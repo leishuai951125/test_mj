@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            font-family: "Microsoft YaHei UI";
+        }
+        body{
+            background-color: ghostwhite;
+        }
+        form{
+            width: 200px;
+            height: 200px;
+            background-color: dimgrey;
+            text-align: center;
+            line-height: 50px;
+        }
+        form div input{
+            height: 2em;
+            /*font-size: 1.5em;*/
+        }
+        form div+div input{
+            width: 10em;
+            color: red;
+            font-weight: bold;
+            height: 2em;
+        }
+        *{
+            margin: auto;
+        }
+        .tishi{
+            color: red;
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+<form action="jsp/game.jsp">
+    <div><span class="tishi">请输入账号</span><input type="text" name="accountId"></div>
+    <div><input type="submit" value="开始游戏"></div>
+</form>
+</body>
+</html>

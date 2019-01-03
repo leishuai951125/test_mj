@@ -1,0 +1,817 @@
+
+$("#buyao").click(function(){
+
+    hideButton();
+    if(roomInformation.isMyTurn==true){
+        $("#chupai").css("display","block")
+        //我出牌点击不要
+        $("#pengpai").css("display","none");
+        $("#hupai").css("display","none");
+        $("#xiaopai").css("display","none");
+        $("#chupai").css("display","none");
+        if(($("#myChuPai").css("display"))=="none"){
+            var c7={ msgId:"c7",type:"bu_yao"};
+            ws.send(JSON.stringify(c7));
+        }
+
+    }else{
+    //别人出牌我不要
+    var c7={ msgId:"c7",type:"bu_yao"};
+    ws.send(JSON.stringify(c7));
+    }
+
+});
+
+$("#chupai").click(function(){
+    // 用户选中牌并点击出牌允许出牌
+    if(roomInformation.isMyTurn==true && myInformation.xuanPai>=0){
+        roomInformation.isMyTurn=false;
+        var c4={
+            msgId:"c4",
+            paiNo:myInformation.pai[myInformation.xuanPai]
+        }
+        ws.send(JSON.stringify(c4));
+        hideButton();
+    }
+});
+
+function hideButton(){
+    $("#pengpai").css("display","none")
+    $("#hupai").css("display","none")
+    $("#xiaopai").css("display","none")
+    $("#chupai").css("display","none")
+    $("#buyao").css("display","none");
+
+}
+//点击碰之后隐藏胡、笑、碰
+$("#pengpai").click(function(){
+
+    hideButton();
+    $("#chupai").css("display","block");
+    var c7={msgId:"c7",type:"peng",paiNo:myInformation.canPengNo}
+    ws.send(JSON.stringify(c7));
+});
+
+$("#hupai").click(function(){
+    console.log(myInformation.canHu);
+
+    if((myInformation.pai.length%3)==2){
+        var c5={
+            msgId:"c5",
+            type:myInformation.canHu.type,
+            matchMethod:myInformation.canHu.matchMethod,
+            actAs:myInformation.canHu.actAs
+        }
+        ws.send(JSON.stringify(c5));
+    } else{
+        var c7={
+            msgId:"c5",
+            type:myInformation.canHu.type,
+            matchMethod:myInformation.canHu.matchMethod,
+            actAs:myInformation.canHu.actAs
+        }
+        ws.send(JSON.stringify(c7));
+    }
+
+});
+
+$("#xiaopai").click(function(){
+    hideButton();
+    var number=0;
+    for (var i=0;i<myInformation.pai.length;i++){
+        if(myInformation.pai[i]==(myInformation.canXiaoNo)){
+            number++;
+        }
+    }
+
+    if(number==1){
+
+        var c6= {
+            msgId: "c6",
+            type: "hui_tou_xiao",
+            paiNo: myInformation.canXiaoNo
+        
+        }
+        ws.send(JSON.stringify(c6));
+
+    }else if(number==2) {
+        //小朝天
+        var c7= {
+            msgId: "c7",
+            type: "dian_xiao",
+            paiNo: myInformation.canXiaoNo
+        }
+        ws.send(JSON.stringify(c7));
+    }else if(number==3){
+        //大朝天
+        if(myInformation.canXiaoNo==roomInformation.laiGen){
+            var c6= {
+                msgId: "c6",
+                type: "zi_xiao",
+                paiNo: myInformation.canXiaoNo
+            }
+            ws.send(JSON.stringify(c6));
+        } else{
+            //点笑
+            var c7= {
+                msgId: "c7",
+                type: "dian_xiao",
+                paiNo: myInformation.canXiaoNo
+            }
+            ws.send(JSON.stringify(c7));
+        }
+    }else if(number==4){
+        //闷笑
+        var c6={
+            msgId:"c6",
+            type:"zi_xiao",
+            paiNo:myInformation.canXiaoNo
+        }
+        ws.send(JSON.stringify(c6));
+    }
+});
+
+function compartor(param1,param2) {
+    return param1-param2;
+}
+// 显示我的手牌
+function myCard(){
+    //将赖子取出、再排序、再加入数组
+    var laizi=0;
+    var temp=myInformation.pai.length
+    for(var a=0;a<temp;){
+        if (myInformation.pai[a]==roomInformation.laizi){
+            myInformation.pai.splice(a,1);
+            laizi++;
+            temp--;
+        } else{
+            a++;
+        }
+    }
+    //逆序
+    myInformation.pai.sort(compartor);
+    myInformation.pai.reverse();
+    for (var b=0;b<laizi;b++){
+        myInformation.pai.push(roomInformation.laizi);
+    }
+
+    $("#chupaiqu").empty();
+    for(var i=0;i<myInformation.pai.length;i++){
+        if(parseInt(myInformation.pai[i])>=0){
+            var image=new Image();
+            image.src="img/"+zhuanhuan[myInformation.pai[i]]+".png";
+            // image.backgroundImage=;
+            image.id=i;
+            image.ondblclick=function(){doubleClick(this.id)};
+            image.onclick=function(){clickPai(this.id)};
+            image.style.width="12%";
+            image.style.height="140%";
+            // image.style.height="90%"
+            image.style.right=(11.6*i+23.2)+"%";
+            image.style.backgroundImage='url(img/自己手牌.png)';
+
+            $("#chupaiqu").append(image);
+        }
+    }
+}
+
+// 选中牌
+function clickPai(id){
+    if( $("#"+id).position().top<0){
+        $("#"+id).animate({top:"0"},0);
+        $("#"+id).css("width","12%");
+        $("#"+id).css("height","140%");
+    } else{
+        $("#"+id).animate({top:"-40%"},0);
+        $("#"+id).siblings().animate({top:"0"},0);
+        $("#"+id).siblings().animate({width:"12%"},0);
+        $("#"+id).siblings().animate({height:"140%"},0);
+        $("#"+id).css("width","14%");
+        $("#"+id).css("height","180%");
+        $("#"+id).css("z-index","1");
+        $("#"+id).siblings().css("z-index","0");
+        myInformation.xuanPai=id;
+    }
+
+}
+//双击牌事件 id为该牌在数组中下标
+function doubleClick(id) {
+    if(roomInformation.isMyTurn==true){
+        var c4_msg={
+            msgId:"c4",
+            paiNo:myInformation.pai[id]
+        }
+        roomInformation.isMyTurn=false;
+        ws.send(JSON.stringify(c4_msg));
+
+    }
+    hideButton();
+}
+
+// 左边玩家手牌
+function leftPai(){
+    $("#left-pai").empty();
+
+    for(var i=0;i<leftInformation.pai;i++){
+        var image = new Image();
+        image.src="img/侧家手牌.png";
+        image.style.top=8*i+"%";
+        $("#left-pai").append(image);
+
+    }
+    //左边碰
+    for (var i = 0; i < leftInformation.peng.length; i++) {
+        for (var b = 0; b < 3; b++) {
+            var image = new Image();
+            //设置图片样式
+            image.src="img/"+zhuanhuan[leftInformation.peng[i]]+".png";
+            image.style.width="78%";
+            image.style.height="92%";
+            image.style.top="-10%";
+            image.style.position="absolute";
+            image.style.left="16%";
+            image.style.transform="rotate(90deg)";
+
+            var pai = document.createElement("div");
+            // 设置背景样式
+            pai.style.width="98%";
+            pai.style.height="15%";
+            pai.style.position = "absolute";
+            pai.style.left="30%";
+
+            pai.style.top = ((leftInformation.pai * 8) + (b * 9.5))+(28*i)+ 6 + "%";
+
+            pai.style.background = "url(img/侧家出牌.png)";
+            pai.style.backgroundRepeat = "no-repeat";
+            pai.style.backgroundSize = "100% 100%";
+            pai.append(image);
+            $("#left-pai").append(pai);
+        }
+    }
+    // 左边笑
+    for (var j = 0; j < leftInformation.xiao.length; j++) {
+        for (var b = 0; b < 3; b++) {
+            var image = new Image();
+            //设置图片样式
+            image.src = "img/" + zhuanhuan[leftInformation.xiao[j]] + ".png";
+            image.style.width = "78%";
+            image.style.height = "92%";
+            image.style.top = "-10%";
+            image.style.position = "absolute";
+            image.style.left = "16%";
+            image.style.transform = "rotate(90deg)";
+
+            var pai = document.createElement("div");
+            // 设置背景样式
+            pai.style.width = "98%";
+            pai.style.height = "15%";
+            pai.style.position = "absolute";
+            pai.style.left = "30%";
+
+            pai.style.top = ((leftInformation.pai * 8) + (b * 9.5))+leftInformation.peng.length*28 + (28 * j) + 6 + "%";
+
+            pai.style.background = "url(img/侧家出牌.png)";
+            pai.style.backgroundRepeat = "no-repeat";
+            pai.style.backgroundSize = "100% 100%";
+            pai.append(image);
+            $("#left-pai").append(pai);
+        }
+        var image = new Image();
+        //设置图片样式
+        image.src = "img/" + zhuanhuan[leftInformation.xiao[j]] + ".png";
+        image.style.width = "78%";
+        image.style.height = "92%";
+        image.style.top = "-10%";
+        image.style.position = "absolute";
+        image.style.left = "16%";
+        image.style.transform = "rotate(90deg)";
+
+
+        var pai = document.createElement("div");
+        // 设置背景样式
+        pai.style.width = "96%";
+        pai.style.height = "14%";
+        pai.style.position = "absolute";
+        pai.style.left = "30%";
+        pai.style.top = ((leftInformation.pai * 8) +leftInformation.peng.length*28 + (28 * j) + 13.5)+ "%";
+
+        pai.style.background = "url(img/侧家出牌.png)";
+        pai.style.backgroundRepeat = "no-repeat";
+        pai.style.backgroundSize = "100% 100%";
+        pai.append(image);
+        $("#left-pai").append(pai);
+    }
+}
+
+
+function rightPai(){
+    $("#right-pai").empty();
+    // 右边玩家手牌
+    for(var i=0;i<rightInformation.pai;i++){
+        var image = new Image();
+        image.src="img/侧家手牌.png";
+        // image.style.width="30%";     
+        // image.style.height="8%"; 
+        image.style.top=8*i+"%";
+        $("#right-pai").append(image);
+    }
+    //右边碰
+    for (var i = 0; i < rightInformation.peng.length; i++) {
+        for (var b = 0; b < 3; b++) {
+            var image = new Image();
+            //设置图片样式
+            image.src="img/"+zhuanhuan[rightInformation.peng[i]]+".png";
+            image.style.width="78%";
+            image.style.height="92%";
+            image.style.top="-10%";
+            image.style.position="absolute";
+            image.style.left="3%";
+            image.style.transform="rotate(270deg)";
+
+            var pai = document.createElement("div");
+            // 设置背景样式
+            pai.style.width="98%";
+            pai.style.height="15%";
+            pai.style.position = "absolute";
+            pai.style.left="20%";
+
+            pai.style.top = ((rightInformation.pai * 8) + (b * 9.5))+(28*i)+ 6 + "%";
+
+            pai.style.background = "url(img/侧家出牌.png)";
+            pai.style.backgroundRepeat = "no-repeat";
+            pai.style.backgroundSize = "100% 100%";
+            pai.append(image);
+            $("#right-pai").append(pai);
+        }
+    }
+    // 右边笑
+    for (var j = 0; j < rightInformation.xiao.length; j++) {
+        for (var b = 0; b < 3; b++) {
+            var image = new Image();
+            //设置图片样式
+            image.src = "img/" + zhuanhuan[rightInformation.xiao[j]] + ".png";
+            image.style.width = "78%";
+            image.style.height = "92%";
+            image.style.top = "-10%";
+            image.style.position = "absolute";
+            image.style.left = "3%";
+            image.style.transform = "rotate(270deg)";
+
+            var pai = document.createElement("div");
+            // 设置背景样式
+            pai.style.width = "98%";
+            pai.style.height = "15%";
+            pai.style.position = "absolute";
+            pai.style.left = "20%";
+
+            pai.style.top = ((rightInformation.pai * 8) + (b * 9.5))+rightInformation.peng.length*28 + (28 * j) + 6 + "%";
+
+            pai.style.background = "url(img/侧家出牌.png)";
+            pai.style.backgroundRepeat = "no-repeat";
+            pai.style.backgroundSize = "100% 100%";
+            pai.append(image);
+            $("#right-pai").append(pai);
+        }
+        var image = new Image();
+        //设置图片样式
+        image.src = "img/" + zhuanhuan[rightInformation.xiao[j]] + ".png";
+        image.style.width = "78%";
+        image.style.height = "92%";
+        image.style.top = "-10%";
+        image.style.position = "absolute";
+        image.style.left = "3%";
+        image.style.transform = "rotate(270deg)";
+
+
+        var pai = document.createElement("div");
+        // 设置背景样式
+        pai.style.width = "96%";
+        pai.style.height = "14%";
+        pai.style.position = "absolute";
+        pai.style.left = "22%";
+        pai.style.top = ((rightInformation.pai * 8) +rightInformation.peng.length*28 + (28 * j) + 13)+ "%";
+
+        pai.style.background = "url(img/侧家出牌.png)";
+        pai.style.backgroundRepeat = "no-repeat";
+        pai.style.backgroundSize = "100% 100%";
+        pai.append(image);
+        $("#right-pai").append(pai);
+    }
+
+}
+
+// 对面玩家手牌
+function acrossPai(){
+    $("#across-pai").empty();
+    for(var i=0;i<acrossInformation.pai;i++){
+        var image = new Image();
+        image.src="img/对家手牌.png";
+        // image.style.width="30%";     
+        // image.style.height="8%"; 
+        image.style.left=5.55*i+25+"%";
+        $("#across-pai").append(image);
+    }
+
+    //对面碰
+    for (var i = 0; i < acrossInformation.peng.length; i++) {
+        for (var b = 0; b < 3; b++) {
+            var image = new Image();
+            //设置图片样式
+            image.src="img/"+zhuanhuan[acrossInformation.peng[i]]+".png";
+            image.style.width="90%";
+            image.style.height="92%";
+            image.style.top="0%";
+            image.style.position="absolute";
+            image.style.left="3%";
+            image.style.transform="rotate(180deg)";
+
+            var pai = document.createElement("div");
+            // 设置背景样式
+            pai.style.width="5%";
+            pai.style.height="80%";
+            pai.style.position = "absolute";
+            pai.style.top="18%";
+
+            pai.style.left =(5.55*acrossInformation.pai)+25+(b*4.5)+(13.5*i)+ "%";
+
+            pai.style.background = "url(img/自己出牌对家出牌对家碰牌.png)";
+            pai.style.backgroundRepeat = "no-repeat";
+            pai.style.backgroundSize = "100% 100%";
+            pai.append(image);
+            $("#across-pai").append(pai);
+        }
+    }
+    // 对面笑
+    for (var j = 0; j < acrossInformation.xiao.length; j++) {
+        for (var b = 0; b < 3; b++) {
+            var image = new Image();
+            //设置图片样式
+            image.src="img/"+zhuanhuan[acrossInformation.xiao[j]]+".png";
+            image.style.width="90%";
+            image.style.height="92%";
+            image.style.top="0%";
+            image.style.position="absolute";
+            image.style.left="3%";
+            image.style.transform="rotate(180deg)";
+
+            var pai = document.createElement("div");
+            // 设置背景样式
+            pai.style.width="5%";
+            pai.style.height="80%";
+            pai.style.position = "absolute";
+            pai.style.top="18%";
+
+            pai.style.left =acrossInformation.peng.length*13.5+(5.55*acrossInformation.pai)+25+(b*4.5)+(13.5*j)+"%";
+    
+            pai.style.background = "url(img/自己出牌对家出牌对家碰牌.png)";
+            pai.style.backgroundRepeat = "no-repeat";
+            pai.style.backgroundSize = "100% 100%";
+            pai.append(image);
+            $("#across-pai").append(pai);
+        }
+
+        var image = new Image();
+        //设置图片样式
+        image.src="img/"+zhuanhuan[acrossInformation.xiao[j]]+".png";
+        image.style.width="90%";
+        image.style.height="92%";
+        image.style.top="0%";
+        image.style.position="absolute";
+        image.style.left="3%";
+        image.style.transform="rotate(180deg)";
+
+        var pai = document.createElement("div");
+        // 设置背景样式
+        pai.style.width="5%";
+        pai.style.height="80%";
+        pai.style.position = "absolute";
+        pai.style.top="0%";
+        pai.style.left =acrossInformation.peng.length*13.5+(5.55*acrossInformation.pai)+29.5+(13.5*j)+ "%";
+    
+        pai.style.background = "url(img/自己出牌对家出牌对家碰牌.png)";
+        pai.style.backgroundRepeat = "no-repeat";
+        pai.style.backgroundSize = "100% 100%";
+        pai.append(image);
+        $("#across-pai").append(pai);
+    }
+
+}
+//显示自己摸上来的一张牌，并将摸得牌加入到手牌数组中
+function moPai(moDePai){
+    myInformation.pai.push(moDePai);
+    var image = new Image();
+    image.src="img/"+zhuanhuan[moDePai]+".png";
+    image.id=myInformation.pai.length-1;
+    image.style.right="10%";
+
+    image.ondblclick=function(){doubleClick(this.id)};
+    image.onclick=function(){clickPai(this.id)};
+    image.style.width="12%";
+    image.style.height="140%";
+    image.style.backgroundImage='url(img/自己手牌.png)';
+    $("#chupaiqu").append(image);
+
+}
+
+// 显示上家打的字 先添加到数组中、再显示
+function leftDaZi(zi){
+    // leftInformation.chuPai.push(zi);
+
+    var image = new Image();
+    //设置图片样式
+    image.src="img/"+zhuanhuan[zi]+".png";
+    image.style.width="78%";
+    image.style.height="92%";
+    image.style.top="-8%";
+    image.style.position="absolute";
+    image.style.left="15%";
+    image.style.transform="rotate(90deg)";
+    // image.style.backgroundImage='url(img/自己出牌对家出牌对家碰牌.png)';
+    /* clip:rect(0px,0px,0px,0px); */
+
+    var pai=document.createElement("div");
+    // 设置背景样式
+    pai.style.position="absolute";
+
+    pai.style.width="35%";
+    pai.style.height="22%";
+    pai.style.background="url(img/侧家出牌.png)";
+    pai.style.backgroundRepeat="no-repeat";
+    pai.style.backgroundSize="100% 100%";
+    pai.id="leftchupai"+leftInformation.chuPai.length;
+    // pai.style.top="30%";
+    pai.append(image);
+
+    if(leftInformation.chuPai.length<=10){
+        pai.style.left="60%";
+        pai.style.top=(leftInformation.chuPai.length*14-44)+"%";
+        pai.style.zIndex="1";
+    } else {
+        pai.style.left="28%";
+        // pai.style.zIndex=1;
+
+        pai.style.top=((leftInformation.chuPai.length-11)*14-30)+"%";
+    }
+
+    $("#left-chupai").append(pai);
+
+}
+
+// 显示右边玩家打一张字
+function rightDaZi(zi) {
+    // rightInformation.chuPai.push(zi);
+
+    var image = new Image();
+    //设置图片样式
+    image.src="img/"+zhuanhuan[zi]+".png";
+    image.style.width="78%";
+    image.style.height="92%";
+    image.style.top="-10%";
+    image.style.position="absolute";
+    image.style.left="3%";
+    image.style.transform="rotate(270deg)";
+    // image.style.backgroundImage='url(img/自己出牌对家出牌对家碰牌.png)';
+    /* clip:rect(0px,0px,0px,0px); */
+
+    var pai=document.createElement("div");
+    // 设置背景样式
+    pai.style.position="absolute";
+
+    pai.id="rightchupai"+rightInformation.chuPai.length;
+    pai.style.width="35%";
+    pai.style.height="22%";
+    pai.style.background="url(img/侧家出牌.png)";
+    pai.style.backgroundRepeat="no-repeat";
+    pai.style.backgroundSize="100% 100%";
+    // pai.style.top="30%";
+    pai.append(image);
+
+    if(rightInformation.chuPai.length<=10){
+        pai.style.left="25%";
+        pai.style.bottom=(rightInformation.chuPai.length*14-30)+"%";
+        pai.style.zIndex= 20-rightInformation.chuPai.length;
+    } else {
+        pai.style.left="58%";
+        // pai.style.zIndex=1;
+        pai.style.zIndex= 20-rightInformation.chuPai.length;
+        pai.style.bottom=((rightInformation.chuPai.length-10)*14-30)+"%";
+    }
+
+    $("#right-chupai").append(pai);
+}
+
+// 显示对家打一张字
+function acrossDaZi(zi) {
+    // acrossInformation.chuPai.push(zi);
+    var image = new Image();
+    //设置图片样式
+    image.src="img/"+zhuanhuan[zi]+".png";
+    image.style.width="80%";
+    image.style.height="80%";
+    image.style.top="-10%";
+    image.style.position="absolute";
+    image.style.left="7%";
+    // image.style.backgroundImage='url(img/自己出牌对家出牌对家碰牌.png)';
+    /* clip:rect(0px,0px,0px,0px); */
+
+    var pai=document.createElement("div");
+    // 设置背景样式
+    pai.style.position="absolute";
+    if(acrossInformation.chuPai.length<=10){
+        pai.style.right=acrossInformation.chuPai.length*15.3-70+"%";
+    } else {
+        pai.style.top="63%";
+        pai.style.right=(acrossInformation.chuPai.length-11)*15.3-54.7+"%";
+    }
+    pai.style.width="16%";
+    pai.style.height="88%";
+    pai.id="acrosschupai"+acrossInformation.chuPai.length;
+    pai.style.background="url(img/自己出牌对家出牌对家碰牌.png)";
+    pai.style.backgroundRepeat="no-repeat";
+    pai.style.backgroundSize="100% 100%";
+    pai.append(image);
+    $("#across-chupai").append(pai);
+
+}
+//页面中间指示当前出牌人
+function chuPaiRen(ren){
+    switch(ren){
+        case 0:{
+            $("#myChuPai").css("display","block");
+            $("#acrossChuPai").css("display","none");
+            $("#leftChuPai").css("display","none");
+            $("#rightChuPai").css("display","none");
+            break;
+        }
+        case 1:{
+            $("#rightChuPai").css("display","block");
+            $("#myChuPai").css("display","none");
+            $("#acrossChuPai").css("display","none");
+            $("#leftChuPai").css("display","none");
+            break;
+        }
+        case 2:{
+            $("#acrossChuPai").css("display","block");
+            $("#myChuPai").css("display","none");
+            $("#leftChuPai").css("display","none");
+            $("#rightChuPai").css("display","none");
+            break;
+        }
+        case 3:{
+            $("#leftChuPai").css("display","block");
+            $("#acrossChuPai").css("display","none");
+            $("#myChuPai").css("display","none");
+            $("#rightChuPai").css("display","none");
+            break;
+        }
+    }
+}
+
+
+// 显示自己出的牌
+function woChuPai(daPai){
+    // myInformation.chuPai.push(myInformation.pai[dapai]);
+    var image = new Image();
+    //设置图片样式
+    image.src="img/"+zhuanhuan[daPai]+".png";
+    image.style.width="80%";
+    image.style.height="80%";
+    image.style.top="-10%";
+    image.style.position="absolute";
+    image.style.left="7%";
+    // image.style.backgroundImage='url(img/自己出牌对家出牌对家碰牌.png)';
+    /* clip:rect(0px,0px,0px,0px); */
+
+    var pai=document.createElement("div");
+    // 设置背景样式
+    pai.style.position="absolute";
+    if(myInformation.chuPai.length<=10){
+        pai.style.left=myInformation.chuPai.length*9.5-9.5+"%";
+    } else {
+        pai.style.top="45%";
+        pai.style.left=(myInformation.chuPai.length-11)*9.5+"%";
+    }
+    pai.style.width="10%";
+    pai.style.height="69%";
+    pai.style.background="url(img/自己出牌对家出牌对家碰牌.png)";
+    pai.style.backgroundRepeat="no-repeat";
+    pai.style.backgroundSize="100% 100%";
+    pai.id="mychupai"+myInformation.chuPai.length;
+
+    pai.append(image);
+    $("#myDiscard").append(pai);
+}
+
+function woPeng(){
+    
+    for(var i=0;i<myInformation.peng.length;i++){
+        for(var b=0;b<3;b++){
+            var image = new Image();
+            //设置图片样式
+            image.src="img/"+zhuanhuan[myInformation.peng[i]]+".png";
+            image.style.width="80%";
+            image.style.height="80%";
+            image.style.top="-5%";
+            image.style.position="absolute";
+            image.style.left="7%";
+            // image.style.backgroundImage='url(img/自己出牌对家出牌对家碰牌.png)';
+            /* clip:rect(0px,0px,0px,0px); */
+        
+            var pai=document.createElement("div");
+            // 设置背景样式
+            pai.style.position="absolute";
+    
+            pai.style.top="103%";
+            pai.style.left=((i*35)+(b*11))+myInformation.xiao.length*35+"%";
+    
+            pai.style.width="11.5%";
+            pai.style.height="53%";
+            pai.style.background="url(img/自己出牌对家出牌对家碰牌.png)";
+            pai.style.backgroundRepeat="no-repeat";
+            pai.style.backgroundSize="100% 100%";
+            pai.append(image);
+            $("#myPengXiao").append(pai);
+        }
+    }
+
+    for(var i=0;i<myInformation.xiao.length;i++){
+        for(var b=0;b<3;b++){
+            var image = new Image();
+            //设置图片样式
+            image.src="img/"+zhuanhuan[myInformation.xiao[i]]+".png";
+            image.style.width="80%";
+            image.style.height="80%";
+            image.style.top="-5%";
+            image.style.position="absolute";
+            image.style.left="7%";
+            // image.style.backgroundImage='url(img/自己出牌对家出牌对家碰牌.png)';
+            /* clip:rect(0px,0px,0px,0px); */
+        
+            var pai=document.createElement("div");
+            // 设置背景样式
+            pai.style.position="absolute";
+    
+            pai.style.top="103%";
+            pai.style.left=((i*35)+(b*11))+"%";
+    
+            pai.style.width="11.5%";
+            pai.style.height="53%";
+            pai.style.background="url(img/自己出牌对家出牌对家碰牌.png)";
+            pai.style.backgroundRepeat="no-repeat";
+            pai.style.backgroundSize="100% 100%";
+            pai.append(image);
+            $("#myPengXiao").append(pai);
+        }
+        var image = new Image();
+        //设置图片样式
+        image.src="img/"+zhuanhuan[myInformation.xiao[i]]+".png";
+        image.style.width="80%";
+        image.style.height="80%";
+        image.style.top="-5%";
+        image.style.position="absolute";
+        image.style.left="7%";
+        // image.style.backgroundImage='url(img/自己出牌对家出牌对家碰牌.png)';
+        /* clip:rect(0px,0px,0px,0px); */
+    
+        var pai=document.createElement("div");
+        // 设置背景样式
+        pai.style.position="absolute";
+
+        pai.style.top="91%";
+        pai.style.left=(i*35)+11+"%";
+
+        pai.style.width="11.5%";
+        pai.style.height="51.5%";
+        pai.style.background="url(img/自己出牌对家出牌对家碰牌.png)";
+        pai.style.backgroundRepeat="no-repeat";
+        pai.style.backgroundSize="100% 100%";
+        pai.append(image);
+        $("#myPengXiao").append(pai);
+    }
+}
+
+function removeChuPai(wanjia){
+    switch(wanjia){
+        case "mychupai":{
+            $("#"+wanjia+myInformation.chuPai.length).remove();
+            myInformation.chuPai.splice(myInformation.chuPai.length-1,1);
+            break;
+        }
+        case "leftchupai":{
+            $("#"+wanjia+leftInformation.chuPai.length).remove();
+            leftInformation.chuPai.splice(leftInformation.chuPai.length-1,1);
+            break;
+        }
+        case "rightchupai":{
+            $("#"+wanjia+rightInformation.chuPai.length).remove();
+            rightInformation.chuPai.splice(rightInformation.chuPai.length-1,1);
+            break;
+        }
+        case "acrosschupai":{
+            $("#"+wanjia+acrossInformation.chuPai.length).remove();
+            acrossInformation.chuPai.splice(acrossInformation.chuPai.length-1,1);
+            break;
+        }
+    }
+
+}

@@ -29,6 +29,14 @@ public class Account {
 
     @JSONField(serialize = false)
     Player player;//不为空说明在游戏中,重连时使用，不需要参与持久化
+    public Account(){
+    }
+
+    public Account(long accountId,String username){
+        setAccountId(accountId);
+        setUsername(username);
+    }
+
     public long getAccountId() {
         return accountId;
     }

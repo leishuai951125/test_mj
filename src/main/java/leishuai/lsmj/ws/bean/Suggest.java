@@ -9,7 +9,7 @@ import java.util.Map;
  * @Date 2018/12/19 0:50
  * @Version 1.0
  */
-public class Msg {
+public class Suggest {
     String msgId;
     Object msgBody;
 

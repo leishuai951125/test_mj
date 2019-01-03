@@ -1,18 +1,19 @@
 package leishuai.lsmj.ws.utils;
 
+import leishuai.lsmj.ws.bean.Player;
+import leishuai.lsmj.ws.bean.PlayerState;
+import leishuai.lsmj.ws.bean.RoomState;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import javax.persistence.criteria.CriteriaBuilder;
+import java.util.*;
 import java.util.stream.Collectors;
 
 //改1：统计每种花色数量时把pai[i]/3,改成(pai[i]-1)/3
 //改2：getCardList时，把sort（pai,0,lenth-1）改成 pai，0，lenth
-public class HuPai3 {
-    private boolean printFlag=false; //是否打印匹配信息，主要用于调试
-    private boolean printResult=false; //打印匹配结果
+public class HuPai {
+     boolean printFlag=false; //是否打印匹配信息，主要用于调试
+     boolean printResult=false; //打印匹配结果
     private class CardNode{ //用来存牌某种牌的信息和数量
         //把相同点数和花色的牌称为一种牌，这个节点的作用就是纪录每种牌的数量
         int figure;//点数 1-9
@@ -181,7 +182,7 @@ public class HuPai3 {
 
     //把牌封装成一个有序链表，把具有相同花色和点数的牌称为一种牌，
     // 每一种牌占链表中的一个节点，并保存每种牌的数量
-    private List<CardNode> getCardList(int []pai,int lenth){
+     List<CardNode> getCardList(int []pai,int lenth){
         Arrays.sort(pai,0,lenth);//升序
         List<CardNode> list=new LinkedList<CardNode>();
         for(int i=0;i<lenth;i++){
@@ -281,17 +282,60 @@ public class HuPai3 {
         return oneMatchIsAble;
     }
 
-    public static void main(String[] args) throws InterruptedException {
 
+    public static boolean testHu(int []cardArr){
+        HuPai huPai=new HuPai();
+        int []pai=getPaiFromCardArr(cardArr);
+        return huPai.noNaiTest(pai,pai.length);
+    }
+
+     private static int[] getPaiFromCardArr(int[] cardArr) {
+        int[]cardArr2=HuPaiByGuide.copyCardArr(cardArr);
+        List<Integer> paiList=new LinkedList<Integer>();
+        for(int i=1;i<28;i++){
+            if(cardArr2[i]==RoomState.V.PENG_AND_ONE || cardArr2[i]==1){
+                paiList.add(i);
+            }else if(cardArr2[i]>0 && cardArr2[i]<=4){
+                for(int j=0;j<cardArr2[i];j++){
+                    paiList.add(i);
+                }
+            }
+        }
+        int pai[]=new int[paiList.size()];
+        Iterator<Integer> iterator=paiList.iterator();
+        for(int i=0;i<pai.length;i++){
+            pai[i]=iterator.next();
+        }
+        return pai;
+    }
+
+}
+
+class TestHuPai{
+    public static void main(String[] args) throws InterruptedException {
+        for(int i=0;i<20;i++){
+            long s=System.nanoTime()/1000;
+            System.out.println(HuPai.testHu(createTestPaiArr()));
+            System.out.println(System.nanoTime()/1000-s);
+            Thread.sleep(100);
+        }
+    }
+    public  static int[] createTestPaiArr(){
+        int []paiArr2={0,3,1,1,1,1,2,1,1,0,1,1,6};
+        int []paiArr=new int[28];
+        for(int i=0;i<paiArr2.length;i++){
+            paiArr[i]=paiArr2[i];
+        }
+        return paiArr;
     }
 
     @Test
     public void test2(){  //
         List<Integer> paiList=Arrays.stream(
                 new Integer[]{1,1,1,2,3,4,5,6,7,8,9,9,9}
-                ).collect(Collectors.toList());  //数组转集合
+        ).collect(Collectors.toList());  //数组转集合
         int paiArr[]=new int[paiList.size()+1];
-        HuPai3 huPai3=new HuPai3();
+        HuPai huPai3=new HuPai();
         for(int test=1;test<28;test++){
             paiList.add(test);
             Object[] pai=  paiList.toArray();
@@ -303,12 +347,12 @@ public class HuPai3 {
             }
             paiList.remove(13);
         }
-
     }
+
 
     @Test
     public void test1(){  //测试胡牌检测是否正常与时间打印
-        final int times=1;
+        final int times=100;
         int pai[]={
                 1,1,1,9,9,
                 4,4,4,6,7,
@@ -317,8 +361,7 @@ public class HuPai3 {
 //        int pai[]={
 //                1,1,1,2,2,3,3,4,9,9,9
 //        };
-
-        HuPai3 huPai=new HuPai3();
+        HuPai huPai=new HuPai();
         List list=huPai.getCardList(pai,pai.length);
         for(Object o:list) {
             System.out.println(o);
@@ -343,16 +386,14 @@ public class HuPai3 {
             isHu=huPai.noNaiTest(pai,pai.length);
             long time=(System.nanoTime()-startTime)/1000;
             timeSum+=time;
-//            System.out.println("no:"+i+"  time:"+time+"微妙");
-//            Thread.sleep(10);
-
-
+            System.out.println("no:"+i+"  time:"+time+"微妙");
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         System.out.println("sum:"+timeSum/1000+"毫秒  avgs:"+timeSum/times+"微秒");
-
-
-
         System.out.println(isHu);
     }
 }
-

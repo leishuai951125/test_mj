@@ -3,6 +3,7 @@ package leishuai.lsmj.ws.service.impl;
 
 import leishuai.lsmj.ws.bean.Account;
 import leishuai.lsmj.ws.service.AccountService;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
@@ -23,6 +24,20 @@ public class AccountServiceImpl implements AccountService,HttpSessionListener {
     private static ConcurrentMap<Long,HttpSession> httpSessionMap=new ConcurrentHashMap<Long,HttpSession>(1000);
 
     @Override
+    public Account getAccountOnGame(Long accountId) {
+        return accountsOnGame.get(accountId);
+    }
+    @Override
+    public void putOnGameAccount(Long accountId,Account account) {
+        accountsOnGame.put(accountId,account);
+    }
+    @Override
+    public void removeOnGameAccount(Long accountId) {
+        accountsOnGame.remove(accountId);
+    }
+
+
+    @Override
     public String getAccountToken(Long accountId) {
         HttpSession httpSession=httpSessionMap.get(accountId);
         if(httpSession==null){
@@ -31,12 +46,6 @@ public class AccountServiceImpl implements AccountService,HttpSessionListener {
         String token=(String)httpSession.getAttribute("token");
         return token;
     }
-
-    @Override
-    public Account getAccountOnGame(Long accountId) {
-        return accountsOnGame.get(accountId);
-    }
-
     @Override
     public Account getAccountBySession(Long accountId) {
         HttpSession httpSession=httpSessionMap.get(accountId);
@@ -46,28 +55,17 @@ public class AccountServiceImpl implements AccountService,HttpSessionListener {
             return (Account)httpSession.getAttribute("account");
         }
     }
-
     @Override
     public void addAccountIntoSessionMap(Long accountId, HttpSession httpSession) {
         httpSessionMap.put(accountId,httpSession);
     }
 
-    @Override
-    public void putOnGameAccount(Long accountId,Account account) {
-        accountsOnGame.put(accountId,account);
-    }
-
-    @Override
-    public void removeOnGameAccount(Long accountId) {
-        accountsOnGame.remove(accountId);
-    }
 
     @Override
     public void sessionCreated(HttpSessionEvent httpSessionEvent) {
         //创建时也不好传参，干脆创建后在别处操作
         //创建后应该添加token和Account到session中
     }
-
     @Override
     public void sessionDestroyed(HttpSessionEvent httpSessionEvent) {
         Account account=(Account)httpSessionEvent.getSession().getAttribute("account");

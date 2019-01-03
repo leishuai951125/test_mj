@@ -11,16 +11,32 @@ import java.util.Map;
  * @Version 1.0
  */
 public class PlayerState {
+    public interface V{
+        int PENG=15;  //碰
+        int PENG_AND_ONE=16;//碰的同时留有一张
+        int DIAN_XIAO=17;  //点笑，包括小朝天
+        int HUI_TOU_XIAO=18;  //回头笑
+        int ZI_XIAO=19;  //自笑，包括大朝天
+
+        int BU_YAO=10;//不要，标识响应,以上常量也可以做响应标志，也可以做牌信息标志
+        int ZHUO_CHONG=20;//捉冲
+        int WORKABLE=31;//可响应别人出牌，也可以称为未响应状态，以上常量均为不可响应状态
+        int RESP_LAST_FOUR_CARD=32;//可响应最后四张是否能胡
+        int RESP_RESTART=33;//可响应重新开始
+    }
+
+    //以下变量在发牌阶段修改（此前大多数据需要还原成默认值）
     //此数组同时记录了牌、点笑、自笑等等信息，可用长14的map代替，但可能影响效率
-    public int []cardArr=new int[28]; //下标0不用，取值0表示没有，1-4表示个数，5-9 看上面常量定义，
+    public int []cardArr=new int[28]; //下标0不用，取值0表示没有，1-4表示个数，15-19 看上面常量定义，
 
-    //以下两变量方便核对和恢复
-    public boolean isYourResponseCard;//是否该你响应别人的出牌
-    public boolean isYourChoseCard;
+    //以下信息在生成出牌指令时修改
+    public int getCardTimes=0;//拿牌的次数，用于自笑和回头笑的合法验证
 
-    //出牌（泛指碰、自笑、回头笑）标志，-1表示禁用，5 表示碰后出牌，依此类推
-    public int choseFlag=0;//取值-1，5-10
+    //以下变量在服务端收到出牌信息时修改
+    public int disLiaZiNum=0;//漂癞子数
+    public int jifen=0;
 
-    public int fuckWho;//点笑时，需要记录被点笑的人，出牌没人要时减掉他的积分
-
+    //以下信息在服务端收到其它玩家对出的牌的响应之后修改
+    //包括jifen，cardArr（碰笑时）
+    public int responseFlag=V.BU_YAO;//响应类型，与是否可以响应，用于验证响应与记录，以及用作恢复的依据
 }

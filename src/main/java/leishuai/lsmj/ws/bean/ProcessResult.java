@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class ProcessResult {
     int seatNo;//收信人的座位号
-    List<Msg> msgList=new ArrayList<Msg>(4);//指令列表
+    List<Suggest> suggestList =new ArrayList<Suggest>(4);//指令列表
     public int getSeatNo() {
         return seatNo;
     }
@@ -20,11 +20,11 @@ public class ProcessResult {
         this.seatNo = seatNo;
     }
 
-    public List<Msg> getMsgList() {
-        return msgList;
+    public List<Suggest> getSuggestList() {
+        return suggestList;
     }
 
-    public void setMsgList(List<Msg> msgList) {
-        this.msgList = msgList;
+    public void setSuggestList(List<Suggest> suggestList) {
+        this.suggestList = suggestList;
     }
 }
