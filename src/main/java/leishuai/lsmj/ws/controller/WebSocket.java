@@ -57,36 +57,23 @@ public class WebSocket {
         return false;
     }
 
-    Account getDevAccount() {
-        return new Account() {{
-            setAccountId(123);
-            setHeadImgUrl("headImgUrl");
-            setPassword("password");
-            setUsername("username");
-        }};
-    }
-
-    static String jsonParamByCreate = null;
-
-    static {
-        Map map = new HashMap() {{
-            put("accountId", 123);
-            put("roomId", null);
-            put("token", "token");
-            put("diFen", 5);
-        }};
-        jsonParamByCreate = JSON.toJSONString(map);
-    }
+//    static String jsonParamByCreate = null;
+//    static {
+//        Map map = new HashMap() {{
+//            put("accountId", 123);
+//            put("roomId", null);
+//            put("token", "token");
+//            put("diFen", 5);
+//        }};
+//        jsonParamByCreate = JSON.toJSONString(map);
+//    }
 
     @OnOpen
     public void onOpen(Session session, @PathParam("jsonParam") String jsonParam) throws IOException {
-        //                System.out.println("新连接加入");  // TODO: 2018/12/22
-//        session.close();
         addOnlineCount();
         long startTime = System.nanoTime() / 100000;
-//       jsonParam=jsonParamByCreate; //todo 测试时使用
         try {
-            System.out.println(jsonParam);  //// TODO:
+            System.out.println(jsonParam);
             JSONObject param = JSON.parseObject(jsonParam);
             if (isCheckSuccess(param)) {
                 long accountId = param.getLong("accountId");

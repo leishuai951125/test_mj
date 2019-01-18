@@ -6,9 +6,6 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%
-    String base=request.getContextPath()+"/";
-%>
 <%--<!DOCTYPE html>--%>
 <html>
 <head>
@@ -27,15 +24,14 @@
             height: 200px;
             background-color: dimgrey;
             text-align: center;
-            line-height: 50px;
+            line-height: 45px;
         }
         form div input{
             height: 2em;
-            /*font-size: 1.5em;*/
         }
-        form div+div input{
-            width: 10em;
-            color: red;
+        form div input{
+            width: 8em;
+            /*color: red;*/
             font-weight: bold;
             height: 2em;
         }
@@ -55,7 +51,14 @@
 </head>
 <body>
 <form action="user/login" method="post">
-    <div><span class="tishi">请输入账号</span><input value="15671582806" type="text" name="accountId"></div>
+    <div>
+        <span class="tishi">账号:</span>
+        <input value="15671582806" type="text" name="accountId">
+    </div>
+    <div>
+        <span class="tishi">密码:</span>
+        <input value="15671582806" type="password" name="password">
+    </div>
     <span id="error"><br>${error}</span>
     <br>
     <div><input type="submit" value="开始游戏"></div>

@@ -10,18 +10,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="game.css">
-    <link rel="stylesheet" type="text/css" href="player.css">
-
+    <link rel="stylesheet" type="text/css" href="css/game.css">
+    <link rel="stylesheet" type="text/css" href="css/player.css">
     <title>game</title>
 </head>
 <body>
 <script>
-    var params={accountId:${account.accountId},diFen:"5",token:undefined,roomId:null};
-    var ws=null;http://111.230.108.43:8080/majiang_war/
-
+    var params={
+        accountId:'${account.accountId}',
+        diFen:'<%= request.getParameter("diFen")%>',
+        token:'',
+        roomId:'<%= request.getParameter("roomId")%>'
+    };
         var wsUrl = 'ws://localhost:8080/lsmj/websocket/{'+JSON.stringify(params)+"}";
-        wsUrl = 'ws://192.168.43.35:8080/lsmj/websocket/{'+JSON.stringify(params)+"}";
+        // wsUrl = 'ws://192.168.43.35:8080/lsmj/websocket/{'+JSON.stringify(params)+"}";
     // var wsUrl = 'ws://111.230.108.43:8080/TestGit/lsmj/websocket/{'+JSON.stringify(params)+"}";
     // var wsUrl = 'ws://3308b008.nat123.cc:53780/lsmj/websocket/{'+JSON.stringify(params)+"}";
     var accountId=params.accountId;
@@ -29,7 +31,7 @@
     function requestFullScreen() {}
     var requestFullScreen=function () {
         var de = document.getElementById("yemian");
-        if (de.requestFullscreen) {
+        if (de.requestFullscreen){
             de.requestFullscreen();
         } else if (de.mozRequestFullScreen) {
             de.mozRequestFullScreen();
@@ -118,12 +120,12 @@
 
 </div>
 
-<script src="jquery.min.js"></script>
-<script src="playerinformation.js"></script>
-<script src="Do.js"></script>
-<script src="socket.js"></script>
-<script src="huPai(1).js"></script>
-<script src="chupai.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/playerinformation.js"></script>
+<script src="js/Do.js"></script>
+<script src="js/socket.js"></script>
+<script src="js/huPai(1).js"></script>
+<script src="js/chupai.js"></script>
 <script>
     $(function () {
         $("*").css("fontSize",window.innerWidth/100+"px");

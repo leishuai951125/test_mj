@@ -24,9 +24,6 @@ public class UserController {
     AccountService accountService = new AccountServiceImpl();
     @RequestMapping("login")
     public String login(HttpServletRequest request, HttpSession session){
-//        String path = request.getContextPath();  //要么为空，要么为"/xiangmuming" 总之后面要加/
-//        System.out.println("========="+path);
-//        String indexPath="redirect:/index.jsp";
         String s = request.getParameter("accountId");
         Long accountId=0L;
         try{
@@ -35,16 +32,21 @@ public class UserController {
             request.setAttribute("error","账户应该为数字");
             return "../index";
         }
-        String username = accountMap.get(accountId);
+        String []nameAndImg=accountMap.get(accountId).toString().split("#");
+        String username = nameAndImg[0];
         if (username != null) { //验证通过
+            //创建account
             Account account = new Account(accountId, username);
             int imgNo=(int)(Math.random()*12);
+            imgNo=Integer.parseInt(nameAndImg[1]);
             String url="img/head/"+imgNo+".jpg";
             account.setHeadImgUrl(url);
+            //把account存储到session中
             session.setAttribute("account", account);
             session.setMaxInactiveInterval(-1);
             accountService.addAccountIntoSessionMap(accountId, session);
-            return "redirect:/static/index.jsp";
+//            return "redirect:"+request.getContextPath()+"/static/room.jsp"; //不使用重定向会出错
+            return "hall";
         }
         request.setAttribute("error","账户不存在");
         return "../index";
@@ -55,15 +57,15 @@ public class UserController {
         return null;
     }
     {
-        accountMap.put(15671582806L, "雷帅");
-        accountMap.put(15671582807L, "施庄明");
-        accountMap.put(15671582808L, "赵进化");
-        accountMap.put(15671582809L, "杨帆");
-        accountMap.put(15671582802L, "雷帅");
-        accountMap.put(15671582803L, "施庄明");
-        accountMap.put(15671582804L, "赵进化");
-        accountMap.put(15671582805L, "杨帆");
-        accountMap.put(15671582800L, "summer");
-        accountMap.put(15671582801L, "张三");
+        accountMap.put(15671582806L, "雷帅#8");
+        accountMap.put(15671582807L, "施庄明#11");
+        accountMap.put(15671582808L, "赵进化#10");
+        accountMap.put(15671582809L, "杨帆#9");
+        accountMap.put(15671582802L, "雷帅#1");
+        accountMap.put(15671582803L, "施庄明#2");
+        accountMap.put(15671582804L, "赵进化#3");
+        accountMap.put(15671582805L, "杨帆#4");
+        accountMap.put(15671582800L, "summer#5");
+        accountMap.put(15671582801L, "张三#6");
     }
 }

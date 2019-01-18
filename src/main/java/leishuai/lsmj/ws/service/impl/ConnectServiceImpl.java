@@ -24,7 +24,7 @@ public class ConnectServiceImpl implements ConnectService {
     static RoomService roomService = new RoomServiceImpl();
     static AccountService accountService=new AccountServiceImpl();
     /**
-     第一次连接，或者重开一句都用这个方法
+     第一次连接，或者重开一局都用这个方法
      */
     @Override
     public boolean intoRoom(Player player,Long roomId, Integer diFen) throws LsmjException { //生成玩家和房间
@@ -89,36 +89,42 @@ public class ConnectServiceImpl implements ConnectService {
         }
     }
 
+    private Account copyAccount(Account account){  //复制account，多登陆且换头像时使用
+        long id=account.getAccountId();
+        String name=account.getUsername();
+        account=new Account(){{ //换个头像，并创建ws对象
+            int imgNo=(int)(Math.random()*12);
+            String url="img/head/"+imgNo+".jpg";
+            setHeadImgUrl(url);
+            setAccountId(id);
+            setUsername(name);
+        }};
+        return account;
+    }
+
     //上线，绑定account，player，ws，session
     @Override
     public void onLine(WebSocket webSocket, Session session, Account account) {
-        //        Room room;//房间
-//        int seatNo;//座位号
-//        Session session;//会话，不需要持久化，因为持久化是为断电恢复使用的，断电后sessino存了也没有作用
-//        Account account;//账户信息，该字段不需要持久化,暂时可以不存
-//        int account_id;  //账号id
+        //palyer的成员如下：
+        //与room关联的   Room room;  int seatNo;
+        //与ws关联的   Session session;
+        //与account关联的     Account account;     int account_id;
         Player player = account.getPlayer();
-        boolean allowMuliplePlayers=true;//允许多玩家登陆
-        //加上if也意为者同一个账号只能登陆一次
-        if(player==null || allowMuliplePlayers) {//第一次开，player对象不存在
-            if(allowMuliplePlayers){//正式环境下去掉
-                long id=account.getAccountId();
-                String name=account.getUsername();
-                account=new Account(){{
-                    int imgNo=(int)(Math.random()*12);
-                    String url="img/head/"+imgNo+".jpg";
-                    setHeadImgUrl(url);
-                    setAccountId(id);
-                    setUsername(name);
-                }};
+        boolean allowMuliplePlayers=true; //允许同一账号多登陆，如果为true，可多称为多个玩家，但不能进行游戏状态恢复
+        //账户第一次建ws连接时player为空，此时创建palyer对象
+        //如果希望同一账户可以称为多用户，每次建ws创建palyer对象，否则无需创建，进行绑定即可方便做数据恢复。
+        if(player==null || allowMuliplePlayers) {//第一次开，或者希望多登陆
+            if(allowMuliplePlayers){
+                //同一账户多使用时，换头像，为了保留之前前几个玩家的头像，必须复制出新的账户对象
+                //主要方便测试阶段使用，正式环境下可去  todo
+//                account=copyAccount(account);
             }
 
-            //palyer与account绑定
+            //创建player，并与account双向绑定
             player = new Player();
             player.setAccount(account);
             player.setAccountId(account.getAccountId());
             account.setPlayer(player);
-
         }
 
         //player绑定session和ws
