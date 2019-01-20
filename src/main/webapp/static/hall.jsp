@@ -12,6 +12,8 @@
     <meta charset="UTF-8">
     <base href="<%= request.getContextPath()+"/" %>">
     <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=false" />
+
     <script src="static/js/jquery.min.js"></script>
     <style>
         body {
@@ -32,6 +34,7 @@
 
         td input, select {
             width: 8em;
+            height: 2em;
         }
     </style>
     <script>
@@ -42,7 +45,6 @@
                 async:false
             }).responseText==="success";
         }
-
         function intoRoom(diFen) { //进入房间
             console.log(diFen);
             var f = gameForm;
@@ -55,7 +57,7 @@
                     f.roomId.value = null;
                 }
             } else {
-                var roomId = document.getElementById("roomIdText").value.trim();
+                var roomId = $("#roomIdText").val().trim();
                 if (isNaN(roomId) || roomId === "") {
                     alert("房号必须是纯数字")
                     return;
@@ -71,6 +73,17 @@
             }
             f.submit();
         }
+        function createPriRoom() { //创建私人房
+            var f = gameForm;
+            // f.roomId.value=null;
+            f.diFen.value=$("#diFenSel").val();
+            f.sumTurn.value=$("#sumTurnSel").val();
+            f.action="room/createPriRoom";
+            f.submit();
+        }
+    </script>
+    <script>
+
     </script>
 </head>
 <body>
@@ -109,17 +122,19 @@
     <tr>
         <td>底分：</td>
         <!--<td><input type="text"></td>-->
-        <td><select>
+        <td><select id="diFenSel">
             <option value="1">1分</option>
             <option value="2">2分</option>
             <option value="5">5分</option>
         </select></td>
-        <td rowspan="2"><input type="button" value="确定"></td>
+        <td rowspan="2">
+            <input id="check" type="button" value="确定" style="height: 3em" onclick="createPriRoom()">
+        </td>
     </tr>
     <tr>
         <td>场数：</td>
         <!--<td><input type="text"></td>-->
-        <td><select>
+        <td><select id="sumTurnSel">
             <option value="5">5场</option>
             <option value="10">10场</option>
             <option value="20">20场</option>

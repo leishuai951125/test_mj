@@ -11,6 +11,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=false" />
+
     <base href="<%= request.getContextPath()+"/" %>">
     <style>
         *{
@@ -61,7 +63,7 @@
     </div>
     <span id="error"><br>${error}</span>
     <br>
-    <div><input type="submit" value="开始游戏"></div>
+    <div><input type="submit" value="登陆"></div>
 </form>
 </body>
 </html>

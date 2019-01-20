@@ -1,8 +1,8 @@
 package leishuai.controller;
 
-import leishuai.lsmj.ws.bean.Account;
-import leishuai.lsmj.ws.service.AccountService;
-import leishuai.lsmj.ws.service.impl.AccountServiceImpl;
+import leishuai.bean.Account;
+import leishuai.service.AccountService;
+import leishuai.service.impl.AccountServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 

@@ -228,7 +228,7 @@ function leftPai(){
 
     for(var i=0;i<leftInformation.pai;i++){
         var image = new Image();
-        image.src="img/侧家手牌.png";
+        image.src="img/leftpai.png";
         image.style.top=8*i+"%";
         $("#left-pai").append(image);
 
@@ -327,6 +327,7 @@ function rightPai(){
         // image.style.width="30%";     
         // image.style.height="8%"; 
         image.style.top=8*i+"%";
+        image.style.left=0;
         $("#right-pai").append(image);
     }
     //右边碰

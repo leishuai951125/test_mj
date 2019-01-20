@@ -12,6 +12,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="css/game.css">
     <link rel="stylesheet" type="text/css" href="css/player.css">
+    <link rel="stylesheet" type="text/css" href="css/yupai.css">
     <title>game</title>
 </head>
 <body>
@@ -22,7 +23,7 @@
         token:'',
         roomId:'<%= request.getParameter("roomId")%>'
     };
-        var wsUrl = 'ws://localhost:8080/lsmj/websocket/{'+JSON.stringify(params)+"}";
+        var wsUrl = 'ws://localhost:8080/TestGit/lsmj/websocket/{'+JSON.stringify(params)+"}";
         // wsUrl = 'ws://192.168.43.35:8080/lsmj/websocket/{'+JSON.stringify(params)+"}";
     // var wsUrl = 'ws://111.230.108.43:8080/TestGit/lsmj/websocket/{'+JSON.stringify(params)+"}";
     // var wsUrl = 'ws://3308b008.nat123.cc:53780/lsmj/websocket/{'+JSON.stringify(params)+"}";
@@ -44,6 +45,7 @@
 
 </script>
 <div id="yemian">
+    <div id="yupai-information"></div>
     <div id="showlaizi"></div>
     <div id="fullScreen" onclick = requestFullScreen()>全屏</div>
     <div id="daoZhuan" onclick = daoZhuan()>倒转</div>
@@ -63,7 +65,6 @@
     <div id="leftplayer">
     </div>
     <div id="left-information">
-        积分：
     </div>
     <div id="left-chupai"></div>
     <div id="left-pai">
@@ -78,7 +79,7 @@
     <div id="rightplayer">
     </div>
     <div id="right-information">
-        积分：
+
     </div>
     <div id="right-chupai"></div>
     <div id="right-pai"></div>
@@ -88,7 +89,7 @@
     <div id="acrossplayer">
     </div>
     <div id="across-information">
-        积分：
+
     </div>
     <div id="across-chupai"></div>
     <div id="across-pai"></div>

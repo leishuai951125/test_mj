@@ -65,6 +65,7 @@ var s6_suggest={
     msgBody:{
         laiZi:2,
         laiGen:1,
+        playedTurn:1,
         allCards:[
             //13张牌的编号
         ]

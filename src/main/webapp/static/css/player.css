@@ -4,7 +4,7 @@
     position: absolute;
     top: 40%;
     left: 2%;
-    /*background-image: url("img/头像.jpg");*/
+    /*background-image: url("img/å¤´åƒ.jpg");*/
     background-size: 100% 100%;
     border-radius: 6% 6% 6% 6%;
     text-align: center;
@@ -15,9 +15,9 @@
     height: 16%;
     position: absolute;
     top: 37%;
-    left: 2%;
+    left: 0.7%;
     background-color: darkgreen;
-    border-radius: 5% 5%;
+    border-radius: 8% 8% 8% 8%;
     display: none;
 }
 #left-pai{
@@ -55,14 +55,14 @@
     line-height: 1300%;
 }
 #right-information{
-    width: 6%;
-    height: 10%;
+    width: 10%;
+    height: 16%;
     position: absolute;
-    top: 42%;
-    left: 80%;
-    display: none;
+    top: 37%;
+    right: 0.7%;
     background-color: darkgreen;
-    border-radius: 5% 0;
+    border-radius: 8% 8% 8% 8%;
+    display: none;
 }
 #right-pai{
     width: 3%;
@@ -92,20 +92,20 @@
     position: absolute;
     top: 5%;
     left: 82%;
-    /*background-image: url("img/头像.jpg");*/
+    /*background-image: url("img/å¤´åƒ.jpg");*/
     background-size: 100% 100%;
     border-radius: 6% 6% 6% 6%;
     text-align: center;
     line-height: 1300%;
 }
 #across-information{
-    width: 6%;
-    height: 10%;
+    width: 10%;
+    height: 16%;
     position: absolute;
-    top: 13%;
-    left: 53%;
+    top: 1%;
+    left: 80%;
     background-color: darkgreen;
-    border-radius: 5% 0;
+    border-radius: 8% 8% 8% 8%;
     display: none;
 }
 #across-pai{
@@ -208,7 +208,7 @@
     background-repeat: no-repeat;
     background-size: 100%,100%;
     left: 89%;
-    background-image: url(img/自己手牌.png);
+    background-image: url(img/è‡ªå·±æ‰‹ç‰Œ.png);
     position: absolute;
     bottom: 4%;
     display: none;
