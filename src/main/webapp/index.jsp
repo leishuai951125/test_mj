@@ -33,7 +33,6 @@
         }
         form div input{
             width: 8em;
-            /*color: red;*/
             font-weight: bold;
             height: 2em;
         }
@@ -49,10 +48,13 @@
             line-height: 1em;
             color: red;
         }
+        .submit_div input{
+            /*width: 5em;*/
+        }
     </style>
 </head>
 <body>
-<form action="user/login" method="post">
+<form action="user/login" method="post" name="form2">
     <div>
         <span class="tishi">账号:</span>
         <input value="15671582806" type="text" name="accountId">
@@ -63,7 +65,10 @@
     </div>
     <span id="error"><br>${error}</span>
     <br>
-    <div><input type="submit" value="登陆"></div>
+    <div class="submit_div">
+        <input type="submit" value="登陆" onclick="form2.action='user/login'">
+        <%--<input type="submit" value="注册" onclick="form2.action='user/register'">--%>
+    </div>
 </form>
 </body>
 </html>

@@ -20,8 +20,17 @@ public class Room {  //游戏开始前具有的属性
     int maxLaiZiNum_zhuoChong=0;//胡牌时允许的最大癞子数,1 赖
     int canBeUsedTimes=V.PUBLIC_ROOM;//能被使用的次数，默认值为V.PUBLIC_ROOM -1 表示公共房，不限次数
     int havePalyerNum=0;//已有玩家人数，分配房间时用,为 0 表示未使用
+    int sumPlayer=4;//房间可容纳人数
     Player[] players=new Player[4];  //若房间以json字符串方式持久化，则存此字段，否则不存。
     RoomState roomState=new RoomState();  //记录集齐四人后发好牌完后具有的公共信息，因为此时才有恢复的必要
+
+    public int getSumPlayer() {
+        return sumPlayer;
+    }
+
+    public void setSumPlayer(int sumPlayer) {
+        this.sumPlayer = sumPlayer;
+    }
 
     public int getMaxLaiZiNum_ziMo() {
         return maxLaiZiNum_ziMo;

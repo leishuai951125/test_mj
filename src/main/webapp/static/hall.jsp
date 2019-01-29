@@ -1,10 +1,4 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: leishuai
-  Date: 2019/1/17
-  Time: 15:05
-  To change this template use File | Settings | File Templates.
---%>
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -71,6 +65,7 @@
                     }
                 }
             }
+            f.action="static/room.jsp";
             f.submit();
         }
         function createPriRoom() { //创建私人房
@@ -78,6 +73,7 @@
             // f.roomId.value=null;
             f.diFen.value=$("#diFenSel").val();
             f.sumTurn.value=$("#sumTurnSel").val();
+            f.sumPlayer.value=$("#sumPlayerSel").val();
             f.action="room/createPriRoom";
             f.submit();
         }
@@ -92,6 +88,7 @@
     <input type="hidden" name="diFen" value="1">
     <input type="hidden" name="sumTurn">
     <input type="hidden" name="roomId">
+    <input type="hidden" name="sumPlayer">
 </form>
 <table border="1" style="margin: auto">
     <tr>
@@ -124,10 +121,10 @@
         <!--<td><input type="text"></td>-->
         <td><select id="diFenSel">
             <option value="1">1分</option>
-            <option value="2">2分</option>
+            <option value="2" selected="selected">2分</option>
             <option value="5">5分</option>
         </select></td>
-        <td rowspan="2">
+        <td rowspan="3">
             <input id="check" type="button" value="确定" style="height: 3em" onclick="createPriRoom()">
         </td>
     </tr>
@@ -136,8 +133,17 @@
         <!--<td><input type="text"></td>-->
         <td><select id="sumTurnSel">
             <option value="5">5场</option>
-            <option value="10">10场</option>
+            <option value="10" selected="selected">10场</option>
             <option value="20">20场</option>
+        </select></td>
+    </tr>
+    <tr>
+        <td>人数：</td>
+        <!--<td><input type="text"></td>-->
+        <td><select id="sumPlayerSel">
+            <option value="2">2人</option>
+            <option value="3" selected="selected">3人</option>
+            <option value="4">4人</option>
         </select></td>
     </tr>
 </table>

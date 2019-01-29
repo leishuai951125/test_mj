@@ -21,7 +21,7 @@ public class Process_C3 {
     {
         ProcessMsg.map.put("-c3",((jsonObject, player) -> { //玩家退出
             Room room=player.getRoom();
-            if(room.getHavePalyerNum()==4){
+            if(room.getHavePalyerNum()==room.getSumPlayer()){
                 return null;
             }
             Player[] players=room.getPlayers();
@@ -31,7 +31,7 @@ public class Process_C3 {
                 setMsgId("s5");
                 setMsgBody(ProcessC3.getPlayerInfo(player,true));
             }};
-            for(int i=0;i<4;i++){
+            for(int i=0;i<room.getSumPlayer();i++){
                 ProcessResult result=null;
                 if(players[i]!=null){
                     result=new ProcessResult();

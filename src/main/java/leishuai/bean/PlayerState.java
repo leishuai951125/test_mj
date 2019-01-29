@@ -35,6 +35,7 @@ public class PlayerState {
     public int disLiaZiNum = 0;//漂癞子数
     public int jifen = 0;
     public List<Integer> disCardArr=new ArrayList<Integer>(20);
+    public boolean superFlag=false; //特权
 
     //以下信息在服务端收到其它玩家对出的牌的响应之后修改
     //包括jifen，cardArr（碰笑时）

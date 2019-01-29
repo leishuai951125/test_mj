@@ -134,13 +134,12 @@
 /*}*/
 
 #duijushu{
-    width: 30%;
+    width: 53%;
     height: 4%;
     position: absolute;
     bottom: 0%;
-    left: 5%;
-    text-align: center;
-
+    left: 12%;
+    text-align: left;
 }
 #chupairen{
     position: absolute;
@@ -148,7 +147,7 @@
     width: 9.5%;
     height: 22.5%;
     top:  35%;
-    left: 48%;
+    left: 46%;
     background-image: url(../img/time11.png);
     background-repeat: no-repeat;
 }

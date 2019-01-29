@@ -3,6 +3,16 @@
 ws=new WebSocket(wsUrl);
 ws.onopen = function()
 {
+    $(function () {
+        for(var i=1;i<=9;i++){
+            new Image().src="img/suo"+i+".png";
+            new Image().src="img/tong"+i+".png";
+            new Image().src="img/wan"+i+".png";
+        }
+        for(var i=1;i<=4;i++){
+            new Image().src="img/time"+i+i+".png";
+        }
+    });
 };
 ws.onmessage = function(evt)
 {
@@ -43,6 +53,10 @@ ws.onmessage = function(evt)
             }
             case "s12" :{
                 Dos12(jsondata[i].msgBody)
+                break;
+            }
+            case "s13" :{
+                Dos13(jsondata[i].msgBody)
                 break;
             }
 

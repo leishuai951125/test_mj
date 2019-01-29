@@ -8,6 +8,7 @@ import leishuai.service.ConnectService;
 import leishuai.service.RoomService;
 
 import javax.websocket.Session;
+import java.io.IOException;
 
 /**
  * @Description TODO
@@ -39,30 +40,18 @@ public class ConnectServiceImpl implements ConnectService {
         Player[] players = room.getPlayers();
         int seatNo = -1;
         synchronized (room) {  //看具体能占几号位
-            for (int i = 0; i < 4 && seatNo == -1; i++) {
+            for (int i = 0; i < room.getSumPlayer() && seatNo == -1; i++) {
                 if (players[i] == null) {
                     seatNo = i;
                 }
             }
             //玩家与房间绑定
             players[seatNo] = player;
-
             player.setRoom(room);
             player.setSeatNo(seatNo);
-        }
-        //玩家集齐，游戏可以开始，全部加入在线玩家
-        boolean full=true; //房间是否已满，不能用room.getHavePalyerNum()
-        for(int i=seatNo+1;i<4;i++){
-            if(players[i]==null){
-                full=false;
-                break;
-            }
-        }
-        if(full){//加入在线玩家列表
-            for(int i=0;i<4;i++){
-                Account account=players[i].getAccount();
-                accountService.putOnGameAccount(account.getAccountId(),account);
-            }
+            //在房间占位后即可进入在线玩家列表
+            Account account=player.getAccount();
+            accountService.putOnGameAccount(account.getAccountId(),account);
         }
         return true;
     }
@@ -106,7 +95,7 @@ public class ConnectServiceImpl implements ConnectService {
         //与ws关联的   Session session;
         //与account关联的     Account account;     int account_id;
         Player player = account.getPlayer();
-        boolean allowMuliplePlayers=true; //允许同一账号多登陆，如果为true，可多称为多个玩家，但不能进行游戏状态恢复
+        boolean allowMuliplePlayers=false; //允许同一账号多登陆，如果为true，可多称为多个玩家，但不能进行游戏状态恢复
         //账户第一次建ws连接时player为空，此时创建palyer对象
         //如果希望同一账户可以称为多用户，每次建ws创建palyer对象，否则无需创建，进行绑定即可方便做数据恢复。
         if(player==null || allowMuliplePlayers) {//第一次开，或者希望多登陆
@@ -115,14 +104,22 @@ public class ConnectServiceImpl implements ConnectService {
                 //主要方便测试阶段使用，正式环境下可去  todo
 //                account=copyAccount(account);
             }
-
             //创建player，并与account双向绑定
             player = new Player();
             player.setAccount(account);
             player.setAccountId(account.getAccountId());
             account.setPlayer(player);
         }
-
+       //关闭旧的session
+        Session oleSession=player.getSession();
+        if(oleSession!=null && oleSession.isOpen()){
+            try {
+                player.setExitFlagWhenSessionClose(false);
+                oleSession.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         //player绑定session和ws
         player.setSession(session);
         webSocket.setPlayer(player);

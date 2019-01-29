@@ -49,7 +49,7 @@ public class ProcessC4 {
             roomState.disCardSeatNo = player.getSeatNo();
             roomState.beforeGetCard = RoomState.V.DIS_LAI_ZI;
         } else { //不是癞子，将其它三人设置成可响应出牌状态,或者说未响应状态
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < player.getRoom().getSumPlayer(); i++) {
                 if (i != player.getSeatNo()) {
                     roomState.playerStates[i].responseFlag = PlayerState.V.RESP_OTHER_DISCARD;
                 }
@@ -83,10 +83,10 @@ public class ProcessC4 {
         Suggest s10_suggest = ProcessC5.getS10(roomState);
         Suggest s7_suggest[] = null;
         if (paiNo == roomState.laiZi) {
-            s7_suggest = ProcessC3.getS7(roomState, true);
+            s7_suggest = ProcessC3.getS7(player.getRoom(), true);
         }
-        List<ProcessResult> resultList = new ArrayList<ProcessResult>(4);
-        for (int i = 0; i < 4; i++) {
+        List<ProcessResult> resultList = new ArrayList<ProcessResult>(player.getRoom().getSumPlayer());
+        for (int i = 0; i < player.getRoom().getSumPlayer(); i++) {
             List<Suggest> suggestList = new LinkedList<Suggest>();
             suggestList.add(s8_suggest);
             suggestList.add(s10_suggest);

@@ -223,6 +223,7 @@ function doubleClick(id) {
 }
 
 // 左边玩家手牌
+
 function leftPai(){
     $("#left-pai").empty();
 
@@ -319,6 +320,8 @@ function leftPai(){
 
 
 function rightPai(){
+
+
     $("#right-pai").empty();
     // 右边玩家手牌
     for(var i=0;i<rightInformation.pai;i++){
@@ -417,6 +420,7 @@ function rightPai(){
 
 // 对面玩家手牌
 function acrossPai(){
+
     $("#across-pai").empty();
     for(var i=0;i<acrossInformation.pai;i++){
         var image = new Image();
@@ -511,25 +515,12 @@ function acrossPai(){
     }
 
 }
-//显示自己摸上来的一张牌，并将摸得牌加入到手牌数组中
-function moPai(moDePai){
-    myInformation.pai.push(moDePai);
-    var image = new Image();
-    image.src="img/"+zhuanhuan[moDePai]+".png";
-    image.id=myInformation.pai.length-1;
-    image.style.right="10%";
 
-    image.ondblclick=function(){doubleClick(this.id)};
-    image.onclick=function(){clickPai(this.id)};
-    image.style.width="12%";
-    image.style.height="140%";
-    image.style.backgroundImage='url(img/自己手牌.png)';
-    $("#chupaiqu").append(image);
-
-}
 
 // 显示上家打的字 先添加到数组中、再显示
 function leftDaZi(zi){
+
+
     // leftInformation.chuPai.push(zi);
 
     var image = new Image();
@@ -574,6 +565,7 @@ function leftDaZi(zi){
 
 // 显示右边玩家打一张字
 function rightDaZi(zi) {
+
     // rightInformation.chuPai.push(zi);
 
     var image = new Image();
@@ -617,6 +609,7 @@ function rightDaZi(zi) {
 
 // 显示对家打一张字
 function acrossDaZi(zi) {
+
     // acrossInformation.chuPai.push(zi);
     var image = new Image();
     //设置图片样式
@@ -648,40 +641,56 @@ function acrossDaZi(zi) {
     $("#across-chupai").append(pai);
 
 }
-//页面中间指示当前出牌人
-function chuPaiRen(ren){
-    switch(ren){
-        case 0:{
-            $("#myChuPai").css("display","block");
-            $("#acrossChuPai").css("display","none");
-            $("#leftChuPai").css("display","none");
-            $("#rightChuPai").css("display","none");
-            break;
-        }
-        case 1:{
-            $("#rightChuPai").css("display","block");
-            $("#myChuPai").css("display","none");
-            $("#acrossChuPai").css("display","none");
-            $("#leftChuPai").css("display","none");
-            break;
-        }
-        case 2:{
-            $("#acrossChuPai").css("display","block");
-            $("#myChuPai").css("display","none");
-            $("#leftChuPai").css("display","none");
-            $("#rightChuPai").css("display","none");
-            break;
-        }
-        case 3:{
-            $("#leftChuPai").css("display","block");
-            $("#acrossChuPai").css("display","none");
-            $("#myChuPai").css("display","none");
-            $("#rightChuPai").css("display","none");
-            break;
-        }
+
+//显示自己摸上来的一张牌，并将摸得牌加入到手牌数组中
+function moPai(moDePai){
+
+    myInformation.pai.push(moDePai);
+    var image = new Image();
+    image.src="img/"+zhuanhuan[moDePai]+".png";
+    image.id=myInformation.pai.length-1;
+    image.style.right="10%";
+    image.style.width="12%";
+    image.style.height="140%";
+    image.style.backgroundImage='url(img/自己手牌.png)';
+     if(moDePai==roomInformation.laizi){
+   
+        var yellowPai = document.createElement("div");
+        yellowPai.style.position="absolute";
+        yellowPai.style.width="11.6%";
+        yellowPai.style.height="130%"
+        yellowPai.style.backgroundColor="yellow";
+        yellowPai.style.right="10.3%";
+        yellowPai.style.top="8%";
+        yellowPai.style.borderRadius="6%";
+        yellowPai.style.opacity="0.3";
+        yellowPai.ondblclick=function(){doubleClick(myInformation.pai.indexOf(moDePai))};
+        yellowPai.onclick=function(){clickPai(myInformation.pai.indexOf(moDePai))};
+        $("#chupaiqu").append(image);
+        $("#chupaiqu").append(yellowPai);
+
+    }else{
+        image.ondblclick=function(){doubleClick(this.id)};
+        image.onclick=function(){clickPai(this.id)};
+        $("#chupaiqu").append(image);
+
     }
+
+
 }
 
+//页面中间指示当前出牌人
+function chuPaiRen(idString){
+    // idString取值为
+    // "#leftplayer";     // "#rightplayer";
+    // "#acrossplayer";   // "#myplayer";
+    $("#myChuPai").css("display","none");
+    $("#acrossChuPai").css("display","none");
+    $("#leftChuPai").css("display","none");
+    $("#rightChuPai").css("display","none");
+    var id= idString.split("p")[0]+"ChuPai";
+    $(id).css("display","block");
+}
 
 // 显示自己出的牌
 function woChuPai(daPai){
@@ -718,7 +727,6 @@ function woChuPai(daPai){
 }
 
 function woPeng(){
-    
     for(var i=0;i<myInformation.peng.length;i++){
         for(var b=0;b<3;b++){
             var image = new Image();
@@ -736,7 +744,7 @@ function woPeng(){
             // 设置背景样式
             pai.style.position="absolute";
     
-            pai.style.top="103%";
+            pai.style.top="100%";
             pai.style.left=((i*35)+(b*11))+myInformation.xiao.length*35+"%";
     
             pai.style.width="11.5%";
@@ -766,7 +774,7 @@ function woPeng(){
             // 设置背景样式
             pai.style.position="absolute";
     
-            pai.style.top="103%";
+            pai.style.top="100%";
             pai.style.left=((i*35)+(b*11))+"%";
     
             pai.style.width="11.5%";
@@ -792,7 +800,7 @@ function woPeng(){
         // 设置背景样式
         pai.style.position="absolute";
 
-        pai.style.top="91%";
+        pai.style.top="89.5%";
         pai.style.left=(i*35)+11+"%";
 
         pai.style.width="11.5%";
@@ -805,7 +813,7 @@ function woPeng(){
     }
 }
 
-function removeChuPai(wanjia){
+function removeChuPai(wanjia){   //todo
     switch(wanjia){
         case "mychupai":{
             $("#"+wanjia+myInformation.chuPai.length).remove();
@@ -828,5 +836,45 @@ function removeChuPai(wanjia){
             break;
         }
     }
-
 }
+
+function showLaiGen() {
+    var imglaizi=new Image();
+    imglaizi.src="img/"+zhuanhuan[roomInformation.laiGen]+".png";
+    imglaizi.style.position="absolute";
+    imglaizi.style.width="100%";
+    imglaizi.style.height="100%";
+    imglaizi.style.left="0%";
+    $("#showlaizi").append(imglaizi);
+    var LaiGenText = document.createElement("div");
+    LaiGenText.style.position="absolute";
+    LaiGenText.style.top="-20%";
+    LaiGenText.style.left="25%";
+    LaiGenText.append("赖 根");
+    LaiGenText.style.fontSize="1.2em";
+    $("#showlaizi").append(LaiGenText);
+}
+
+function showRoomId(roomId){
+    // var roomIdDiv = document.createElement("div");
+    // roomIdDiv.style.position="absolute";
+    // roomIdDiv.id="roomIdDiv";
+    // roomIdDiv.width="15%";
+    // roomIdDiv.height="100%";
+    // roomIdDiv.style.fontSize="1em";
+    // roomIdDiv.style.bottom="0%";
+    // roomIdDiv.style.right="10%";
+    // roomIdDiv.append("房间号:"+roomId);
+    // $("#duijushu").append(roomIdDiv);
+}
+
+function showDuiJuShu() {
+    $("#duijushu").html("底分 : "+roomInformation.diFen+ "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp对局数 : "+roomInformation.playedTurn+"/"+roomInformation.sumTurn+"&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp余牌 : "+roomInformation.yuPaiSum+"&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp积分 : "+myInformation.jiFen + " &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp房间号 : "+roomInformation.roomId);
+}
+// 雷帅加
+leftInformation.showPai=leftPai;
+rightInformation.showPai=rightPai;
+acrossInformation.showPai=acrossPai;
+leftInformation.daZi=leftDaZi;
+rightInformation.daZi=rightDaZi;
+acrossInformation.daZi=acrossDaZi;

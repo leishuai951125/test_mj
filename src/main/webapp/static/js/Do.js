@@ -1,8 +1,11 @@
 // var a ={pai:[],peng:[],xiao:"",seatNo:"",accountNo:"",headImgUrl:"",chuPai:[],userName:"",id};
 var myInformation=new Object();
 var leftInformation=new Object();
+leftInformation.idString="#leftplayer";
 var rightInformation=new Object();
+rightInformation.idString="#rightplayer";
 var acrossInformation=new Object();
+acrossInformation.idString="#acrossplayer";
 var roomInformation={sumTurn:"",playedTurn:"",diFen:"",roomId:"",laizi:"",laiGen:""};
 //将牌通过数组进行转换，只用于显示。
 var zhuanhuan=[-1,"suo1","suo2","suo3","suo4","suo5","suo6","suo7","suo8","suo9","wan1","wan2","wan3","wan4","wan5","wan6","wan7","wan8","wan9","tong1","tong2","tong3","tong4","tong5","tong6","tong7","tong8","tong9"];
@@ -10,6 +13,7 @@ rightInformation.jiFen=0;
 acrossInformation.jiFen=0;
 leftInformation.jiFen=0;
 myInformation.jiFen=0;
+roomInformation.allPlayer=new Array(4);
 init();
 function init(){
     if(roomInformation.sumTurn==1){
@@ -23,6 +27,7 @@ function init(){
         acrossInformation.userName=null;
     }
     myInformation.chuPai=[];
+    myInformation.pai=[];
     myInformation.xuanPai=-1;
     //赖子是否出现，初始化为false。
     roomInformation.laiZiApprience=false;
@@ -36,15 +41,13 @@ function init(){
     myInformation.canPengNo="";
     myInformation.canHu=null;
     // myInformation.jiFen=0;
-
     leftInformation.chuPai=[];
     leftInformation.pai=13;
     leftInformation.peng=[];
     leftInformation.xiao=[];
-    roomInformation.diFen=5;
+    // roomInformation.diFen=5;
     // roomInformation.playedTurn=0;
     roomInformation.yuPaiSum=0;
-
     rightInformation.chuPai=[];
     rightInformation.pai=13;
     rightInformation.peng=[];
@@ -55,7 +58,6 @@ function init(){
     acrossInformation.xiao=[];
     acrossInformation.peng=[];
 }
-
 
 //  处理其他玩家出牌 0要不起 1朝天 2碰 3点笑
 function canPengXiao(chuDePai){
@@ -108,108 +110,72 @@ function canXiao() { //判断回头笑、点笑、闷笑
     }
     return -1;
 }
-
+function setOtherPlayer(sumPlayer,selfSeatNo) {
+    switch (sumPlayer) {
+        case 4: {
+            roomInformation.allPlayer[(selfSeatNo + 1 + sumPlayer) % sumPlayer] = rightInformation;
+            roomInformation.allPlayer[(selfSeatNo + 2 + sumPlayer) % sumPlayer] = acrossInformation;
+            roomInformation.allPlayer[(selfSeatNo + 3 + sumPlayer) % sumPlayer] = leftInformation;
+            break
+        }
+        case 3: {
+            roomInformation.allPlayer[(selfSeatNo + 1 + sumPlayer) % sumPlayer] = rightInformation;
+            roomInformation.allPlayer[(selfSeatNo + 2 + sumPlayer) % sumPlayer] = leftInformation;
+            break
+        }
+        case 2: {
+            roomInformation.allPlayer[(selfSeatNo + 1 + sumPlayer) % sumPlayer] = acrossInformation;
+            break
+        }
+    }
+}
 //新玩家加入后，再玩家对象中添加基本信息，同时显示玩家头像
  function Dos4(data) {
-    var selfSeatNo=data[0].selfSeatNo;
-    myInformation.seatNo=selfSeatNo;
-
-     roomInformation.diFen=data[0].diFen;
-     roomInformation.playedTurn=data[0].playedTurn;
-     roomInformation.roomId=data[0].roomId;
-     roomInformation.sumTurn=data[0].sumTurn;
+     roomInformation.diFen = data[0].diFen;
+     roomInformation.playedTurn = data[0].playedTurn;
+     roomInformation.roomId = data[0].roomId;
+     roomInformation.sumTurn = data[0].sumTurn;
+     var sumPlayer = roomInformation.sumPlayer = data[0].sumPlayer;
+     var selfSeatNo = myInformation.seatNo = data[0].selfSeatNo;
      showRoomId(roomInformation.roomId);
-     for (var i = 0; i < data.length; i++) {
-         if (data[i].seatNo == selfSeatNo) {
+     setOtherPlayer(sumPlayer,selfSeatNo);
+
+     for (var i = 1; i < data.length; i++) {
+         var seatNo = data[i].seatNo;
+         if (seatNo == selfSeatNo) {
              myInformation.headImgUrl = data[i].headImgUrl;
              myInformation.accountId = data[i].accountId;
              myInformation.userName = data[i].username;
-
-         } else if (data[i].seatNo == ((parseInt(myInformation.seatNo) + 1) % 4)) {
-             //rightplayer
-             rightInformation.seatNo = data[i].seatNo;
-             rightInformation.headImgUrl = data[i].headImgUrl;
-             rightInformation.accountId = data[i].accountId;
-             rightInformation.userName = data[i].username;
-             $("#rightplayer").css("background-image","url("+rightInformation.headImgUrl+")");
-
-         } else if (data[i].seatNo == ((parseInt(myInformation.seatNo) + 2) % 4)) {
-             //accrossplayer
-             acrossInformation.seatNo = data[i].seatNo;
-             acrossInformation.headImgUrl = data[i].headImgUrl;
-             acrossInformation.accountId = data[i].accountId;
-             acrossInformation.userName = data[i].username;
-             $("#acrossplayer").css("background-image","url("+acrossInformation.headImgUrl+")");
-
-         } else if (data[i].seatNo == ((parseInt(myInformation.seatNo) + 3) % 4)) {
-             //leftplayer
-             leftInformation.seatNo = data[i].seatNo;
-             leftInformation.headImgUrl = data[i].headImgUrl;
-             leftInformation.accountId = data[i].accountId;
-             leftInformation.userName = data[i].username;
-             $("#leftplayer").css("background-image","url("+leftInformation.headImgUrl+")");
-            }
+         } else {
+             roomInformation.allPlayer[seatNo].seatNo = data[i].seatNo;
+             roomInformation.allPlayer[seatNo].headImgUrl = data[i].headImgUrl;
+             roomInformation.allPlayer[seatNo].accountId = data[i].accountId;
+             roomInformation.allPlayer[seatNo].userName = data[i].username;
+             var idString = roomInformation.allPlayer[seatNo].idString;
+             $(idString).css("background-image", "url(" + data[i].headImgUrl + ")");
+         }
      }
  }
 
  //有玩家加入，保存玩家信息，显示玩家
  function Dos5(data) {
+     var seatNo=data.seatNo;
+     var idString=roomInformation.allPlayer[seatNo].idString;
      if(data.type=="exit"){
-         switch (data.seatNo) {
-             case leftInformation.seatNo:{
-                 leftInformation.seatNo="";
-                 leftInformation.headImgUrl="";
-                 leftInformation.accountId="";
-                 leftInformation.userName="";
-                 $("#leftplayer").css("background-image","url()");
-                 break;
-                }
-             case rightInformation.seatNo:{
-                 rightInformation.seatNo="";
-                 rightInformation.headImgUrl="";
-                 rightInformation.accountId="";
-                 rightInformation.userName="";
-                 $("#rightplayer").css("background-image","url()");
-                 break;
-             }
-             case  acrossInformation.seatNo:{
-                 acrossInformation.seatNo="";
-                 acrossInformation.headImgUrl="";
-                 acrossInformation.accountId="";
-                 acrossInformation.userName="";
-                 $("#acrossplayer").css("background-image","url()");
-                 break;
-             }
-
-         }
-     }else{
-         if(data.seatNo == ((parseInt(myInformation.seatNo) + 1)% 4)) {
-             //rightplayer
-             rightInformation.seatNo = data.seatNo;
-             rightInformation.headImgUrl = data.headImgUrl;
-             rightInformation.accountId = data.accountId;
-             rightInformation.userName = data.username;
-             $("#rightplayer").css("background-image","url("+rightInformation.headImgUrl+")");
-
-         } else if (data.seatNo == ((parseInt(myInformation.seatNo) + 2) % 4)) {
-             //accrossplayer
-             acrossInformation.seatNo = data.seatNo;
-             acrossInformation.headImgUrl = data.headImgUrl;
-             acrossInformation.accountId = data.accountId;
-             acrossInformation.userName = data.username;
-             $("#acrossplayer").css("background-image","url("+acrossInformation.headImgUrl+")");
-
-         } else if (data.seatNo == ((parseInt(myInformation.seatNo) + 3) % 4)) {
-             //leftplayer
-             leftInformation.seatNo = data.seatNo;
-             leftInformation.headImgUrl = data.headImgUrl;
-             leftInformation.accountId = data.accountId;
-             leftInformation.userName = data.username;
-             $("#leftplayer").css("background-image","url("+leftInformation.headImgUrl+")");
-         }
+         roomInformation.allPlayer[seatNo].seatNo="";
+         roomInformation.allPlayer[seatNo].headImgUrl="";
+         roomInformation.allPlayer[seatNo].accountId="";
+         roomInformation.allPlayer[seatNo].userName="";
+         $(idString).css("background-image","url()");
+     }else {
+         roomInformation.allPlayer[seatNo].seatNo = data.seatNo;
+         roomInformation.allPlayer[seatNo].headImgUrl = data.headImgUrl;
+         roomInformation.allPlayer[seatNo].accountId = data.accountId;
+         roomInformation.allPlayer[seatNo].userName = data.username;
+         $(idString).css("background-image", "url(" + data.headImgUrl + ")");
      }
-
  }
+
  //接收13张牌、癞子、癞根、已玩局数，保存到myInformation.pai中
  function Dos6(data) {
     {
@@ -235,74 +201,27 @@ function canXiao() { //判断回头笑、点笑、闷笑
      leftInformation.pai=13;
      acrossInformation.pai=13;
      rightInformation.pai=13;
-     var imglaizi=new Image();
-     imglaizi.src="img/"+zhuanhuan[roomInformation.laiGen]+".png";
-     imglaizi.style.position="absolute";
-     imglaizi.style.width="100%";
-     imglaizi.style.height="100%";
-     imglaizi.style.left="0%";
-     $("#showlaizi").append(imglaizi);
-     var LaiGenText = document.createElement("div");
-     LaiGenText.style.position="absolute";
-     LaiGenText.style.top="-20%";
-     LaiGenText.style.left="25%";
-     LaiGenText.append("赖 根");
-     LaiGenText.style.fontSize="1.2em";
-
-     $("#showlaizi").append(LaiGenText);
-
-     myCard();
-     leftPai();
-     rightPai();
-     acrossPai()
+     showLaiGen();
+     for(var i=0;i<roomInformation.sumPlayer;i++){
+         if(i==myInformation.seatNo){
+             myCard();
+         }else{
+             roomInformation.allPlayer[i].showPai();
+         }
+     }
  }
 
- function showDuiJuShu() {
-     $("#duijushu").html("底分 : "+roomInformation.diFen+ "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp对局数 : "+roomInformation.playedTurn+"/"+roomInformation.sumTurn+"&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp余牌 : "+roomInformation.yuPaiSum+"&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp积分 : "+myInformation.jiFen);
-
- }
 function Dos7(data) {
     roomInformation.yuPaiSum=data.yuPaiSum;
     showDuiJuShu();
-    if(data.lastFourCards!=undefined){
-        moPai(data.lastFourCards[myInformation.seatNo]);
-        myInformation.canHu=huPai3.test2(myInformation.pai,null,roomInformation.laizi,roomInformation);
-
-        if(myInformation.canHu!=null){
-            var c8_msg={
-                msgId:"c8",
-                type:myInformation.canHu.type,
-                matchMethod:myInformation.canHu.matchMethod,
-                actAs:myInformation.canHu.actAs
-            }
-            ws.send(JSON.stringify(c8_msg));
-        }else {
-            var c8_msg={
-                msgId:"c8",
-                type:"not_hu",
-            }
-            ws.send(JSON.stringify(c8_msg));
-        }
-
-        return;
-    }
-
+    var seatNo=data.seatNo;
     //出牌人不为自己时，只需要更新当前出牌人图标
-    if(data.seatNo==leftInformation.seatNo){
-        //出牌人为左边玩家,只需要更新当前出牌人
-        chuPaiRen(3);
-    }else if (data.seatNo==rightInformation.seatNo){
-        //出牌人为右边玩家
-        chuPaiRen(1);
-    } else if(data.seatNo==acrossInformation.seatNo){
-        //出牌人为对面玩家
-        chuPaiRen(2);
-    }else if (data.seatNo==myInformation.seatNo){
-        chuPaiRen(0);
+    if(seatNo!=myInformation.seatNo){
+        chuPaiRen(roomInformation.allPlayer[seatNo].idString)
+    }else{ //自己出牌
+        chuPaiRen("#myplayer");
         roomInformation.isMyTurn=true;
-
         if(data.paiNo>0){
-
             //自己为出牌人 -1,不拿牌直接出牌、1-27 拿牌编号
             //进牌区显示该牌
             moPai(data.paiNo);
@@ -321,7 +240,6 @@ function Dos7(data) {
                     $("#xiaopai").css("display","block");
                     $("#buyao").css("display","block");
                 }
-
                 // 胡牌
                 if(myInformation.canHu!=null){
                     $("#buyao").css("display","block");
@@ -329,7 +247,26 @@ function Dos7(data) {
                 }
         }
         $("#chupai").css("display","block");
+    }
 
+    if(data.lastFourCards!=undefined ){
+        moPai(data.lastFourCards[myInformation.seatNo]);
+        myInformation.canHu=huPai3.test2(myInformation.pai,null,roomInformation.laizi,roomInformation);
+        if(myInformation.canHu!=null){
+            var c8_msg={
+                msgId:"c8",
+                type:myInformation.canHu.type,
+                matchMethod:myInformation.canHu.matchMethod,
+                actAs:myInformation.canHu.actAs
+            }
+            ws.send(JSON.stringify(c8_msg));
+        }else {
+            var c8_msg={
+                msgId:"c8",
+                type:"not_hu",
+            }
+            ws.send(JSON.stringify(c8_msg));
+        }
     }
 }
 
@@ -348,20 +285,10 @@ function Dos8(data) {
         woChuPai(disCard)
         return;
     }
-    switch (data.seatNo){
-        case leftInformation.seatNo:
-            leftInformation.chuPai.push(disCard);
-            leftDaZi(disCard);
-            break;
-        case rightInformation.seatNo:
-            rightInformation.chuPai.push(disCard);
-            rightDaZi(disCard);
-            break;
-        case acrossInformation.seatNo:
-            acrossInformation.chuPai.push(disCard)
-            acrossDaZi(disCard);
-            break;
-    }
+
+    var seatNo=data.seatNo;
+    roomInformation.allPlayer[seatNo].chuPai.push(disCard);
+    roomInformation.allPlayer[seatNo].daZi(disCard);
 
     //对其他玩家出牌处理 0要不起 1小朝天 2碰 3点笑
     myInformation.canHu=huPai3.test2(myInformation.pai,data.paiNo,roomInformation.laizi,roomInformation);
@@ -423,9 +350,10 @@ function endClear(){
     }
     $("#showlaizi").empty();
 }
+
 function Dos9(data) {
     var yuPaiData = [];
-    for(var i=0;i<4;i++){
+    for(var i=0;i<roomInformation.sumPlayer;i++){
         var playerPai=[];
         var pengAndOne=16;
         for(var j=1;j<28;j++){
@@ -441,13 +369,14 @@ function Dos9(data) {
     }
     showYuPai(data.type,data.seatNoOfHu,data.seatNoOfBeiHu,yuPaiData,data.currentJiFen);
 }
+
 function showYuPai(type,seatNoOfHu,seatNoOfBeiHu,paiData,currentJiFen){
     $("#yupai-information").empty();
     $("#yupai-information").show();
     var huType=["","","",""];
     switch(type){
         case "pi_hu":{
-            huType[seatNoOfHu]="屁胡";
+            huType[seatNoOfHu]="屁模";
             break;
         }
         case "zhuo_chong":
@@ -479,27 +408,13 @@ function showYuPai(type,seatNoOfHu,seatNoOfBeiHu,paiData,currentJiFen){
         username.style.top=24*j+2+"%";
         username.style.fontSize="1.2em";
         username.style.textAlign="left";
-        switch(j){
-            case myInformation.seatNo:{
-                username.append(myInformation.userName+" 本轮积分 : "+currentJiFen[j]+ " " +huType[myInformation.seatNo]);
-                break;
-            }
-            case rightInformation.seatNo:{
-                username.append(rightInformation.userName+" 本轮积分: "+currentJiFen[j]+" " +huType[rightInformation.seatNo]);
-                break;
-            }
-            case leftInformation.seatNo:{
-                username.append(leftInformation.userName+" 本轮积分 : "+currentJiFen[j]+" " +huType[leftInformation.seatNo]);
-                break;
-            }
-            case acrossInformation.seatNo:{
-                username.append(acrossInformation.userName+" 本轮积分 : "+currentJiFen[j]+" " +huType[acrossInformation.seatNo]);
-                break;
-            }
-            default:{
-                username.append("出错啦");
-            }
+        if(j==myInformation.seatNo){
+            username.append(myInformation.userName+" 本轮积分 : "+currentJiFen[j]+ " " +huType[myInformation.seatNo]);
+        }else {
+            var palyerInfo=roomInformation.allPlayer[j];
+            username.append(palyerInfo.userName+" 本轮积分 : "+currentJiFen[j]+ " " +huType[palyerInfo.seatNo]);
         }
+
         yupaiInformation.appendChild(username);
         for (var i = 0; i < paiData[j].length; i++) {
 
@@ -578,109 +493,69 @@ function showYuPai(type,seatNoOfHu,seatNoOfBeiHu,paiData,currentJiFen){
         }
     }
 }
-function Dos10(data) {
-    myInformation.jiFen=data[myInformation.seatNo];
-    leftInformation.jiFen=data[leftInformation.seatNo];
-    rightInformation.jiFen=data[rightInformation.seatNo];
-    acrossInformation.jiFen=data[acrossInformation.seatNo];
 
-    $("#rightplayer").html("积分："+rightInformation.jiFen);
-    $("#acrossplayer").html("积分："+acrossInformation.jiFen);
-    $("#leftplayer").html("积分："+leftInformation.jiFen);
-    showDuiJuShu();
+function Dos10(data) {
+    for(var i=0;i<roomInformation.sumPlayer;i++){
+        if(i == myInformation.seatNo){
+            myInformation.jiFen=data[myInformation.seatNo];
+            myInformation.jiFen=data[myInformation.seatNo];
+            showDuiJuShu();
+        }else {
+            var playerInfo=roomInformation.allPlayer[i];
+            playerInfo.jiFen=data[playerInfo.seatNo];
+            var idString=playerInfo.idString;
+            $(idString).html("积分："+playerInfo.jiFen);
+        }
+    }
 }
+
 //显示笑
 function Dos11(data) {
+    var seatNo=data.seatNo;
     switch (data.type){
         case "zi_xiao":{
-            switch (data.seatNo) {
-                case leftInformation.seatNo:{
-                    if(data.paiNo==roomInformation.laiGen){
-                        leftInformation.peng.push(data.paiNo);
-                        leftInformation.pai=leftInformation.pai-3;
-                        leftPai();
-                    }else{
-                        leftInformation.xiao.push(data.paiNo);
-                        leftInformation.pai=leftInformation.pai-4;
-                        leftPai();
-                    }
-                    break;
+            if(seatNo!=myInformation.seatNo){ //别人
+                var playerInfo=roomInformation.allPlayer[seatNo];
+                if(data.paiNo==roomInformation.laiGen){
+                    playerInfo.peng.push(data.paiNo);
+                }else {
+                    playerInfo.xiao.push(data.paiNo);
                 }
-                case rightInformation.seatNo:{
-                    if(data.paiNo==roomInformation.laiGen){
-                        rightInformation.peng.push(data.paiNo);
-                        rightInformation.pai=rightInformation.pai-3;
-                        rightPai();
-                    }else{
-                        rightInformation.xiao.push(data.paiNo);
-                        rightInformation.pai=rightInformation.pai-4;
-                        rightPai();
-                    }
-                    break;
-                }
-                case acrossInformation.seatNo:{
-                    if(data.paiNo==roomInformation.laiGen){
-                        acrossInformation.peng.push(data.paiNo);
-                        acrossInformation.pai=acrossInformation.pai-3;
-                        acrossPai();
-                    }else{
-                        acrossInformation.xiao.push(data.paiNo);
-                        acrossInformation.pai=acrossInformation.pai-4;
-                        acrossPai();
-                    }
-                    break;
-                }
-                case myInformation.seatNo:{
-                    if(data.paiNo==roomInformation.laiGen){
-                        myInformation.peng.push(data.paiNo);
-                        myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
-                        myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
-                        myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
-                        myCard();
-                        woPeng();
-
-                    }else{
-                        myInformation.xiao.push(data.paiNo);
-                        myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
-                        myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
-                        myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
-                        myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
-                        myCard();
-                        woPeng();
-                    }
-                    break;
+                playerInfo.pai=playerInfo.pai-3;
+                playerInfo.showPai();
+            }else {  //自己
+                if(data.paiNo==roomInformation.laiGen){
+                    myInformation.peng.push(data.paiNo);
+                    myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
+                    myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
+                    myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
+                    myCard();
+                    woPeng();
+                }else{
+                    myInformation.xiao.push(data.paiNo);
+                    myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
+                    myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
+                    myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
+                    myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
+                    myCard();
+                    woPeng();
                 }
             }
             break;
         }
+
         case "hui_tou_xiao":{
-            switch (data.seatNo) {
-                case leftInformation.seatNo:{
-                    leftInformation.peng.splice(leftInformation.peng.indexOf(data.paiNo),1);
-                    leftInformation.xiao.push(data.paiNo);
-                    leftPai();
-                    break;
-                }
-                case rightInformation.seatNo:{
-                    rightInformation.peng.splice(rightInformation.peng.indexOf(data.paiNo),1);
-                    rightInformation.xiao.push(data.paiNo);
-                    rightPai();
-                    break;
-                }
-                case acrossInformation.seatNo:{
-                    acrossInformation.peng.splice(acrossInformation.peng.indexOf(data.paiNo),1);
-                    acrossInformation.xiao.push(data.paiNo);
-                    acrossPai();
-                    break;
-                }
-                case myInformation.seatNo:{
-                    myInformation.peng.splice(myInformation.peng.indexOf(data.paiNo),1);
-                    myInformation.xiao.push(data.paiNo);
-                    myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
-                    myCard();
-                    woPeng();
-                    break;
-                }
+            if(seatNo!=myInformation.seatNo){
+                var playerInfo=roomInformation.allPlayer[seatNo];
+                playerInfo.peng.splice(playerInfo.peng.indexOf(data.paiNo),1);
+                playerInfo.xiao.push(data.paiNo);
+                playerInfo.showPai();
+            }else{
+                myInformation.peng.splice(myInformation.peng.indexOf(data.paiNo),1);
+                myInformation.xiao.push(data.paiNo);
+                myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
+                myCard();
+                woPeng();
             }
             break;
         }
@@ -696,57 +571,28 @@ function Dos11(data) {
             }else if($("#acrossChuPai").css("display")=="block"){
                 removeChuPai("acrosschupai");
             }
-            
-            switch (data.seatNo) {
-                case leftInformation.seatNo:{
-                    if(data.paiNo==roomInformation.laiGen){
-                        leftInformation.peng.push(data.paiNo);
-                        leftInformation.pai=leftInformation.pai-3;
-                    } else {
-                        leftInformation.xiao.push(data.paiNo);
-                        leftInformation.pai=leftInformation.pai-3;
-                    }
-                    leftPai();
-                    break;
+            if(seatNo!=myInformation.seatNo){
+                var playerInfo=roomInformation.allPlayer[seatNo];
+                if(data.paiNo==roomInformation.laiGen){
+                    playerInfo.peng.push(data.paiNo);
+                    playerInfo.pai=playerInfo.pai-3;
+                } else {
+                    playerInfo.xiao.push(data.paiNo);
+                    playerInfo.pai=playerInfo.pai-3;
                 }
-                case rightInformation.seatNo:{
-                    if(data.paiNo==roomInformation.laiGen){
-                        rightInformation.peng.push(data.paiNo);
-                        rightInformation.pai=rightInformation.pai-3;
-                    } else{
-                        rightInformation.xiao.push(data.paiNo);
-                        rightInformation.pai=rightInformation.pai-3;
-                    }
-
-                    rightPai();
-                    break;
-                }
-                case acrossInformation.seatNo:{
-                    if(data.paiNo==roomInformation.laiGen) {
-                        acrossInformation.peng.push(data.paiNo);
-                        acrossInformation.pai=acrossInformation.pai-3;
-                    }else{
-                        acrossInformation.xiao.push(data.paiNo);
-                        acrossInformation.pai=acrossInformation.pai-3;
-                    }
-                    acrossPai();
-                    break;
-                }
-                case myInformation.seatNo:{
-                    if(data.paiNo==roomInformation.laiGen){
-                        myInformation.peng.push(data.paiNo);
-                    }else{
-                        myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
-                        myInformation.xiao.push(data.paiNo);
-                    }
+                playerInfo.showPai();
+            }else{
+                if(data.paiNo==roomInformation.laiGen){
+                    myInformation.peng.push(data.paiNo);
+                }else{
                     myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
-                    myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
-                    myCard();
-                    woPeng();
-                    break;
+                    myInformation.xiao.push(data.paiNo);
                 }
+                myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
+                myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
+                myCard();
+                woPeng();
             }
-            break;
         }
     }
 }
@@ -762,56 +608,219 @@ function Dos12(data){
     }else if($("#acrossChuPai").css("display")=="block"){
         removeChuPai("acrosschupai");
     };
-    switch (data.seatNo) {
-        case leftInformation.seatNo:{
-            leftInformation.peng.push(data.paiNo);
-            // leftInformation.pai.splice(leftInformation.pai.indexOf(data.paiNo),1);
-            // leftInformation.pai.splice(leftInformation.pai.indexOf(data.paiNo),1);
-            leftInformation.pai-=3;
-            leftPai();
-            break;
-        }
-        case rightInformation.seatNo:{
-            rightInformation.peng.push(data.paiNo);
-            // rightInformation.pai.splice(rightInformation.pai.indexOf(data.paiNo),1);
-            // rightInformation.pai.splice(rightInformation.pai.indexOf(data.paiNo),1);
-            rightInformation.pai-=3;
-            rightPai();
-            removeChuPai()
-            break;
-        }
-        case acrossInformation.seatNo:{
-
-            acrossInformation.peng.push(data.paiNo);
-            // acrossInformation.pai.splice(acrossInformation.pai.indexOf(data.paiNo),1);
-            // acrossInformation.pai.splice(acrossInformation.pai.indexOf(data.paiNo),1);
-            acrossInformation.pai-=3;
-            acrossPai();
-            break;
-        }
-        case myInformation.seatNo:{
-            //添加牌到碰中，删除手牌中两张该牌，重新显示碰、手牌
-            myInformation.peng.push(data.paiNo);
-            myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
-            myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
-            myCard();
-            woPeng();
-            break;
-        }
+    var seatNo=data.seatNo;
+    if(seatNo!=myInformation.seatNo){
+        var playerInfo=roomInformation.allPlayer[seatNo];
+        playerInfo.peng.push(data.paiNo);
+        // leftInformation.pai.splice(leftInformation.pai.indexOf(data.paiNo),1);
+        // leftInformation.pai.splice(leftInformation.pai.indexOf(data.paiNo),1);
+        playerInfo.pai-=3;
+        playerInfo.showPai();
+    }else{
+        //添加牌到碰中，删除手牌中两张该牌，重新显示碰、手牌
+        myInformation.peng.push(data.paiNo);
+        myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
+        myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
+        myCard();
+        woPeng();
     }
 }
-function showRoomId(roomId){
-    var roomIdDiv = document.createElement("div");
-    roomIdDiv.style.position="absolute";
-    roomIdDiv.id="roomIdDiv";
-    roomIdDiv.width="15%";
-    roomIdDiv.height="10%";
-    roomIdDiv.style.bottom="3%";
-    roomIdDiv.style.left="32%";
-    roomIdDiv.style.fontSize="1em";
-    roomIdDiv.style.bottom="1.3%";
-    roomIdDiv.style.left="35%";
 
-    roomIdDiv.append("房间号:"+roomId);
-    $("#yemian").append(roomIdDiv);
+function Dos13(data){
+    endClear();
+    //赋值房间信息
+    roomInformation.roomId = data[0].roomId;
+    roomInformation.diFen = data[0].diFen;
+    roomInformation.sumTurn = data[0].sumTurn;
+    roomInformation.playedTurn = data[0].playedTurn;
+    roomInformation.laizi = data[0].laiZi;
+    roomInformation.laiGen = data[0].laiGen;
+    roomInformation.laiZiApprience = data[0].laiZiApprience;
+    roomInformation.yuPaiSum = data[0].yuPaiSum;
+    var sumPlayer=roomInformation.sumPlayer=data[0].sumPlayer;
+    var selfSeatNo=myInformation.seatNo = data[0].selfSeatNo;
+    setOtherPlayer(sumPlayer,selfSeatNo);
+    showLaiGen();
+    for(var i = 1; i<data.length; i++){
+        var seatNo=data[i].seatNo;
+        if(seatNo == myInformation.seatNo){
+            myInformation.headImgUrl = data[i].headImgUrl;
+            myInformation.accountId = data[i].accountId;
+            myInformation.userName = data[i].username;
+            //将后台牌数组转换为前台对应格式
+            for (var j = 1; j < data[i].cardArr.length; j++) {
+                switch (data[i].cardArr[j]) {
+                    case 1: {
+                        myInformation.pai.push(j);
+                        break;
+                    }
+                    case 2: {
+                        myInformation.pai.push(j);
+                        myInformation.pai.push(j);
+                        break;
+                    }
+                    case 3: {
+                        for (var m = 0; m < 3; m++) {
+                            myInformation.pai.push(j);
+                        }
+                        break;
+                    }
+                    case 4: {
+                        for (var m = 0; m < 4; m++) {
+                            myInformation.pai.push(j);
+                        }
+                        break;
+                    }
+                    //peng
+                    case 15: {
+                        myInformation.peng.push(j);
+                        break;
+                    }
+                    //peng and one
+                    case 16: {
+                        myInformation.peng.push(j);
+                        myInformation.pai.push(j);
+                        break;
+                    }
+                    //点笑
+                    case 17: {
+                        if (j == roomInformation.laiGen) {
+                            myInformation.peng.push(j);
+                        } else {
+                            myInformation.xiao.push(j);
+                        }
+                        break;
+                    }
+                    //回头笑
+                    case 18: {
+                        myInformation.xiao.push(j);
+                        break;
+                    }
+                    //自笑
+                    case 19: {
+                        if (j == roomInformation.laiGen) {
+                            myInformation.peng.push(j);
+                        } else {
+                            myInformation.xiao.push(j);
+                        }
+                        break;
+                    }
+                    default : {
+                        break;
+                    }
+                }
+            }
+            if (data[i].superFlag == false) {
+                //将手上的自笑加入黑名单
+                var b=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+                for(var aa=0;aa<myInformation.pai.length;aa++){
+                    b[myInformation.pai[aa]]++;
+                }
+                for (var num=1;num<b.length;num++){
+                    if(b[num]==4||(b[num]==3&&b[num]==roomInformation.laiGen)){
+                        myInformation.notAdminXiao.push(num);
+                    }
+                }
+            }
+            //显示自己手牌、碰、笑、打的字
+            myCard();
+            woPeng();
+            for (var a = 0; a < data[i].disCardArr.length; a++) {
+                myInformation.chuPai.push(data[i].disCardArr[a]);
+                woChuPai(data[i].disCardArr[a]);
+            }
+        }else{
+            var playerInfo=roomInformation.allPlayer[seatNo];
+            playerInfo.seatNo = data[i].seatNo;
+            playerInfo.headImgUrl = data[i].headImgUrl;
+            playerInfo.accountId = data[i].accountId;
+            playerInfo.userName = data[i].username;
+            playerInfo.pai=13;
+            var idString=playerInfo.idString;
+            $(idString).css("background-image", "url(" + data[i].headImgUrl + ")");
+            //将后台牌数组转换为前台对应格式
+            for (var j = 1; j < data[i].cardArr.length; j++) {
+                switch (data[i].cardArr[j]) {
+                    //peng
+                    case 15:
+                    //peng and one
+                    case 16: {
+                        playerInfo.peng.push(j);
+                        playerInfo.pai = playerInfo.pai - 3;
+                        break;
+                    }
+
+                    //回头笑
+                    case 18: {
+                        playerInfo.xiao.push(j);
+                        playerInfo.pai = playerInfo.pai - 3;
+                        break;
+                    }
+                    //点笑
+                    case 17:
+                    //自笑
+                    case 19: {
+                        if (j == roomInformation.laiGen) {
+                            playerInfo.peng.push(j);
+                        } else {
+                            playerInfo.xiao.push(j);
+                        }
+                        playerInfo.pai = playerInfo.pai - 3;
+                        break;
+                    }
+                }
+            }
+            //显示自己手牌、碰、笑、打的字
+            playerInfo.showPai();
+            for (var a = 0; a < data[i].disCardArr.length; a++) {
+                playerInfo.chuPai.push(data[i].disCardArr[a]);
+                playerInfo.daZi(data[i].disCardArr[a]);
+            }
+        }
+    }
+
+    data[0].paiNo=data[0].getCardNoBeforeDis;
+    data[0].seatNo=data[0].disCardSeatNo;
+
+    //出牌人可以出牌
+    if(data[0].canDisCard){
+        //该我出牌
+        if(data[0].disCardSeatNo==myInformation.seatNo){
+            var index=myInformation.pai.indexOf(data[0].getCardNoBeforeDis);
+            if(index != -1){
+                myInformation.pai.splice(index,1);
+            }
+            myCard();
+            woPeng();
+        }
+        Dos7(data[0]);
+    } else{
+        switch(data[0].responseFlag){
+            case 31:{
+                Dos7(data[0]);
+                data[0].paiNo=data[0].disCardNo;
+                var seatNo=data[0].disCardSeatNo;
+                var playerInfo=roomInformation.allPlayer[seatNo];
+                playerInfo.chuPai.splice(playerInfo.chuPai.length-1,1);
+
+                Dos8(data[0]);
+                break;
+            }
+            case 32:{
+                myInformation.pai.splice(myInformation.pai.indexOf(data[0].lastFourCards[myInformation.seatNo]),1);
+                Dos7(data[0]);
+                break;
+            }
+            case 33:{
+                Dos9(data[0]);
+                break;
+            }
+        }
+    }
+    if(data[0].disCardSeatNo == myInformation.seatNo){
+        chuPaiRen("#myplayer");
+    }else {
+        var playerInfo=roomInformation.allPlayer[data[0].disCardSeatNo];
+        chuPaiRen(playerInfo.idString)
+    }
 }

@@ -47,7 +47,7 @@ public class ProcessC9 {
             synchronized (player.getRoom()){
                 roomState.responseNum++;
                 playerStates[player.getSeatNo()].responseFlag = - PlayerState.V.RESP_RESTART; //已响应重新开始
-                if(roomState.responseNum == 4){
+                if(roomState.responseNum == player.getRoom().getSumPlayer()){
                     return onceAgain(player);
                 }
             }
@@ -57,10 +57,14 @@ public class ProcessC9 {
 
     private List<ProcessResult> onceAgain(Player player) {
         Room room=player.getRoom();
+        RoomState roomState=room.getRoomState();
         Suggest[] s6_suggest=ProcessC3.getS6(room);
-        Suggest[] s7_suggest=ProcessC3.getS7(room.getRoomState(),true);
+
+        roomState.disCardSeatNo=roomState.zhuang;
+        roomState.beforeGetCard=RoomState.V.NORMAL;
+        Suggest[] s7_suggest=ProcessC3.getS7(room,true);
         List<ProcessResult> resultList=new LinkedList<>();
-        for(int i=0;i<4;i++){
+        for(int i=0;i<player.getRoom().getSumPlayer();i++){
             List<Suggest> list=new LinkedList<>();
             list.add(s6_suggest[i]);
             list.add(s7_suggest[i]);

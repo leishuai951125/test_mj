@@ -24,12 +24,21 @@ public class Player {  //玩家不需要单独做持久化
     int seatNo=-1;//座位号
     long accountId;  //账号id，这个是用来持久化的,并关联玩家和账户，间接关联玩家、房间、账号三个属性
     int sumJiFen=0; //总积分
+    boolean exitFlagWhenSessionClose=true; //当session关闭时，是否退出房间
     @JSONField(serialize = false)
     Room room;//房间
     @JSONField(serialize = false)
     Session session;//会话，不需要持久化，因为持久化是为断电恢复使用的，断电后sessino存了也没有作用
     @JSONField(serialize = false)
     Account account;//账户信息，该字段不需要持久化，房间恢复时需要获取账户信息，所以要存
+
+    public boolean isExitFlagWhenSessionClose() {
+        return exitFlagWhenSessionClose;
+    }
+
+    public void setExitFlagWhenSessionClose(boolean exitFlagWhenSessionClose) {
+        this.exitFlagWhenSessionClose = exitFlagWhenSessionClose;
+    }
 
     public int getSumJiFen() {
         return sumJiFen;

@@ -3,6 +3,7 @@ package leishuai.service.impl;
 
 import leishuai.bean.Account;
 import leishuai.service.AccountService;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.HttpSessionEvent;
@@ -16,6 +17,7 @@ import java.util.concurrent.ConcurrentMap;
  * @Date 2018/12/18 10:42
  * @Version 1.0
  */
+@Service
 public class AccountServiceImpl implements AccountService,HttpSessionListener {
     //在房间中的账户信息,这些信息不能随httpsession消失而消失，所以不存seeion里面
     private static ConcurrentMap<Long,Account> accountsOnGame=new ConcurrentHashMap<Long, Account>(200);

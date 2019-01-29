@@ -1,13 +1,16 @@
 package leishuai.service.impl;
 
 
+import com.alibaba.fastjson.JSON;
 import leishuai.bean.*;
 import leishuai.service.AccountService;
 import leishuai.service.RoomService;
 import org.springframework.stereotype.Service;
 
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @Description TODO
@@ -24,6 +27,49 @@ public class RoomServiceImpl implements RoomService {
 
     //已满的房间集合，官方没有提供hash版的并发set，只能用map模拟
     static private ConcurrentHashMap<Room,Object> fullRoomSet=new ConcurrentHashMap<>(1000);
+//    static {
+//        new Thread(){
+//            @Override
+//            public void run(){
+//                long start=0,stop=0;
+//                boolean fileNo=false;
+//                BufferedWriter fileWriter=null;
+//                File file=null;
+//                while (true){
+//                    start=System.currentTimeMillis();
+//                    try {
+//                        fileNo=!fileNo;
+//                        file=new File("d:/majiang/majiang"+fileNo+".txt");
+//                        fileWriter=new BufferedWriter(new FileWriter(file));
+//                        fileWriter.write(fileNo+"");
+//                        fileWriter.newLine();
+//                        for(Map.Entry<Room,Object> entry:fullRoomSet.entrySet()){
+//                            Room room=entry.getKey();
+//                            System.out.println("写入"+room);
+//                            fileWriter.write(JSON.toJSONString(room));
+//                            fileWriter.newLine();
+//                        }
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }finally {
+//                        try {
+//                            fileWriter.close();
+////                            file.renameTo(new File("d:/majiang/success.txt"));
+//                            System.out.println("关闭文件");
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                    stop=System.currentTimeMillis();
+//                    try {
+//                        sleep(5000-stop+start);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }.start();
+//    }
     //私人房
     static private ConcurrentHashMap<Long,Room> priRoomSet=new ConcurrentHashMap<>(100);
 
@@ -33,12 +79,15 @@ public class RoomServiceImpl implements RoomService {
     // 不直接拿pub[i]当锁，是因为pub[i]指向的对象会发生变化，也就是多个线程用的并非同一把锁,有可能
     //多个线程同时进入房间分配的同步块，重点是进入之后还有可能操作的是同一对象，所以不行
 
-    static private Long maxRoomId=10000L; //注意多线程并发，服务器集群时最好改存redis
+    static private Long maxRoomId=10000L;
+    //注意多线程并发，服务器集群时最好改存redis
+    static private AtomicLong uuRoomId=new AtomicLong(10000L);
 
     public Long getUURoomId(){
-        synchronized (maxRoomId){
-            return maxRoomId++;
-        }
+//        synchronized (maxRoomId){
+//            return maxRoomId++;
+//        }
+        return uuRoomId.getAndIncrement();
     }
 
     private Room getEmptyRoomObject(){ //获取一个房间对象
@@ -61,11 +110,12 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public Room createPriRoom(Integer diFen, Integer sumTurn) {
+    public Room createPriRoom(Integer diFen, Integer sumTurn,Integer sumPlayer) {
         Room priRoom=getEmptyRoomObject();
         priRoom.setRoomId(getUURoomId());
         priRoom.setDiFen(diFen);
         priRoom.setCanBeUsedTimes(sumTurn);
+        priRoom.setSumPlayer(sumPlayer);
         priRoomSet.put(priRoom.getRoomId(),priRoom);
         return priRoom;
     }
@@ -78,11 +128,11 @@ public class RoomServiceImpl implements RoomService {
         }
         synchronized (room){
             int playNum=room.getHavePalyerNum();
-            if(playNum==4){
+            if(playNum==room.getSumPlayer()){
                 return null;
             }else {
                 room.setHavePalyerNum(playNum+1);
-                if(playNum==3){
+                if(playNum==room.getSumPlayer()-1){
                     priRoomSet.remove(roomId);
                     fullRoomSet.put(room,"");
                 }
@@ -98,7 +148,7 @@ public class RoomServiceImpl implements RoomService {
             return false;
         }
         synchronized (room){
-            return room.getHavePalyerNum()!=4; //未满返回true
+            return room.getHavePalyerNum()!=room.getSumPlayer(); //未满返回true
         }
     }
 
@@ -112,13 +162,14 @@ public class RoomServiceImpl implements RoomService {
                 room.setRoomId(getUURoomId());
                 room.setDiFen(diFen);
                 room.setCanBeUsedTimes(Room.V.PUBLIC_ROOM);
+                room.setSumPlayer(3);
             }
             //占有房间的一个位置
             synchronized (room){//有可能集齐之前有其它玩家退出修改数量。
                 //因为涉及到pubromm的条件修改，所以只能放在嵌套同步块里
                 int playNum=room.getHavePalyerNum();
                 room.setHavePalyerNum(playNum+1);
-                if(playNum==3){
+                if(playNum==room.getSumPlayer()-1){
                     publicRoom[diFen-1]=null;
                     fullRoomSet.put(room,"");
                 }
@@ -132,10 +183,10 @@ public class RoomServiceImpl implements RoomService {
         synchronized (room){
             Player [] players=room.getPlayers();
             PlayerState[]playerStates=room.getRoomState().playerStates;
-            for(int i=0;i<4;i++){
+            for(int i=0;i<room.getSumPlayer();i++){
 //                players[i].setSumJiFen(playerStates[i].jifen); //记录总积分
-                Account account=players[i].getAccount();//退出在线账户
-                accountService.removeOnGameAccount(account.getAccountId());  // TODO: 2019/1/19
+//                Account account=players[i].getAccount();//退出在线账户
+//                accountService.removeOnGameAccount(account.getAccountId());
                 exitRoom(players[i]); //退出房间
             }
             room.getRoomState().playedTurn=0;
@@ -149,6 +200,9 @@ public class RoomServiceImpl implements RoomService {
         Player[] players=room.getPlayers();
         //以下退房操作
         synchronized (room){
+            Account account=player.getAccount();//退出在线账户
+            accountService.removeOnGameAccount(account.getAccountId());
+
             int hasPlayer=room.getHavePalyerNum();
             room.setHavePalyerNum(hasPlayer-1);
             players[player.getSeatNo()]=null;
@@ -161,4 +215,5 @@ public class RoomServiceImpl implements RoomService {
             }
         }
     }
+
 }

@@ -30,11 +30,12 @@ public class ProcessC6 {
         if(roomState.laiZiAppeared){ //癞子出现，所有人都不能胡
             return null;
         }
-        int robbedNo[]=new int[4];
+        int sumPlayer=player.getRoom().getSumPlayer();
+        int robbedNo[]=new int[sumPlayer];
         int lenth=0;
         //回头笑是否被抢，被抢返回序号
         int paiNo=jsonObject.getInteger("paiNo");
-        for(int i=0;i<4;i++){
+        for(int i=0;i<sumPlayer;i++){
             int []temp=roomState.playerStates[i].cardArr;
             //超过胡牌的癞子数限制，不能胡
             if(temp[roomState.laiZi]>player.getRoom().getMaxLaiZiNum_zhuoChong()){
@@ -89,7 +90,7 @@ public class ProcessC6 {
         suggestList.add(s11_suggest);
         suggestList.add(s10_suggest);
         suggestList.add(s9_suggest);
-        for(int i=0;i<4;i++){
+        for(int i=0;i<player.getRoom().getSumPlayer();i++){
             ProcessResult result=new ProcessResult();
             result.setSeatNo(i);
             result.setSuggestList(suggestList);
@@ -164,11 +165,11 @@ public class ProcessC6 {
         changeStatusAfterXiaoBySelf(roomState,player,paiNo,type); //修改自笑或者回头笑后的状态信息
         Suggest s11_suggest=getS11(player.getSeatNo(),type,paiNo);//获取笑的信息
         boolean isGetCard= roomState.laiGen==paiNo ? false:true;
-        Suggest s7_suggest[]=  ProcessC3.getS7(roomState,isGetCard);
+        Suggest s7_suggest[]=  ProcessC3.getS7(player.getRoom(),isGetCard);
         List<ProcessResult> resultList=new LinkedList<ProcessResult>();
 
         Suggest s10_suggest=ProcessC5.getS10(roomState);
-        for(int i=0;i<4;i++){
+        for(int i=0;i<player.getRoom().getSumPlayer();i++){
             List<Suggest> suggestList=new LinkedList<Suggest>();
             if(paiNo==roomState.laiGen){  //是朝天则还有添加积分信息
                 suggestList.add(s10_suggest);
@@ -188,7 +189,7 @@ public class ProcessC6 {
         int selfNo = player.getSeatNo();
         PlayerState[] playerStates = roomState.playerStates;
         int selfDisLaiZi = playerStates[selfNo].disLiaZiNum;
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < player.getRoom().getSumPlayer(); i++) {
             if (i != selfNo) {
                 int disLaiZi = playerStates[i].disLiaZiNum + selfDisLaiZi; //一共漂癞子数癞子
                 int multipleI = Multiple *  (int)Math.pow(2, disLaiZi); //2的disLaiZi次方

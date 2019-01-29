@@ -53,7 +53,7 @@ public class ProcessC5 {
         if (selfDisLaiZi + playerStates[selfNo].cardArr[roomState.laiZi] == 4) { //胡的人共有四个癞子
             huMultiple = 2 * huMultiple;
         }
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < player.getRoom().getSumPlayer(); i++) {
             if (i != selfNo) {
                 int disLaiZi = playerStates[i].disLiaZiNum + selfDisLaiZi; //一共漂癞子数癞子
                 int multipleI = huMultiple * (int) Math.pow(2, disLaiZi); //2的disLaiZi次方
@@ -92,7 +92,7 @@ public class ProcessC5 {
         }
         Suggest s9_suggest = getS9_ziMo(player, roomState, type);
         List<ProcessResult> resultList = new ArrayList<ProcessResult>(4);
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < player.getRoom().getSumPlayer(); i++) {
             ProcessResult result = new ProcessResult();
             result.setSeatNo(i);
             result.setSuggestList(new ArrayList<Suggest>(2) {{
@@ -127,6 +127,7 @@ public class ProcessC5 {
     public static Suggest getS9(Player player, String type,RoomState roomState,int []seatNoOfHu,int seatNoOfBeiHu) {
         PlayerState[]playerStates=roomState.playerStates;
         Player[]players=player.getRoom().getPlayers();
+        int sumPlayer=player.getRoom().getSumPlayer();
 
         if(seatNoOfHu!=null){  //不是和局，则更换庄家
             if(seatNoOfHu.length==1){
@@ -140,18 +141,18 @@ public class ProcessC5 {
         roomState.isOver = roomState.playedTurn == player.getRoom().getCanBeUsedTimes();
         if(!roomState.isOver){
             roomState.responseNum=0;
-            for(int i=0;i<4;i++){
+            for(int i=0;i<sumPlayer;i++){
                 playerStates[i].responseFlag=PlayerState.V.RESP_RESTART;
             }
         }
 
-        int[][] yuPai = new int[4][];
-        for (int i = 0; i < 4; i++) {
+        int[][] yuPai = new int[sumPlayer][];
+        for (int i = 0; i < sumPlayer; i++) {
             yuPai[i] = playerStates[i].cardArr;
         }
 
-        int currentJiFen[]=new int[4];//四个玩家本轮积分
-        for(int i=0;i<4;i++){
+        int currentJiFen[]=new int[sumPlayer];//四个玩家本轮积分
+        for(int i=0;i<sumPlayer;i++){
             int temp=playerStates[i].jifen;
             //计算本轮积分并存储
             currentJiFen[i]=temp-players[i].getSumJiFen();

@@ -42,7 +42,7 @@ public class ProcessC7 {
             synchronized (player.getRoom()){
                 roomState.responseNum++;
                 playerStates[player.getSeatNo()].responseFlag = responseValue;
-                if(roomState.responseNum == 3){
+                if(roomState.responseNum == player.getRoom().getSumPlayer()-1){
                     return getC7_Response(player.getRoom());
                 }
             }
@@ -60,16 +60,16 @@ public class ProcessC7 {
     private static List<ProcessResult> getC7_Response(Room room) {
         RoomState roomState=room.getRoomState();
         int disCardSeatNo=roomState.disCardSeatNo;//当前的出牌人
-        int zhuoChongSeats[]=getZhuoChongSeats(roomState,disCardSeatNo); //传disCardSeatNo的原因是避免把自己以前的响应统计进去
+        int zhuoChongSeats[]=getZhuoChongSeats(room,disCardSeatNo); //传disCardSeatNo的原因是避免把自己以前的响应统计进去
         if(zhuoChongSeats!=null){//有人捉冲
             return getRobbedMsg(room,disCardSeatNo,zhuoChongSeats);
         }
         jiFenBeforeNotRobbed(room,disCardSeatNo);//计算不被捉时的积分变化，即出牌前操作造成的积分变化，不含大小朝天，
-        int dianXiaoSeat=getDianXiaoSeat(roomState,disCardSeatNo); //点笑的人座位号
+        int dianXiaoSeat=getDianXiaoSeat(room,disCardSeatNo); //点笑的人座位号
         if(dianXiaoSeat != -1){ //有人点笑
             return getDianXiaoMsg(room,disCardSeatNo,dianXiaoSeat);
         }
-        int pengSeat=getPengSeat(roomState,disCardSeatNo);
+        int pengSeat=getPengSeat(room,disCardSeatNo);
         if(pengSeat!=-1){//有人碰
             return getPengMsg(room,disCardSeatNo,pengSeat);
         }
@@ -79,11 +79,11 @@ public class ProcessC7 {
     private static List<ProcessResult> getNormalMsg(Room room,int disCardSeatNo) {
         RoomState roomState=room.getRoomState();
         //修改出牌人
-        changeStatusWhenNothing(roomState,disCardSeatNo);
+        changeStatusWhenNothing(room,disCardSeatNo);
         List<ProcessResult> resultList=new LinkedList<ProcessResult>();
         Suggest s10_suggest=ProcessC5.getS10(roomState); //积分
-        Suggest s7_suggest[]= ProcessC3.getS7(roomState,true);
-        for(int i=0;i<4;i++){
+        Suggest s7_suggest[]= ProcessC3.getS7(room,true);
+        for(int i=0;i<room.getSumPlayer();i++){
             List<Suggest> suggestList=new LinkedList<Suggest>();
             suggestList.add(s10_suggest);
             suggestList.add(s7_suggest[i]);
@@ -97,9 +97,10 @@ public class ProcessC7 {
     }
 
     //修改三家都不要时的出牌人
-    private static void changeStatusWhenNothing(RoomState roomState, int disCardSeatNo) {
+    private static void changeStatusWhenNothing(Room room, int disCardSeatNo) {
+        RoomState roomState=room.getRoomState();
         int next= 0;
-        if(disCardSeatNo ==3){
+        if(disCardSeatNo ==room.getSumPlayer()-1){
             next=0;
         }else {
             next=disCardSeatNo+1;
@@ -114,9 +115,9 @@ public class ProcessC7 {
         List<ProcessResult> resultList=new LinkedList<ProcessResult>();
         Suggest s10_suggest=ProcessC5.getS10(roomState); //积分
         Suggest s12_suggest=getS12(pengSeat,roomState.disCardNo);//获取碰的信息
-        Suggest s7_suggest[]= ProcessC3.getS7(roomState,false);
+        Suggest s7_suggest[]= ProcessC3.getS7(room,false);
 
-        for(int i=0;i<4;i++){
+        for(int i=0;i<room.getSumPlayer();i++){
             List<Suggest> suggestList=new LinkedList<Suggest>();
             suggestList.add(s10_suggest);
             suggestList.add(s12_suggest);
@@ -155,8 +156,9 @@ public class ProcessC7 {
         roomState.beforeGetCard=RoomState.V.PENG;
     }
 
-    private static int getPengSeat(RoomState roomState, int disCardSeatNo) {
-        for(int i=0;i<4;i++){
+    private static int getPengSeat(Room room, int disCardSeatNo) {
+        RoomState roomState=room.getRoomState();
+        for(int i=0;i<room.getSumPlayer();i++){
             if(i!=disCardSeatNo && roomState.playerStates[i].responseFlag==RoomState.V.PENG){
                 return i;
             }
@@ -201,9 +203,9 @@ public class ProcessC7 {
         if(roomState.disCardNo != roomState.laiGen){//不是小朝天
             isGetCard=true;
         }
-        Suggest s7_suggest[]= ProcessC3.getS7(roomState,isGetCard);
+        Suggest s7_suggest[]= ProcessC3.getS7(room,isGetCard);
 
-        for(int i=0;i<4;i++){
+        for(int i=0;i<room.getSumPlayer();i++){
             List<Suggest> suggestList=new LinkedList<Suggest>();
             suggestList.add(s10_suggest);
             suggestList.add(s11_suggest);
@@ -217,8 +219,9 @@ public class ProcessC7 {
     }
 
     //获取点笑的人座位号
-    private static int getDianXiaoSeat(RoomState roomState, int disCardSeatNo) {
-        for(int i=0;i<4;i++){
+    private static int getDianXiaoSeat(Room room, int disCardSeatNo) {
+        RoomState roomState=room.getRoomState();
+        for(int i=0;i<room.getSumPlayer();i++){
             if(i!=disCardSeatNo &&
                     roomState.playerStates[i].responseFlag== PlayerState.V.DIAN_XIAO){
                 return i;
@@ -267,7 +270,7 @@ public class ProcessC7 {
         List<Suggest> suggestList=new LinkedList<Suggest>();
         suggestList.add(s10_suggest);
         suggestList.add(s9_suggest);
-        for(int i=0;i<4;i++){
+        for(int i=0;i<room.getSumPlayer();i++){
             ProcessResult result=new ProcessResult();
             result.setSeatNo(i);
             result.setSuggestList(suggestList);
@@ -295,10 +298,11 @@ public class ProcessC7 {
         ProcessC6.jiFenAfterRobbed(roomState,player,zhuoChongSeats,jiFenReduce); //计算抢笑后的积分
     }
     //获取捉冲人的数组
-    private static int[] getZhuoChongSeats(RoomState roomState,int disCardSeatNo) {
-        int[]zhuoChongSeats=new int[4];
+    private static int[] getZhuoChongSeats(Room room,int disCardSeatNo) {
+        RoomState roomState=room.getRoomState();
+        int[]zhuoChongSeats=new int[room.getSumPlayer()];
         int lenth=0;
-        for(int i=0;i<4;i++){
+        for(int i=0;i<room.getSumPlayer();i++){
             if(i!=disCardSeatNo && roomState.playerStates[i].responseFlag==PlayerState.V.ZHUO_CHONG){
                 zhuoChongSeats[lenth++]=i;
             }

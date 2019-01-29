@@ -38,7 +38,7 @@ public class ProcessC8 {
             synchronized (player.getRoom()){
                 roomState.responseNum++;
                 playerStates[player.getSeatNo()].responseFlag = huMultiple;
-                if(roomState.responseNum == 4){
+                if(roomState.responseNum == player.getRoom().getSumPlayer()){
                     return getC8_Response(player.getRoom());
                 }
             }
@@ -48,7 +48,7 @@ public class ProcessC8 {
 
     private static List<ProcessResult> getC8_Response(Room room) {
         RoomState roomState=room.getRoomState();
-        int huSeatNo=getHuSeatByOrder(roomState);
+        int huSeatNo=getHuSeatByOrder(room);
         if(huSeatNo!=-1){ //有人胡
             Player player=room.getPlayers()[huSeatNo];
             roomState.zhuang = huSeatNo;//能胡则为庄
@@ -65,7 +65,7 @@ public class ProcessC8 {
         Suggest s9_suggest=ProcessC5.getS9(player,V.HE_JU_STRING,room.getRoomState(),null,-1);
         Suggest s10_sugget = ProcessC5.getS10(room.getRoomState());
         List<ProcessResult> resultList = new ArrayList<ProcessResult>(4);
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < room.getSumPlayer(); i++) {
             ProcessResult result = new ProcessResult();
             result.setSeatNo(i);
             result.setSuggestList(new ArrayList<Suggest>(2) {{
@@ -78,11 +78,12 @@ public class ProcessC8 {
     }
 
     //根据拿牌次序获取胡牌人,-1 没人胡
-    private static int getHuSeatByOrder(RoomState roomState) {
+    private static int getHuSeatByOrder(Room room) {
+        RoomState roomState=room.getRoomState();
         PlayerState []playerStates=roomState.playerStates;
         int disCardSeatNo=roomState.disCardSeatNo;
-        for(int i=0;i<4;i++){
-            int seatNo=(disCardSeatNo+i)%4;
+        for(int i=0;i<room.getSumPlayer();i++){
+            int seatNo=(disCardSeatNo+i)%room.getSumPlayer();
             int responseValue=playerStates[seatNo].responseFlag;
             if(responseValue==2 || responseValue==4){
                 return seatNo;

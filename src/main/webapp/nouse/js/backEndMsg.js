@@ -26,7 +26,8 @@ var s4_suggest = {
             diFen:2,
             sumTurn:10,
             playedTurn:0,
-            selfSeatNo:3
+            selfSeatNo:3,
+            sumPlayer:3
         },//以下为已有玩家信息，包括自己
         {
             seatNo: 1,
@@ -242,6 +243,64 @@ var msg=[
     s6_suggest,s7_suggest
 ]
 
+//房间恢复的消息
+var s13_suggest = {
+    msgId: "s13",
+    msgBody: [
+        {//房间信息
+            selfSeatNo:3,
+            roomId:23422,
+            diFen:2,
+            sumTurn:10,
+            sumPlayer:3,
+            //==================
+            playedTurn:0, //已玩局数
+            isOver : false,//是否结束
+            laiGen:0,
+            laiZi:0,
+            laiZiApprience : false,//癞子是否出现
+            yuPaiSum:20,
+            //以下三个变量为判断是否处于出牌阶段，以及判断谁在出牌
+            disCardSeatNo : 0,//当前出牌人座位号
+            getCardNoBeforeDis : V.NO_CARD,//当前出牌人拿到的牌，
+            canDisCard : false,//当前出牌人是否可以出牌
+            //以下两个变量为判断是否处于响应别人（是自己仅显示）出牌信息的阶段
+            disCardNo : 0,//当前出牌人出的牌
+            responseFlag:V.BU_YAO//响应类型，与是否可以响应，用于验证响应与记录，以及用作恢复的依据
+
+            /*
+            responseFlag的取值：
+                int RESP_OTHER_DISCARD = 31;//可响应别人出牌，也可以称为未响应状态，以上常量均为不可响应状态
+                int RESP_LAST_FOUR_CARD = 32;//可响应最后四张是否能胡
+                int RESP_RESTART = 33;//可响应重新开始
+                其它值不用管
+             */
+        },
+        //以下有四个玩家
+        {
+            headImgUrl: "",
+            username: "施庄明",
+            seatNo: 2,
+            accountId: 1,
+            //注意 PENG_AND_ONE 这个值
+            cardArr:[],//包括手牌（仅自己）、彭牌、笑牌。
+            /*
+            cardArr[i]的取值：
+                int PENG = 15;  //碰
+                int PENG_AND_ONE = 16;//碰的同时留有一张
+                int DIAN_XIAO = 17;  //点笑，包括小朝天
+                int HUI_TOU_XIAO = 18;  //回头笑
+                int ZI_XIAO = 19;  //自笑，包括大朝天
+             */
+            disLiaZiNum : 0,//漂癞子数
+            jifen : 0,
+            disCardArr:[],//出过的牌
+            superFlag:false //是否处于特权态，取true时 闷笑的字可以和拿牌不一致
+        },{
+        //另外三个玩家同上，略
+        }
+        ]
+}
 
 
 

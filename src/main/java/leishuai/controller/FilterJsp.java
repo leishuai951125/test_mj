@@ -5,10 +5,11 @@ import com.sun.deploy.net.HttpRequest;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @WebFilter(filterName = "Filter",urlPatterns = "/static/*")
-public class JspFilter implements javax.servlet.Filter {
+public class FilterJsp implements javax.servlet.Filter {
     @Override
     public void destroy() {
     }
@@ -21,7 +22,9 @@ public class JspFilter implements javax.servlet.Filter {
             chain.doFilter(req, resp);
         }else {
             String contextUrl=request.getContextPath();
-            request.getRequestDispatcher(contextUrl+"/index.jsp").forward(req, resp);
+//            request.getRequestDispatcher(contextUrl+"/index.jsp").forward(req, resp);
+            HttpServletResponse response=(HttpServletResponse)resp;
+            response.sendRedirect(request.getContextPath()+"/index.jsp");
         }
     }
     @Override

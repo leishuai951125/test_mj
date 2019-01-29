@@ -1,6 +1,5 @@
 package leishuai.controller;
 
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import leishuai.bean.*;
@@ -26,7 +25,6 @@ import java.util.List;
  * @Version 1.0
  */
 @ServerEndpoint("/lsmj/websocket/{jsonParam}")
-//@ServerEndpoint("/lsmj/websocket")
 public class WebSocket {
     private static int onlineCount = 0;
     static AccountService accountService = new AccountServiceImpl();
@@ -53,49 +51,74 @@ public class WebSocket {
         return false;
     }
 
+    private boolean isFull(Room room) {
+        Player[] players = room.getPlayers();
+        boolean full = true; //房间是否已满，不能用room.getHavePalyerNum()
+        for (int i = 0; i < room.getSumPlayer(); i++) {
+            if (players[i] == null) {
+                full = false;
+                break;
+            }
+        }
+        return full;
+    }
+
     @OnOpen
     public void onOpen(Session session, @PathParam("jsonParam") String jsonParam) throws IOException, LsmjException {
         addOnlineCount();
         long startTime = System.nanoTime() / 100000;
-            System.out.println(jsonParam);
-            JSONObject param = JSON.parseObject(jsonParam);
-            if (isCheckSuccess(param)) {
-                long accountId = param.getLong("accountId");
-                Account accountOnGame = accountService.getAccountOnGame(accountId);  accountOnGame = null; //// TODO: 2019/1/18
-                if (accountOnGame != null) {//在游戏中，恢复操作和重传操作
-                    connectService.onLine(this, session, accountOnGame); //上线
-                    connectService.stateRecovery(this, session, accountOnGame); //状态恢复
-                } else { //不在游戏中，分配房间
-                    Account account = accountService.getAccountBySession(accountId);
-                    connectService.onLine(this, session, account);//上线
-                    //进入房间，包括公共房和私人房
+        System.out.println(jsonParam);
+        JSONObject param = JSON.parseObject(jsonParam);
+        if (isCheckSuccess(param)) {
+            long accountId = param.getLong("accountId");
+            Account accountOnGame = accountService.getAccountOnGame(accountId);
+//                accountOnGame = null; //// TODO: 2019/1/18
+            if (accountOnGame != null) { //在线，或者说在房间中
+                connectService.onLine(this, session, accountOnGame); //上线
+                Room room = accountOnGame.getPlayer().getRoom();
+                synchronized (room){
+                    if(isFull(room)){ //齐了
+                        ProcessMsg processMsg = ProcessMsg.map.get("recover"); //恢复
+                        doMsgAndSendMsg(processMsg, null);
+                        System.out.println("状态恢复");
+                    }else { //没齐
+                        ProcessMsg processMsg = ProcessMsg.map.get("c3"); //加入房间的信息发给每个人
+                        doMsgAndSendMsg(processMsg, null);
+                    }
+                }
+            }else { //不在房间中
+                Account account = accountService.getAccountBySession(accountId);
+                connectService.onLine(this, session, account);//上线
+                synchronized (player) {  //进入房间，包括公共房和私人房
                     connectService.intoRoom(player, param.getLong("roomId"), param.getInteger("diFen"));
-                    ProcessMsg processMsg = ProcessMsg.map.get("c3");
+                    ProcessMsg processMsg = ProcessMsg.map.get("c3"); //加入房间的信息发给每个人
                     doMsgAndSendMsg(processMsg, null);
                 }
-            } else {
-                throw new LsmjException("验证失败");
             }
+        } else {
+            throw new LsmjException("验证失败");
+        }
         System.out.println("加入第 " + getOnlineCount() + " 个玩家耗时 " + (System.nanoTime() / 100000 - startTime) + " （毫秒*10）");
     }
 
     @OnClose   //todo 此处没考虑player在并发时的处理问题
     public void onClose() throws IOException, LsmjException {
-        Integer seat=player==null?null:player.getSeatNo();
-        System.out.println("==========seatNo:"+seat+"连接关闭");
+        Integer seat = player == null ? null : player.getSeatNo();
+        System.out.println("==========seatNo:" + seat + "连接关闭");
         if (player != null) {
             Room room = player.getRoom();
             if (room != null) {
                 synchronized (room) {
-                    if (room.getHavePalyerNum() < 4) {
+                    if (room.getHavePalyerNum() < room.getSumPlayer() && player.isExitFlagWhenSessionClose()) {
                         ProcessMsg processMsg = ProcessMsg.map.get("-c3");
                         doMsgAndSendMsg(processMsg, null);
                         roomService.exitRoom(player);
                     }
                 }
             }
+            player.setExitFlagWhenSessionClose(true);
         }
-        player.setSession(null);
+//        player.setSession(null);
         player = null;
         subOnlineCount();
     }
@@ -117,7 +140,7 @@ public class WebSocket {
         List<ProcessResult> resultList = null;
         //锁对象，当消息为 c7 时不加锁或者，其余全部都对房间加锁
         Room room = player.getRoom();
-        Object lockObject = (room == null ) ? new Object() : room;
+        Object lockObject = (room == null) ? new Object() : room;
         synchronized (lockObject) {
             if (processMsg != null) {
                 //同一时刻只有一人操作当前房间
@@ -132,24 +155,26 @@ public class WebSocket {
                     List list = processResult.getSuggestList();
                     String jsonString = JSON.toJSONString(list);
                     try {
-                        System.out.println(player.getSeatNo()+"给"+seatNo+"发送消息");
-                        System.out.println(Thread.currentThread());
+                        System.out.println(player.getSeatNo() + "给" + seatNo + "发送消息");
+//                        System.out.println(Thread.currentThread());
                         sendMsg(sessionToSendMsg, jsonString);
                     } catch (Exception e) {
-                        System.out.println(player.getSeatNo()+"给"+seatNo+"发送消息时发生错误");
+                        System.out.println(player.getSeatNo() + "给" + seatNo + "发送消息时发生错误");
                     }
                 }
             }
-            if(room!=null && room.getRoomState().isOver){
+            if (room != null && room.getRoomState().isOver) {
                 roomService.destory(room);
-
             }
+//            startTime=System.nanoTime()/100000;
+//            System.out.println(JSON.toJSONString(room.getRoomState()));
+//            System.out.println("json: "+ (System.nanoTime()/100000-startTime));
         }
         return resultList;
     }
 
     public static void sendMsg(Session session, String text) throws IOException {
-        synchronized (session){
+        synchronized (session) {
 //            session.getAsyncRemote().sendText(text);
             session.getBasicRemote().sendText(text);
         }
@@ -158,8 +183,8 @@ public class WebSocket {
 
     @OnError
     public void onError(Session session, Throwable error) {
-        Integer seat=player==null?null:player.getSeatNo();
-        System.out.println("===========seatNo:"+seat+"连接出错,马上关闭============");
+        Integer seat = player == null ? null : player.getSeatNo();
+        System.out.println("===========seatNo:" + seat + "连接出错,马上关闭============");
         error.printStackTrace();
     }
 
