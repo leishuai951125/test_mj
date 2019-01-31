@@ -84,6 +84,7 @@ public class WebSocket {
                     }else { //没齐
                         ProcessMsg processMsg = ProcessMsg.map.get("c3"); //加入房间的信息发给每个人
                         doMsgAndSendMsg(processMsg, null);
+
                     }
                 }
             }else { //不在房间中
