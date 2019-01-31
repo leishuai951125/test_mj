@@ -223,7 +223,7 @@ public class ProcessC6 {
             ProcessC7.jiFenBeforeNotRobbed(player.getRoom(),player.getSeatNo());
 
             String type=jsonObject.getString("type");
-            if(V.ZI_XIAO.equals(type)){
+            if(V.HUI_TOU_XIAO.equals(type)){
                 int[] beRobbed=beRobbed(jsonObject,player,roomState);//是否被胡,只有回头笑会被胡
                 if(beRobbed!=null){
                     return getRobbedXiaoMsg(roomState,player,beRobbed,paiNo);

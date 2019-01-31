@@ -28,6 +28,7 @@ public class RoomState {
 
     //以下变量记录着关联关系
     public long roomId; //既是与room关联的外键，也是roomState的主键
+    public long updateTime=0;//更新时间
     public PlayerState[] playerStates = new PlayerState[4];//记录每个玩家在游戏开始后期间的专属数据
 
     {

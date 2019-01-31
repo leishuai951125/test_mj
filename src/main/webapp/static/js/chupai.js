@@ -866,11 +866,13 @@ function showRoomId(roomId){
     // roomIdDiv.style.right="10%";
     // roomIdDiv.append("房间号:"+roomId);
     // $("#duijushu").append(roomIdDiv);
+    showDuiJuShu();
 }
 
 function showDuiJuShu() {
     $("#duijushu").html("底分 : "+roomInformation.diFen+ "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp对局数 : "+roomInformation.playedTurn+"/"+roomInformation.sumTurn+"&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp余牌 : "+roomInformation.yuPaiSum+"&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp积分 : "+myInformation.jiFen + " &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp房间号 : "+roomInformation.roomId);
 }
+
 // 雷帅加
 leftInformation.showPai=leftPai;
 rightInformation.showPai=rightPai;

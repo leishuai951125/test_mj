@@ -163,8 +163,13 @@ public class WebSocket {
                     }
                 }
             }
-            if (room != null && room.getRoomState().isOver) {
-                roomService.destory(room);
+            if (room != null) {
+                RoomState roomState=room.getRoomState();
+                if(roomState.isOver){
+                    roomService.destory(room);
+                }else{
+                    roomState.updateTime=System.currentTimeMillis();
+                }
             }
 //            startTime=System.nanoTime()/100000;
 //            System.out.println(JSON.toJSONString(room.getRoomState()));

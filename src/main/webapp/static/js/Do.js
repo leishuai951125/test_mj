@@ -214,6 +214,28 @@ function setOtherPlayer(sumPlayer,selfSeatNo) {
 function Dos7(data) {
     roomInformation.yuPaiSum=data.yuPaiSum;
     showDuiJuShu();
+
+    if(data.lastFourCards!=undefined ){
+        moPai(data.lastFourCards[myInformation.seatNo]);
+        myInformation.canHu=huPai3.test2(myInformation.pai,null,roomInformation.laizi,roomInformation);
+        if(myInformation.canHu!=null){
+            var c8_msg={
+                msgId:"c8",
+                type:myInformation.canHu.type,
+                matchMethod:myInformation.canHu.matchMethod,
+                actAs:myInformation.canHu.actAs
+            }
+            ws.send(JSON.stringify(c8_msg));
+        }else {
+            var c8_msg={
+                msgId:"c8",
+                type:"not_hu",
+            }
+            ws.send(JSON.stringify(c8_msg));
+        }
+        return;
+    }
+
     var seatNo=data.seatNo;
     //出牌人不为自己时，只需要更新当前出牌人图标
     if(seatNo!=myInformation.seatNo){
@@ -249,25 +271,7 @@ function Dos7(data) {
         $("#chupai").css("display","block");
     }
 
-    if(data.lastFourCards!=undefined ){
-        moPai(data.lastFourCards[myInformation.seatNo]);
-        myInformation.canHu=huPai3.test2(myInformation.pai,null,roomInformation.laizi,roomInformation);
-        if(myInformation.canHu!=null){
-            var c8_msg={
-                msgId:"c8",
-                type:myInformation.canHu.type,
-                matchMethod:myInformation.canHu.matchMethod,
-                actAs:myInformation.canHu.actAs
-            }
-            ws.send(JSON.stringify(c8_msg));
-        }else {
-            var c8_msg={
-                msgId:"c8",
-                type:"not_hu",
-            }
-            ws.send(JSON.stringify(c8_msg));
-        }
-    }
+
 }
 
 // 玩家出牌处理
@@ -335,9 +339,10 @@ function endClear(){
     $("#right-chupai").empty();
     $("#across-pai").empty();
     $("#across-chupai").empty();
-    $("#leftplayer").empty();
-    $("#rightplayer").empty();
-    $("#acrossplayer").empty();
+    // $("#leftplayer").empty();
+    // $("#rightplayer").empty();
+    // $("#acrossplayer").empty();
+
     $("#myDiscard").empty();
     $("#myPengXiao").empty();
     $("#chupaiqu").empty();
@@ -452,7 +457,11 @@ function showYuPai(type,seatNoOfHu,seatNoOfBeiHu,paiData,currentJiFen){
     continueButton.onclick=function(){
         if((roomInformation.playedTurn==roomInformation.sumTurn)&&(roomInformation.sumTurn>1)){
             //私人房结束，返回大厅
-            window.location.href="hall.jsp";
+            if(confirm("看清积分了吗？")==true){
+                window.location.href = "hall.jsp";
+            }else{
+                return;
+            }
         }
         var c9=null;
         if(roomInformation.sumTurn>1){
@@ -641,7 +650,9 @@ function Dos13(data){
     var selfSeatNo=myInformation.seatNo = data[0].selfSeatNo;
     setOtherPlayer(sumPlayer,selfSeatNo);
     showLaiGen();
+    var jiFenArr=[];
     for(var i = 1; i<data.length; i++){
+        jiFenArr.push(data[i].jifen);
         var seatNo=data[i].seatNo;
         if(seatNo == myInformation.seatNo){
             myInformation.headImgUrl = data[i].headImgUrl;
@@ -778,6 +789,8 @@ function Dos13(data){
             }
         }
     }
+
+    Dos10(jiFenArr);
 
     data[0].paiNo=data[0].getCardNoBeforeDis;
     data[0].seatNo=data[0].disCardSeatNo;

@@ -86,7 +86,6 @@
 <script>
     function requestFullScreen() {
     }
-
     var requestFullScreen = function () {
         var de = document.getElementById("yemian");
         if (de.requestFullscreen) {
@@ -98,11 +97,17 @@
         }
         setTimeout(rotateYeMian, 1000);
     }
-    $(function () {
+
+    function setFontSize(){
         $("*").css("fontSize", window.innerWidth / 100 + "px");
         $("#duijushu").css("fontSize", "1.5em");
-        // requestFullScreen();
-        // rotateYeMian();
+    }
+
+    $(function () {
+        setFontSize();
+        $(window).resize(function () {
+            setFontSize();
+        });
     })
 
     function rotateYeMian() {
@@ -133,5 +138,4 @@
     }
 </script>
 </body>
-
 </html>

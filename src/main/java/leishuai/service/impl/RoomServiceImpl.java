@@ -4,13 +4,12 @@ package leishuai.service.impl;
 import com.alibaba.fastjson.JSON;
 import leishuai.bean.*;
 import leishuai.service.AccountService;
+import leishuai.service.RoomIdService;
 import leishuai.service.RoomService;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @Description TODO
@@ -21,13 +20,45 @@ import java.util.concurrent.atomic.AtomicLong;
 @Service
 public class RoomServiceImpl implements RoomService {
     static private AccountService accountService=new AccountServiceImpl();
+    static private RoomService roomService=new RoomServiceImpl();
+    static private RoomIdService roomIdService=new RoomIdServiceImpl();
 
     //游戏结束后作废的房间对象，只存一百个，重复利用，避免频繁创建和回收房间
     static private Queue<Room> emptyRoomList=new LinkedList<Room>();//最多存100个房间对象
 
     //已满的房间集合，官方没有提供hash版的并发set，只能用map模拟
     static private ConcurrentHashMap<Room,Object> fullRoomSet=new ConcurrentHashMap<>(1000);
-//    static {
+    static {
+        new Thread(){
+            static final long five_minute=5*3*1000;
+//            static final long five_minute=20*1000;
+            static final long destory_time=4*five_minute;
+            @Override
+            public void run(){
+                System.out.println("回收开始");
+                while(true){
+                    try {
+                        Thread.sleep(five_minute);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    long time=System.currentTimeMillis();
+                    for(Map.Entry<Room,Object> entry:fullRoomSet.entrySet()){
+                        Room room=entry.getKey();
+                        RoomState roomState=room.getRoomState();
+                        synchronized (room){
+                            System.out.println("time: "+time+"  chaTime:"+(time-roomState.updateTime));
+                            if(time-roomState.updateTime>=destory_time){
+                                System.out.println("roomId: "+room.getRoomId()+" 解散");
+                                roomService.destory(room);
+                            }
+                        }
+                    }
+                }
+            }
+        }.start();
+    }
+    //    static {
 //        new Thread(){
 //            @Override
 //            public void run(){
@@ -79,16 +110,6 @@ public class RoomServiceImpl implements RoomService {
     // 不直接拿pub[i]当锁，是因为pub[i]指向的对象会发生变化，也就是多个线程用的并非同一把锁,有可能
     //多个线程同时进入房间分配的同步块，重点是进入之后还有可能操作的是同一对象，所以不行
 
-    static private Long maxRoomId=10000L;
-    //注意多线程并发，服务器集群时最好改存redis
-    static private AtomicLong uuRoomId=new AtomicLong(10000L);
-
-    public Long getUURoomId(){
-//        synchronized (maxRoomId){
-//            return maxRoomId++;
-//        }
-        return uuRoomId.getAndIncrement();
-    }
 
     private Room getEmptyRoomObject(){ //获取一个房间对象
         synchronized (emptyRoomList){
@@ -112,7 +133,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public Room createPriRoom(Integer diFen, Integer sumTurn,Integer sumPlayer) {
         Room priRoom=getEmptyRoomObject();
-        priRoom.setRoomId(getUURoomId());
+        priRoom.setRoomId(roomIdService.getPriRoomId());
         priRoom.setDiFen(diFen);
         priRoom.setCanBeUsedTimes(sumTurn);
         priRoom.setSumPlayer(sumPlayer);
@@ -159,7 +180,7 @@ public class RoomServiceImpl implements RoomService {
             room=publicRoom[diFen-1];
             if(room==null){ //创建房间
                 room=publicRoom[diFen-1]=getEmptyRoomObject();
-                room.setRoomId(getUURoomId());
+                room.setRoomId(roomIdService.getUURoomId());
                 room.setDiFen(diFen);
                 room.setCanBeUsedTimes(Room.V.PUBLIC_ROOM);
                 room.setSumPlayer(3);
@@ -187,7 +208,9 @@ public class RoomServiceImpl implements RoomService {
 //                players[i].setSumJiFen(playerStates[i].jifen); //记录总积分
 //                Account account=players[i].getAccount();//退出在线账户
 //                accountService.removeOnGameAccount(account.getAccountId());
-                exitRoom(players[i]); //退出房间
+//                if(players[i]!=null){
+                    exitRoom(players[i]); //退出房间
+//                }
             }
             room.getRoomState().playedTurn=0;
             room.getRoomState().isOver=false;
@@ -209,11 +232,17 @@ public class RoomServiceImpl implements RoomService {
 
             player.setRoom(null);
             player.setSeatNo(-1);
-            if(hasPlayer==0){ //房间空了
+            if(hasPlayer==1){ //房间空了
                 fullRoomSet.remove(room);
+                //私人房可能还要先从私人房列表里删除,并且归还房号
+                if(room.getCanBeUsedTimes()!=Room.V.PUBLIC_ROOM){
+                    priRoomSet.remove(room.getRoomId());
+                    roomIdService.putPriRoomId(room.getRoomId());
+                }
                 addEmptyRoomObject(room);
             }
         }
     }
+
 
 }

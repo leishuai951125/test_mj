@@ -120,7 +120,7 @@ public class ProcessC3 {
         }
         List<Integer> roomYupai=roomState.yuPai;
         roomYupai.clear();
-        for(int i=13*sumPlayer;i<allCards.length-1;i++){ //余牌存room  todo 调试
+        for(int i=13*sumPlayer;i<allCards.length-1-40;i++){ //余牌存room  todo 调试
             roomYupai.add(allCards[i]);
         }
         return allPlayCard;

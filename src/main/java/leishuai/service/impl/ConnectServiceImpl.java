@@ -35,6 +35,8 @@ public class ConnectServiceImpl implements ConnectService {
         room = getRoom(roomId,diFen);
         if(room==null){
             return false;
+        }else {
+            room.getRoomState().updateTime=System.currentTimeMillis();
         }
 
         Player[] players = room.getPlayers();
