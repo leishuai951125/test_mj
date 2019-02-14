@@ -30,7 +30,7 @@ public class RoomServiceImpl implements RoomService {
     static private ConcurrentHashMap<Room,Object> fullRoomSet=new ConcurrentHashMap<>(1000);
     static {
         new Thread(){
-            static final long five_minute=5*3*1000;
+            static final long five_minute=5*40*1000;
 //            static final long five_minute=20*1000;
             static final long destory_time=4*five_minute;
             @Override
