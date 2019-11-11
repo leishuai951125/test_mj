@@ -1,6 +1,7 @@
 package leishuai.lsmj.ws.service;
 
 import com.alibaba.fastjson.JSONObject;
+import leishuai.lsmj.ws.bean.LsmjException;
 import leishuai.lsmj.ws.bean.Player;
 import leishuai.lsmj.ws.bean.ProcessResult;
 
@@ -15,5 +16,5 @@ import java.util.Map;
  */
 public interface ProcessMsg{
     Map<String,ProcessMsg> map=new HashMap<String,ProcessMsg>(16); //静态资源
-    List<ProcessResult> processMsg(JSONObject jsonObject, Player player);
+    List<ProcessResult> processMsg(JSONObject jsonObject, Player player) throws LsmjException;
 }

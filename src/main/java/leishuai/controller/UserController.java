@@ -38,7 +38,9 @@ public class UserController {
         String username = accountMap.get(accountId);
         if (username != null) { //验证通过
             Account account = new Account(accountId, username);
-            account.setHeadImgUrl("img/头像.jpg");
+            int imgNo=(int)(Math.random()*12);
+            String url="img/head/"+imgNo+".jpg";
+            account.setHeadImgUrl(url);
             session.setAttribute("account", account);
             session.setMaxInactiveInterval(-1);
             accountService.addAccountIntoSessionMap(accountId, session);

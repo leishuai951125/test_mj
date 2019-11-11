@@ -1,22 +1,14 @@
-#leftplayer,#rightplayer,#acrossplayer{
-    line-height: 1000%;
-    /*color: red;*/
-}
 #leftplayer{
     width: 6%;
     height: 10%;
     position: absolute;
     top: 40%;
     left: 2%;
-    /*background-image: url("img/å¤´åƒ.jpg");*/
+    /*background-image: url("img/头像.jpg");*/
     background-size: 100% 100%;
     border-radius: 6% 6% 6% 6%;
     text-align: center;
-    /*line-height: 1350%;*/
-    /*line-height: 1350%;*/
-    /*line-height: 1000%;*/
-    /*color: red;*/
-
+    line-height: 1300%;
 }
 #left-information{
     width: 10%;
@@ -60,9 +52,7 @@
     background-size: 100% 100%;
     border-radius: 6% 6% 6% 6%;
     text-align: center;
-    /*line-height: 1350%;*/
-    /*line-height: 1000%;*/
-
+    line-height: 1300%;
 }
 #right-information{
     width: 6%;
@@ -102,12 +92,11 @@
     position: absolute;
     top: 5%;
     left: 82%;
-    /*background-image: url("img/å¤´åƒ.jpg");*/
+    /*background-image: url("img/头像.jpg");*/
     background-size: 100% 100%;
     border-radius: 6% 6% 6% 6%;
     text-align: center;
-    /*line-height: 1350%;*/
-    /*line-height: 1000%;*/
+    line-height: 1300%;
 }
 #across-information{
     width: 6%;
@@ -150,7 +139,7 @@
     position: absolute;
     bottom: 0%;
     left: 5%;
-    text-align: end;
+    text-align: center;
 
 }
 #chupairen{
@@ -219,7 +208,7 @@
     background-repeat: no-repeat;
     background-size: 100%,100%;
     left: 89%;
-    background-image: url(img/è‡ªå·±æ‰‹ç‰Œ.png);
+    background-image: url(img/自己手牌.png);
     position: absolute;
     bottom: 4%;
     display: none;

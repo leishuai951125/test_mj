@@ -2,6 +2,8 @@ package leishuai.lsmj.ws.bean;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.annotation.JSONField;
+import leishuai.lsmj.ws.service.RoomService;
+import leishuai.lsmj.ws.service.impl.RoomServiceImpl;
 
 /**
  * @Description 游戏房间,房间的持久化只有两个字段，roomId和room对象的json字符串（包含四个玩家）
@@ -14,7 +16,7 @@ import com.alibaba.fastjson.annotation.JSONField;
  */
 public class Room {  //游戏开始前具有的属性
     public interface V{ //常量
-         int PUBLIC_ROOM= -1 ;//公共房
+         int PUBLIC_ROOM= 1 ;//公共房
     }
     long roomId;//持久化用
     int creatorId; //创建者的account账户id

@@ -6,7 +6,6 @@ ws.onopen = function()
 };
 ws.onmessage = function(evt)
 {
-    console.log("收到："+evt)
     var jsondata=JSON.parse(evt.data);
     for (var i=0;i<jsondata.length;i++){
         switch (jsondata[i].msgId) {
@@ -54,6 +53,7 @@ ws.onmessage = function(evt)
 ws.onclose = function(evt)
 {
     console.log("WebSocketClosed!");
+    alert("连接断开，无法游戏")
 };
 ws.onerror = function(evt)
 {

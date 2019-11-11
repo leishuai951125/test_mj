@@ -28,7 +28,7 @@ public class ProcessC3 {
         }};
         Player [] allPlayer=player.getRoom().getPlayers();
         for(int i=0;i<4;i++){
-            if(allPlayer[i]!=null){
+            if(allPlayer[i]!=null && allPlayer[i].getSeatNo()!=-1){
                 allInfo.add(getPlayerInfo(allPlayer[i],false));  //添加已有玩家信息
             }
         }
@@ -76,7 +76,8 @@ public class ProcessC3 {
      private static int[] creadAllCards(){
          int allCards[]=new int[108];  //值为1-27
          for(int i=0;i<108;i++){
-             allCards[i]=i%27+1;
+//             allCards[i]=i%27+1;
+             allCards[i]=i%27+1;  //todo 调试
          }
          for(int i=0;i<108;i++){ //打乱
              int random=(int)(Math.random()*108);
@@ -93,9 +94,12 @@ public class ProcessC3 {
         Map []allPlayCard=new Map[4];
         for(int i=0;i<4;i++){
             allPlayCard[i]=new HashMap();
+            if(roomState.playedTurn==0){
+                roomState.playerStates[i].jifen=room.getPlayers()[i].getSumJiFen();
+            }
         }
         allCards=creadAllCards();
-        int laiGenLaiZi[]=creatLaiZi(allCards[107]); //0赖根，1癞子
+        int laiGenLaiZi[]=creatLaiZi(allCards[allCards.length-1]); //0赖根，1癞子
         roomState.laiGen=laiGenLaiZi[0];
         roomState.laiZi=laiGenLaiZi[1];
 //        RoomState roomState=player.getRoom().getRoomState();
@@ -122,8 +126,9 @@ public class ProcessC3 {
             allPlayCard[i].put("playedTurn",roomState.playedTurn);
         }
         List<Integer> roomYupai=roomState.yuPai;
+
         roomYupai.clear();
-        for(int i=52;i<107;i++){ //余牌存room
+        for(int i=52;i<allCards.length-1;i++){ //余牌存room  todo 调试
             roomYupai.add(allCards[i]);
         }
         return allPlayCard;
@@ -145,23 +150,44 @@ public class ProcessC3 {
 
     //出牌人的指定在调用这一方法之前
     static public Suggest[] getS7(RoomState roomState, boolean isGetCard){//拿牌并指定出牌人
+        int []lastFourCards=null;
+
         int seatNo=roomState.disCardSeatNo;
         Suggest s7_suggest[]=new Suggest[4];
         int paiNo=RoomState.V.NO_CARD;
         List<Integer> roomYuPai=roomState.yuPai;
         if(isGetCard){  //拿牌操作
-            paiNo=roomYuPai.get(0);
-            roomYuPai.remove(0);
-            //碰后拿牌也是++
-            roomState.playerStates[seatNo].cardArr[paiNo]++;
+            if(roomState.yuPai.size()==4){ //最后四张
+                lastFourCards=new int[4];
+                for(int i=0;i<4;i++){ //四人都拿牌
+                    paiNo=roomYuPai.get(i);
+                    roomState.playerStates[i].cardArr[paiNo]++;
+                    lastFourCards[i]=paiNo;
+                }
+            }else {
+                roomState.playerStates[seatNo].getCardTimes++;
+                paiNo=roomYuPai.get(0);
+                roomYuPai.remove(0);
+                //碰后拿牌也是++
+                roomState.playerStates[seatNo].cardArr[paiNo]++;
+            }
         }
+
         Map disCardBody=new HashMap();
-        disCardBody.put("seatNo",seatNo);
-        disCardBody.put("paiNo",paiNo);
+        if(lastFourCards!=null){
+            disCardBody.put("lastFourCards",lastFourCards);
+        }else{
+            disCardBody.put("seatNo",seatNo);
+            disCardBody.put("paiNo",paiNo);
+        }
         disCardBody.put("yuPaiSum",roomYuPai.size());
         Map notDisCardBody=new HashMap();
-        notDisCardBody.put("seatNo",seatNo);
-        notDisCardBody.put("paiNo",RoomState.V.NOT_YOU_DISCARD);
+        if(lastFourCards!=null){
+            notDisCardBody.put("lastFourCards",lastFourCards);
+        }else{
+            notDisCardBody.put("seatNo",seatNo);
+            notDisCardBody.put("paiNo",paiNo);
+        }
         notDisCardBody.put("yuPaiSum",roomYuPai.size());
         for(int i=0;i<4;i++){
             if(i==seatNo){ //是出牌人
@@ -176,9 +202,16 @@ public class ProcessC3 {
                 }};
             }
         }
-        roomState.canDisCard=true;
-        roomState.getCardNoBeforeDis=paiNo;
-        roomState.playerStates[seatNo].getCardTimes++;
+        if(lastFourCards!=null){ //四人出牌
+            for(int i=0;i<4;i++){
+                roomState.playerStates[i].responseFlag=PlayerState.V.RESP_LAST_FOUR_CARD;
+                roomState.responseNum=0;
+            }
+        }else { //一人出牌
+            roomState.canDisCard=true;
+            roomState.getCardNoBeforeDis=paiNo;
+        }
+
         return s7_suggest;
     }
 

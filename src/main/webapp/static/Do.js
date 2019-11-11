@@ -6,42 +6,51 @@ var acrossInformation=new Object();
 var roomInformation={sumTurn:"",playedTurn:"",diFen:"",roomId:"",laizi:"",laiGen:""};
 //将牌通过数组进行转换，只用于显示。
 var zhuanhuan=[-1,"suo1","suo2","suo3","suo4","suo5","suo6","suo7","suo8","suo9","wan1","wan2","wan3","wan4","wan5","wan6","wan7","wan8","wan9","tong1","tong2","tong3","tong4","tong5","tong6","tong7","tong8","tong9"];
-myInformation.seatNo="";
-myInformation.chuPai=[];
-myInformation.xuanPai=-1;
-//赖子是否出现，初始化为false。
-roomInformation.laiZiApprience=false;
-
-myInformation.peng=[];
-myInformation.xiao=[];
-myInformation.laiPai="";
-myInformation.notAdminXiao=[];
-myInformation.canXiaoNo="";
-myInformation.canPengNo="";
-myInformation.canHu={};
-myInformation.jiFen=0;
-leftInformation.chuPai=[];
-leftInformation.pai=13;
-leftInformation.peng=[];
-leftInformation.xiao=[];
-leftInformation.jiFen=0;
-roomInformation.diFen=5;
-roomInformation.playedTurn=0;
-roomInformation.yuPaiSum=0;
-
-rightInformation.chuPai=[];
-rightInformation.pai=13;
-rightInformation.peng=[];
-rightInformation.xiao=[];
 rightInformation.jiFen=0;
-
-acrossInformation.chuPai=[];
-acrossInformation.pai=13;
-acrossInformation.xiao=[];
-acrossInformation.peng=[];
 acrossInformation.jiFen=0;
+leftInformation.jiFen=0;
+myInformation.jiFen=0;
+init();
+function init(){
+    myInformation.seatNo="";
+    myInformation.chuPai=[];
+    myInformation.xuanPai=-1;
+    //赖子是否出现，初始化为false。
+    roomInformation.laiZiApprience=false;
+
+    myInformation.peng=[];
+    myInformation.xiao=[];
+    myInformation.laiPai="";
+    myInformation.notAdminXiao=[];
+    myInformation.notAdminPeng=[];
+    myInformation.canXiaoNo=-1;
+    myInformation.canPengNo="";
+    myInformation.canHu={};
+    leftInformation.chuPai=[];
+    leftInformation.pai=13;
+    leftInformation.peng=[];
+    leftInformation.xiao=[];
+    roomInformation.diFen=5;
+    roomInformation.playedTurn=0;
+    roomInformation.yuPaiSum=0;
+
+    rightInformation.chuPai=[];
+    rightInformation.pai=13;
+    rightInformation.peng=[];
+    rightInformation.xiao=[];
+
+    acrossInformation.chuPai=[];
+    acrossInformation.pai=13;
+    acrossInformation.xiao=[];
+    acrossInformation.peng=[];
+}
+
+
 //  处理其他玩家出牌 0要不起 1朝天 2碰 3点笑
 function canPengXiao(chuDePai){
+    if(chuDePai==roomInformation.laizi){
+        return 0;
+    }
     var times=0;
 
     for(var i=0;i<myInformation.pai.length;i++) {
@@ -51,16 +60,19 @@ function canPengXiao(chuDePai){
     }
     if (times == 2) {
         if(chuDePai==roomInformation.laiGen){
-            roomInformation.isMyTurn=true;
+            // roomInformation.isMyTurn=true;
             myInformation.canXiaoNo=chuDePai;
             return 1;
         } else{
-            roomInformation.isMyTurn=true;
+            if(myInformation.notAdminPeng.indexOf(chuDePai)>=0){
+                return 0;
+            }
+            // roomInformation.isMyTurn=true;
             myInformation.canPengNo=chuDePai;
             return 2;
         } 
     } else if (times == 3) {
-        roomInformation.isMyTurn=true;
+        // roomInformation.isMyTurn=true;
         myInformation.canXiaoNo=chuDePai;
         myInformation.canPengNo=chuDePai;
         return 3;
@@ -75,7 +87,7 @@ function canXiao() { //判断回头笑、点笑、闷笑
     // b[laiPai]++;
     for (var j=1;j<b.length;j++){
         // 当用户手上牌有四张，并且不在黑名单里面时，将能笑的这颗牌存储起来，方便后面显示以及生成消息
-        if(b[j]==4&&(myInformation.notAdminXiao.indexOf(j)<0)){
+        if(b[j]==4&&((myInformation.notAdminXiao.indexOf(j)<0))&&(j!=roomInformation.laizi)){
             myInformation.canXiaoNo=j;
             return j;
         } else if(b[j]==3&&(myInformation.notAdminXiao.indexOf(j)<0)&&j==roomInformation.laiGen){
@@ -88,21 +100,20 @@ function canXiao() { //判断回头笑、点笑、闷笑
 
 //新玩家加入后，再玩家对象中添加基本信息，同时显示玩家头像
  function Dos4(data) {
-     for (var i = 0; i < data.length; i++) {
-         if (accountId == data[i].accountId) {
-             myInformation.seatNo = data[i].seatNo;
-             myInformation.headImgUrl = data[i].headImgUrl;
-             myInformation.accountId = data[i].accountId;
-             myInformation.userName = data[i].username;
-             // $("#myInformation").css("background-image","url("+myInformation.headImgUrl+")");
-         }
-     }
+    var selfSeatNo=data[0].selfSeatNo;
+    myInformation.seatNo=selfSeatNo;
+
      roomInformation.diFen=data[0].diFen;
      roomInformation.playedTurn=data[0].playedTurn;
      roomInformation.roomId=data[0].roomId;
      roomInformation.sumTurn=data[0].sumTurn;
      for (var i = 0; i < data.length; i++) {
-         if (data[i].seatNo == ((parseInt(myInformation.seatNo) + 1) % 4)) {
+         if (data[i].seatNo == selfSeatNo) {
+             myInformation.headImgUrl = data[selfSeatNo].headImgUrl;
+             myInformation.accountId = data[selfSeatNo].accountId;
+             myInformation.userName = data[selfSeatNo].username;
+
+         } else if (data[i].seatNo == ((parseInt(myInformation.seatNo) + 1) % 4)) {
              //rightplayer
              rightInformation.seatNo = data[i].seatNo;
              rightInformation.headImgUrl = data[i].headImgUrl;
@@ -213,7 +224,7 @@ function canXiao() { //判断回头笑、点笑、闷笑
      acrossInformation.pai=13;
      rightInformation.pai=13;
      var imglaizi=new Image();
-     imglaizi.src="img/"+zhuanhuan[roomInformation.laizi]+".png";
+     imglaizi.src="img/"+zhuanhuan[roomInformation.laiGen]+".png";
      imglaizi.style.position="absolute";
      imglaizi.style.width="100%";
      imglaizi.style.height="100%";
@@ -225,9 +236,36 @@ function canXiao() { //判断回头笑、点笑、闷笑
      acrossPai()
  }
 
+ function showDuiJuShu() {
+     $("#duijushu").html("底分 : "+roomInformation.diFen+ "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp对局数 : "+roomInformation.playedTurn+"&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp余牌 : "+roomInformation.yuPaiSum+"&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp积分 : "+myInformation.jiFen);
+
+ }
 function Dos7(data) {
     roomInformation.yuPaiSum=data.yuPaiSum;
-    $("#duijushu").html("底分："+roomInformation.diFen+"    对局数 : "+roomInformation.playedTurn+"  余牌  :"+roomInformation.yuPaiSum+"  积分:  "+myInformation.jiFen);
+    showDuiJuShu();
+    if(data.lastFourCards!=undefined){
+        moPai(data.lastFourCards[myInformation.seatNo]);
+        myInformation.canHu=huPai3.test2(myInformation.pai,null,roomInformation.laizi,roomInformation);
+
+        if(myInformation.canHu!=null){
+            var c8_msg={
+                msgId:"c8",
+                type:myInformation.canHu.type,
+                matchMethod:myInformation.canHu.matchMethod,
+                actAs:myInformation.canHu.actAs
+            }
+            ws.send(JSON.stringify(c8_msg));
+        }else {
+            var c8_msg={
+                msgId:"c8",
+                type:"not_hu",
+            }
+            ws.send(JSON.stringify(c8_msg));
+        }
+
+        return;
+    }
+
     //出牌人不为自己时，只需要更新当前出牌人图标
     if(data.seatNo==leftInformation.seatNo){
         //出牌人为左边玩家,只需要更新当前出牌人
@@ -249,6 +287,8 @@ function Dos7(data) {
             moPai(data.paiNo);
             myInformation.laiPai=data.paiNo;
             myInformation.canHu=huPai3.test2(myInformation.pai,null,roomInformation.laizi,roomInformation);
+            // 清空碰的黑名单
+            myInformation.notAdminPeng.length=0;
                 //回头笑
                 if(myInformation.peng.indexOf(data.paiNo)>=0){
                     myInformation.canXiaoNo=data.paiNo;
@@ -275,11 +315,11 @@ function Dos7(data) {
 // 玩家出牌处理
 function Dos8(data) {
     var disCard=data.paiNo; //出的牌编号
+    if(data.paiNo==roomInformation.laizi){
+        roomInformation.laiZiApprience=true;
+    }
 
     if(data.seatNo==myInformation.seatNo){ //自己的出牌，只显示
-        if(data.paiNo==roomInformation.laizi){
-            roomInformation.laiZiApprience=true;
-        }
         var index=myInformation.pai.indexOf(disCard);
         myInformation.pai.splice(index,1);
         myInformation.chuPai.push(disCard);
@@ -311,9 +351,7 @@ function Dos8(data) {
             type:"bu_yao"
         };
         ws.send(JSON.stringify(c7));
-        roomInformation.laiZiApprience=true;
         return;
-
     }
     if(myInformation.canHu!=null){
         $("#buyao").css("display","block");
@@ -341,13 +379,43 @@ function Dos8(data) {
         ws.send(JSON.stringify(c7));
     }
 }
+
+function endClear(){
+    $("#left-pai").empty()
+    $("#left-chupai").empty();
+    $("#right-pai").empty();
+    $("#right-chupai").empty();
+    $("#across-pai").empty();
+    $("#across-chupai").empty();
+    $("#leftplayer").empty();
+    $("#rightplayer").empty();
+    $("#acrossplayer").empty();
+    $("#myDiscard").empty();
+    $("#myPengXiao").empty();
+    $("#chupaiqu").empty();
+    hideButton();
+    $("#leftplayer").css("background-image","url()");
+    $("#rightplayer").css("background-image","url()");
+    $("#acrossplayer").css("background-image","url()");
+    $("#showlaizi").empty();
+}
 function Dos9(data) {
     if(data.isOver){
     //结束游戏 返回房间界面
+    //     alert("余牌显示todo "+data.type+ "点击继续游戏");
+        var c9={
+            msgId:"c9",
+            diFen:roomInformation.diFen
+        }
+        setTimeout(function () {
+            endClear();
+            init();
+            ws.send(JSON.stringify(c9));
+        },4000)
 
     } else{
         // 初始化值
-        alert("重新开始游戏 todo");
+        alert("重新开始游戏 todo1");
     }
 }
 function Dos10(data) {
@@ -359,9 +427,7 @@ function Dos10(data) {
     $("#rightplayer").html("积分："+rightInformation.jiFen);
     $("#acrossplayer").html("积分："+acrossInformation.jiFen);
     $("#leftplayer").html("积分："+leftInformation.jiFen);
-    $("#duijushu").html("<span class='info'>底分 : "+roomInformation.diFen+"</span><span class='info'>对局数 : "+roomInformation.playedTurn+"</span><span class='info'>余牌 : "+roomInformation.yuPaiSum+"</span><span class='info'>积分 : "+ myInformation.jiFen)+"</span>";
-
-
+    showDuiJuShu();
 }
 //显示笑
 function Dos11(data) {
@@ -450,6 +516,7 @@ function Dos11(data) {
                 case myInformation.seatNo:{
                     myInformation.peng.splice(myInformation.peng.indexOf(data.paiNo),1);
                     myInformation.xiao.push(data.paiNo);
+                    myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo),1);
                     myCard();
                     woPeng();
                     break;
@@ -524,7 +591,7 @@ function Dos11(data) {
     }
 }
 // 显示碰
-function Dos12(data) {
+function Dos12(data){
     //清除上一个人打的字
     if($("#myChuPai").css("display")=="block"){
         removeChuPai("mychupai");

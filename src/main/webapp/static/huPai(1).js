@@ -329,12 +329,11 @@ var huPai3 = {
         if(otherCard === null && laiZiSum<= room.maxLaiZiNum_ziMo){//自摸判断
             return true;
         }else if(laiZiSum <= room.maxLaiZiNum_zhuoChong){ //捉冲
-            if(room.laiZiApprience !==undefined && room.laiZiApprience === false){
+            if(room.laiZiApprience !==undefined &&room.laiZiApprience === false){
                 return true;
             }
         }
         return false;
-
     },
     test2:function (cardArr,otherCard,laiZi,room) {
         if(this.preCheck(cardArr,otherCard,laiZi,room) === false){
@@ -425,6 +424,7 @@ var LSutil = {
 };
 LSutil.test1();
 LSutil.lsTimeout()
+
 
 // test2() 的简单使用案例
 //   var paiList=[7,9,1,8,1];

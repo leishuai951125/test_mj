@@ -3,6 +3,8 @@ package leishuai.lsmj.ws.service.pcm;
 import com.alibaba.fastjson.JSONObject;
 import leishuai.lsmj.ws.bean.*;
 import leishuai.lsmj.ws.service.ProcessMsg;
+import leishuai.lsmj.ws.service.RoomService;
+import leishuai.lsmj.ws.service.impl.RoomServiceImpl;
 import leishuai.lsmj.ws.utils.HuPaiByGuide;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +21,7 @@ import java.util.Map;
  */
 @Component
 public class ProcessC5 {
+    static RoomService roomService=new RoomServiceImpl();
     public interface V{
         int NOT_HU=0;//不能胡
         int PI_HU=2;//屁胡
@@ -26,7 +29,7 @@ public class ProcessC5 {
         String PI_HU_STRING="pi_hu";
         String HEI_MO_STRING="hei_mo";
     }
-    private static int checkSelfHu(JSONObject jsonObject, Player player) {//0不胡，2屁胡，4黑摸
+     static int checkSelfHu(JSONObject jsonObject, Player player) {//0不胡，2屁胡，4黑摸
         String type=jsonObject.getString("type");
         RoomState roomState = player.getRoom().getRoomState();
         int cardArr[] = roomState.playerStates[player.getSeatNo()].cardArr;
@@ -43,7 +46,7 @@ public class ProcessC5 {
         }
     }
 
-    private static void jiFenAfterSelfHu(Player player, RoomState roomState, int huMultiple) {
+     static void jiFenAfterSelfHu(Player player, RoomState roomState, int huMultiple) {
         int selfNo = player.getSeatNo();
         PlayerState[] playerStates = roomState.playerStates;
         int selfDisLaiZi = playerStates[selfNo].disLiaZiNum;
@@ -80,7 +83,13 @@ public class ProcessC5 {
     //获取自摸后的消息
     public static List<ProcessResult> getHuBySelfMsg(Player player, RoomState roomState, int huMultiple) {
         Suggest s10_sugget = getS10(roomState);
-        String type= huMultiple == 2 ? V.PI_HU_STRING : V.HEI_MO_STRING;//倍数决定类型
+//        String type= huMultiple == 2 ? V.PI_HU_STRING : V.HEI_MO_STRING;//倍数决定类型
+        String type= null;
+        if(huMultiple==2){
+            type=V.PI_HU_STRING;
+        }else {
+            type=V.HEI_MO_STRING;
+        }
         Suggest s9_suggest = getS9_ziMo(player, roomState, type);
         List<ProcessResult> resultList = new ArrayList<ProcessResult>(4);
         for (int i = 0; i < 4; i++) {
@@ -116,14 +125,22 @@ public class ProcessC5 {
     }
 
     public static Suggest getS9(Player player, String type,RoomState roomState,int []seatNoOfHu,int seatNoOfBeiHu) {
+        if(seatNoOfHu!=null){
+            if(seatNoOfHu.length==1){
+                roomState.zhuang=seatNoOfHu[0];
+            }else {
+                roomState.zhuang=seatNoOfBeiHu;
+            }
+        }
         boolean isOver = roomState.playedTurn == player.getRoom().getCanBeUsedTimes(); //私人房此值不会为真
         int[][] yuPai = new int[4][];
         for (int i = 0; i < 4; i++) {
             yuPai[i] = roomState.playerStates[i].cardArr;
         }
-        if(isOver){
-            //todo 进行房间作废的操作
-        }
+//        if(isOver){  //todo 结束操作，如退房，需等消息发送完成再做
+            roomState.isOver=isOver;
+//            roomService.jieSan(player.getRoom());
+//        }
         Map s9_body = new HashMap(5) {{
             put("isOver", isOver);
             put("type", type);
@@ -164,6 +181,8 @@ public class ProcessC5 {
             if (huMultiple == 0) {  //不能胡，则随机出牌
                 return ProcessC4.disCardOne(player,roomState,0);
             }
+            //计算不被捉时的积分变化，即出牌前操作造成的积分变化，不含大小朝天，
+            ProcessC7.jiFenBeforeNotRobbed(player.getRoom(),player.getSeatNo());
 
             roomState.zhuang = player.getSeatNo();//能胡则为庄
             jiFenAfterSelfHu(player, roomState, huMultiple);//计算自摸后的输赢

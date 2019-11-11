@@ -18,25 +18,33 @@
 <body>
 <script>
     var params={accountId:${account.accountId},diFen:"5",token:undefined,roomId:null};
-    var ws=null;
-    var wsUrl = 'ws://localhost:8080/lsmj/websocket/{'+JSON.stringify(params)+"}";
+    var ws=null;http://111.230.108.43:8080/majiang_war/
+
+        var wsUrl = 'ws://localhost:8080/lsmj/websocket/{'+JSON.stringify(params)+"}";
+        wsUrl = 'ws://192.168.43.35:8080/lsmj/websocket/{'+JSON.stringify(params)+"}";
+    // var wsUrl = 'ws://111.230.108.43:8080/TestGit/lsmj/websocket/{'+JSON.stringify(params)+"}";
     // var wsUrl = 'ws://3308b008.nat123.cc:53780/lsmj/websocket/{'+JSON.stringify(params)+"}";
     var accountId=params.accountId;
 
-    function requestFullScreen(de) {}
-    // var requestFullScreen=function (de) {
-    //     // var de = document.documentElement;
-    //     if (de.requestFullscreen) {
-    //         de.requestFullscreen();
-    //     } else if (de.mozRequestFullScreen) {
-    //         de.mozRequestFullScreen();
-    //     } else if (de.webkitRequestFullScreen) {
-    //         de.webkitRequestFullScreen();
-    //     }
-    // }
+    function requestFullScreen() {}
+    var requestFullScreen=function () {
+        var de = document.getElementById("yemian");
+        if (de.requestFullscreen) {
+            de.requestFullscreen();
+        } else if (de.mozRequestFullScreen) {
+            de.mozRequestFullScreen();
+        } else if (de.webkitRequestFullScreen) {
+            de.webkitRequestFullScreen();
+        }
+        setTimeout(rotateYeMian,1000);
+    }
+
+
 </script>
-<div id="yemian" onclick = requestFullScreen(this)>
+<div id="yemian">
     <div id="showlaizi"></div>
+    <div id="fullScreen" onclick = requestFullScreen()>全屏</div>
+    <div id="daoZhuan" onclick = daoZhuan()>倒转</div>
     <div id="buyao">不要</div>
 
     <div id="buttonqu">
@@ -116,7 +124,38 @@
 <script src="socket.js"></script>
 <script src="huPai(1).js"></script>
 <script src="chupai.js"></script>
-
+<script>
+    $(function () {
+        $("*").css("fontSize",window.innerWidth/100+"px");
+        // requestFullScreen();
+        // rotateYeMian();
+    })
+    function rotateYeMian() {
+        var preWidth=window.innerWidth;
+        var preHeight=window.innerHeight;
+        if(preWidth<preHeight) //需要旋转90度的手机端，如微信和qq
+        {
+            $("#daoZhuan").hide();
+            var sub=(preHeight-preWidth)/2;
+            $("#yemian").css("top",sub+"px");
+            $("#yemian").css("left",-sub+"px");
+            $("#yemian").css("width",preHeight);
+            $("#yemian").css("height",preWidth);
+            $("#yemian").css("transform","rotate(270deg)")
+            return true;
+        }
+        return false;
+    }
+    function daoZhuan() {
+        if(daoZhuan.preV===undefined){
+            $("#yemian").css("transform","rotate(180deg)");
+            daoZhuan.preV=null;
+        }else {
+            $("#yemian").css("transform","rotate(0deg)");
+            daoZhuan.preV=undefined;
+        }
+    }
+</script>
 </body>
 
 </html>

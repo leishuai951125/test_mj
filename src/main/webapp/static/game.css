@@ -4,9 +4,24 @@
     font-family: "Microsoft YaHei UI";
     color: white;
     font-weight: bold;
+    font-size: 0.5em;
 }
-span.info{
-    margin-left: 2em;
+#fullScreen,#daoZhuan{
+    text-align: center;
+    width: 5%;
+    height: 3%;
+    top: 4.5%;
+    position: absolute;
+    left: 10%;
+    /*line-height: 3%;*/
+    background-color: red;
+    z-index: 101;
+    border-radius: 20%;
+    /*text-align: center;*/
+}
+#daoZhuan{
+    top: 15%;
+    background-color: green;
 }
 #yemian{
     position: absolute;
@@ -20,10 +35,11 @@ span.info{
 
 }
 #showlaizi{
-    width: 6.5%;
-    height: 15%;
+    text-align: center;
+    width: 5%;
+    height: 13%;
+    top: 4.5%;
     position: absolute;
-    top: 1%;
     left: 3%;
     background-size:100% 100%;
     background-image: url("img/自己手牌.png");
@@ -143,7 +159,7 @@ span.info{
     /*position: absolute;*/
     /*height: 62%;*/
     /*width: 8%;*/
-    /*background-image: url(img/è‡ªå·±å‡ºç‰Œå¯¹å®¶å‡ºç‰Œå¯¹å®¶ç¢°ç‰Œ.png);*/
+    /*background-image: url(img/自己出牌对家出牌对家碰牌.png);*/
     /*background-repeat: no-repeat;*/
     /*!* background-position: 25%,0%; *!*/
 /*}*/

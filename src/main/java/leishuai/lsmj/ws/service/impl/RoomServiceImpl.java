@@ -1,8 +1,8 @@
 package leishuai.lsmj.ws.service.impl;
 
 
-import leishuai.lsmj.ws.bean.Player;
-import leishuai.lsmj.ws.bean.Room;
+import leishuai.lsmj.ws.bean.*;
+import leishuai.lsmj.ws.service.AccountService;
 import leishuai.lsmj.ws.service.RoomService;
 
 import java.util.*;
@@ -15,9 +15,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @Version 1.0
  */
 public class RoomServiceImpl implements RoomService {
+    static private AccountService accountService=new AccountServiceImpl();
 
     //游戏结束后作废的房间对象，只存一百个，重复利用，避免频繁创建和回收房间
-    static private List<Room> emptyRoomList=new LinkedList<Room>();//最多存100个房间对象
+    static private Queue<Room> emptyRoomList=new LinkedList<Room>();//最多存100个房间对象
 
     //已满的房间集合，官方没有提供hash版的并发set，只能用map模拟
     static private ConcurrentHashMap<Room,Object> fullRoomSet=new ConcurrentHashMap<>(1000);
@@ -29,18 +30,18 @@ public class RoomServiceImpl implements RoomService {
 
     static private Long maxRoomId=1L; //注意多线程并发，服务器集群时最好改存redis
 
-    public void setMaxRoomId(long maxRoomId2){
-        synchronized (maxRoomId){
-            maxRoomId=maxRoomId2;
-        }
-    }
+//    public void setMaxRoomId(long maxRoomId2){
+//        synchronized (maxRoomId){
+//            maxRoomId=maxRoomId2;
+//        }
+//    }
 
     private Room getEmptyRoomObject(){ //获取一个房间对象
         synchronized (emptyRoomList){
             if(emptyRoomList.size()==0){
                 return new Room();
             }else {
-                return emptyRoomList.get(0);
+                return emptyRoomList.poll();
             }
         }
     }
@@ -49,8 +50,7 @@ public class RoomServiceImpl implements RoomService {
             if(emptyRoomList.size()>100){
                 return false;
             }else {
-                emptyRoomList.add(room);
-                return true;
+                return emptyRoomList.offer(room);
             }
         }
     }
@@ -83,18 +83,38 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public void exitRoom(Player player) {
-
+    public void destory(Room room) { //解散房间
+        synchronized (room){
+            Player [] players=room.getPlayers();
+            PlayerState[]playerStates=room.getRoomState().playerStates;
+            for(int i=0;i<4;i++){
+                players[i].setSumJiFen(playerStates[i].jifen); //记录总积分
+                Account account=players[i].getAccount();//退出在线账户
+                accountService.removeOnGameAccount(account.getAccountId());
+                exitRoom(players[i]); //退出房间
+            }
+            room.getRoomState().recoverDefault(); //还原状态
+        }
     }
 
-    public static void main(String[] args) {
-//        TreeSet<Room> treeSet=publicRoom[0];
-//        Room room=new Room();
-//        System.out.println(treeSet.size());
-//        treeSet.add(room);
-//        System.out.println(treeSet.size());
-////        treeSet.remove(room);
-//        treeSet.pollFirst();
-//        System.out.println(treeSet.size());
+    @Override
+    public void exitRoom(Player player){ //退出房间
+        Room room=player.getRoom();
+        Player[] players=room.getPlayers();
+        //以下退房操作
+        synchronized (room){
+            int hasPlayer=room.getHavePalyerNum();
+            room.setHavePalyerNum(hasPlayer-1);
+            players[player.getSeatNo()]=null;
+
+            player.setRoom(null);
+            player.setSeatNo(-1);
+            if(hasPlayer==0){ //房间空了
+                fullRoomSet.remove(room);
+                addEmptyRoomObject(room);
+            }
+        }
     }
+
+
 }

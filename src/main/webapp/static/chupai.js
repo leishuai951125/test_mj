@@ -2,13 +2,21 @@
 $("#buyao").click(function(){
 
     hideButton();
+    if(myInformation.canXiaoNo>0){
+        myInformation.notAdminXiao.push(myInformation.canXiaoNo);
+        myInformation.canXiaoNo=-1;
+    }
+    if(myInformation.canPengNo>0){
+        myInformation.notAdminPeng.push(myInformation.canPengNo);
+        myInformation.canPengNo=-1;
+    }
     if(roomInformation.isMyTurn==true){
         $("#chupai").css("display","block")
         //我出牌点击不要
         $("#pengpai").css("display","none");
         $("#hupai").css("display","none");
         $("#xiaopai").css("display","none");
-        $("#chupai").css("display","none");
+        // $("#chupai").css("display","none");
         if(($("#myChuPai").css("display"))=="none"){
             var c7={ msgId:"c7",type:"bu_yao"};
             ws.send(JSON.stringify(c7));
@@ -30,6 +38,11 @@ $("#chupai").click(function(){
             msgId:"c4",
             paiNo:myInformation.pai[myInformation.xuanPai]
         }
+        //自己打出赖子后不让胡牌
+        if(myInformation.pai[myInformation.xuanPai]==roomInformation.laizi){
+            myInformation.laiZiApprience=true;
+        }
+        myInformation.xuanPai=-1;
         ws.send(JSON.stringify(c4));
         hideButton();
     }
@@ -65,7 +78,7 @@ $("#hupai").click(function(){
         ws.send(JSON.stringify(c5));
     } else{
         var c7={
-            msgId:"c5",
+            msgId:"c7",
             type:myInformation.canHu.type,
             matchMethod:myInformation.canHu.matchMethod,
             actAs:myInformation.canHu.actAs
@@ -181,6 +194,7 @@ function clickPai(id){
         $("#"+id).animate({top:"0"},0);
         $("#"+id).css("width","12%");
         $("#"+id).css("height","140%");
+        myInformation.xuanPai=-1;
     } else{
         $("#"+id).animate({top:"-40%"},0);
         $("#"+id).siblings().animate({top:"0"},0);

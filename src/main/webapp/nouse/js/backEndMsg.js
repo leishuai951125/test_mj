@@ -154,13 +154,15 @@ var s9_suggest={
         zhuo_chong
         lian_chong
         hei_mo
+        he_ju
          */
         type:"pi_hu",
         seatNoOfHu:[],//胡牌人的座位号
         seatNoOfBeiHu:2,//被的人座位号，自摸的不用管此属性
         yuPai:[ //四个人的余牌
             [],[],[],[]
-        ]
+        ],
+        currentJiFen:[]//四个玩家本轮积分
     }
 }
 //正常的消息格式为：

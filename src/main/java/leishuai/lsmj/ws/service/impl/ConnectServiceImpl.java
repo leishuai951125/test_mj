@@ -37,7 +37,6 @@ public class ConnectServiceImpl implements ConnectService {
 //        RoomState roomState=null;
         Room room = null;//获取一个有空位的房间
         room = getRoom(player,roomId,diFen);
-
         if(room==null){
             return false;
         }
@@ -55,6 +54,7 @@ public class ConnectServiceImpl implements ConnectService {
             }
             //玩家与房间绑定
             players[seatNo] = player;
+
             player.setRoom(room);
             player.setSeatNo(seatNo);
         }
@@ -76,7 +76,7 @@ public class ConnectServiceImpl implements ConnectService {
     }
 
     //获取一个可用的房间和座位号
-    public Room getRoom(Player player,Long roomId,Integer diFen) throws LsmjException {
+    private Room getRoom(Player player,Long roomId,Integer diFen) throws LsmjException {
         if(roomId!=null){ //获取私人房, todo 房号可能会不合法
             return null;
         }else if(diFen!=null){ //获取公共房，低分可能不合法
@@ -101,31 +101,29 @@ public class ConnectServiceImpl implements ConnectService {
         boolean allowMuliplePlayers=true;//允许多玩家登陆
         //加上if也意为者同一个账号只能登陆一次
         if(player==null || allowMuliplePlayers) {//第一次开，player对象不存在
+            if(allowMuliplePlayers){//正式环境下去掉
+                long id=account.getAccountId();
+                String name=account.getUsername();
+                account=new Account(){{
+                    int imgNo=(int)(Math.random()*12);
+                    String url="img/head/"+imgNo+".jpg";
+                    setHeadImgUrl(url);
+                    setAccountId(id);
+                    setUsername(name);
+                }};
+            }
+
             //palyer与account绑定
-            player = new Player(){{
-                setAccount(account);
-                setAccountId(account.getAccountId());
-            }};
+            player = new Player();
+            player.setAccount(account);
+            player.setAccountId(account.getAccountId());
             account.setPlayer(player);
+
         }
 
         //player绑定session和ws
         player.setSession(session);
         webSocket.setPlayer(player);
-    }
-
-
-    @Override
-    public void exitRoom(Player player){ //退出房间
-        Room room=player.getRoom();
-        Player[] players=room.getPlayers();
-        //以下退房操作，room，ws，account
-        synchronized (room){
-            int hasPlayer=room.getHavePalyerNum();
-            room.setHavePalyerNum(hasPlayer-1);
-            players[player.getSeatNo()]=null;
-            player.setRoom(null);
-        }
     }
 
     /**

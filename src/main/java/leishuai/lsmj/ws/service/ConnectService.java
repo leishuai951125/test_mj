@@ -20,6 +20,5 @@ public interface ConnectService {
     void onLine(WebSocket webSocket, Session session, Account account);
     //进入房间，包括私人房和公共房
     boolean intoRoom(Player player,Long roomId,Integer diFen) throws LsmjException;
-    void exitRoom(Player player);//退出房间
     void stateRecovery(WebSocket webSocket, Session session, Account account);
 }

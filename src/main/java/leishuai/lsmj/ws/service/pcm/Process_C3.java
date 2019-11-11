@@ -5,6 +5,7 @@ import leishuai.lsmj.ws.bean.ProcessResult;
 import leishuai.lsmj.ws.bean.Room;
 import leishuai.lsmj.ws.bean.Suggest;
 import leishuai.lsmj.ws.service.ProcessMsg;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
  * @Date 2018/12/24 19:56
  * @Version 1.0
  */
+@Component
 public class Process_C3 {
     {
         ProcessMsg.map.put("-c3",((jsonObject, player) -> { //玩家退出

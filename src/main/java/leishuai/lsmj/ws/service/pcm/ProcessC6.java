@@ -215,8 +215,11 @@ public class ProcessC6 {
             boolean isAbleXiao=checkXiao(jsonObject,roomState,player);//核对数量确定能否笑
 
             if(!isAbleXiao){//牌数量不对,或者与拿牌不一致，或者出错，随机出一张
-                return ProcessC4.getChuPaiMsg(player, roomState, 0);
+                return ProcessC4.disCardOne(player,roomState,0);
             }
+
+            //计算不被捉时的积分变化，即出牌前操作造成的积分变化，不含大小朝天，
+            ProcessC7.jiFenBeforeNotRobbed(player.getRoom(),player.getSeatNo());
 
             String type=jsonObject.getString("type");
             if(V.ZI_XIAO.equals(type)){

@@ -39,6 +39,9 @@ public class ProcessC4 {
         roomState.disCardNo=paiNo;//当前出牌人出的是paiNo
         roomState.playerStates[player.getSeatNo()].cardArr[paiNo]--;//减掉一张牌
         if(paiNo==roomState.laiZi){ //出的是癞子，则癞子数加一
+            //计算不被捉时的积分变化，即出牌前操作造成的积分变化，不含大小朝天，
+            ProcessC7.jiFenBeforeNotRobbed(player.getRoom(),player.getSeatNo());
+
             roomState.laiZiAppeared=true;
             jifenAfterDisLaiZi(player,roomState);//与下一句顺序不能交换
             roomState.playerStates[player.getSeatNo()].disLiaZiNum++;
@@ -48,7 +51,7 @@ public class ProcessC4 {
         }else{ //不是癞子，将其它三人设置成可响应出牌状态,或者说未响应状态
             for(int i=0;i<4;i++){
                 if(i!=player.getSeatNo()){
-                    roomState.playerStates[i].responseFlag=PlayerState.V.WORKABLE;
+                    roomState.playerStates[i].responseFlag=PlayerState.V.RESP_OTHER_DISCARD;
                 }
             }
             roomState.responseNum=0;

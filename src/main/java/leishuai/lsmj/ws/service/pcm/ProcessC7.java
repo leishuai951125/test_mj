@@ -34,16 +34,16 @@ public class ProcessC7 {
             RoomState roomState=player.getRoom().getRoomState();
             PlayerState []playerStates=roomState.playerStates;
             //当前属于不可响应状态，直接返回null
-            if(playerStates[player.getSeatNo()].responseFlag != PlayerState.V.WORKABLE){
+            if(playerStates[player.getSeatNo()].responseFlag != PlayerState.V.RESP_OTHER_DISCARD){
                 return null;
             }
 
-            int responseValue=isLawful(jsonObject,player,roomState);//不合法自动转成不要
+            int responseValue=c7_isLawful(jsonObject,player,roomState);//不合法自动转成不要
             synchronized (player.getRoom()){
                 roomState.responseNum++;
                 playerStates[player.getSeatNo()].responseFlag = responseValue;
                 if(roomState.responseNum == 3){
-                    return getDoResponse(player.getRoom());
+                    return getC7_Response(player.getRoom());
                 }
             }
             //没有达到三次则仅存储响应结果
@@ -57,14 +57,14 @@ public class ProcessC7 {
     //再看有没有点笑，有点笑，则指定出牌人，朝天则计算输赢并指定出牌
     //看有没有碰，有则指定出牌人
     //三家都不要，则指定下一出牌人
-    private static List<ProcessResult> getDoResponse(Room room) {
+    private static List<ProcessResult> getC7_Response(Room room) {
         RoomState roomState=room.getRoomState();
         int disCardSeatNo=roomState.disCardSeatNo;//当前的出牌人
         int zhuoChongSeats[]=getZhuoChongSeats(roomState,disCardSeatNo); //传disCardSeatNo的原因是避免把自己以前的响应统计进去
         if(zhuoChongSeats!=null){//有人捉冲
             return getRobbedMsg(room,disCardSeatNo,zhuoChongSeats);
         }
-        jiFenBeforeNotRobbed(room,disCardSeatNo);//计算不被捉时的积分变化，包括出牌前操作，和当前响应中的小朝天
+        jiFenBeforeNotRobbed(room,disCardSeatNo);//计算不被捉时的积分变化，即出牌前操作造成的积分变化，不含大小朝天，
         int dianXiaoSeat=getDianXiaoSeat(roomState,disCardSeatNo); //点笑的人座位号
         if(dianXiaoSeat != -1){ //有人点笑
             return getDianXiaoMsg(room,disCardSeatNo,dianXiaoSeat);
@@ -221,8 +221,7 @@ public class ProcessC7 {
     }
 
     //计算不被捉时的积分变化，包括出牌前操作（点笑、回头笑、自笑，不含大小朝天）
-    // 和当前响应中的小朝天
-    private static void jiFenBeforeNotRobbed(Room room, int disCardSeatNo) {
+     static void jiFenBeforeNotRobbed(Room room, int disCardSeatNo) {
         Player disCardPlayer=room.getPlayers()[disCardSeatNo];//当前出牌人
         RoomState roomState=room.getRoomState();
         //计算当前出牌人的出牌前操作造成的积分修改
@@ -315,7 +314,7 @@ public class ProcessC7 {
 //    peng
 //    bu_yao
     //点笑、碰、捉冲是否合法
-    private int isLawful(JSONObject jsonObject,Player player, RoomState roomState) {
+    private int c7_isLawful(JSONObject jsonObject,Player player, RoomState roomState) {
         String type = jsonObject.getString("type");
         if (V.BU_YAO.equals(type)) { //不要无条件为真
             return PlayerState.V.BU_YAO;
