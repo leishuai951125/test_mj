@@ -44,9 +44,7 @@
     background-size:100% 100%;
     background-image: url("../img/自己手牌.png");
 }
-#hupai{
-    height: 6%;
-    width: 4.2%;
+#hupai,#pengpai,#xiaopai,#buyao,#chupai {
     background-color: darkgreen;
     border: none;
     color: white;
@@ -54,75 +52,39 @@
     font-size: 16px;
     font-family: Arial;
     border-radius: 6% 6% 6% 6%;
-    left: 70%;
-    top: 70%;
     z-index: 2;
     position: absolute;
     display: none;
+}
+#hupai{
+    height: 6%;
+    width: 4.2%;
+    left: 70%;
+    top: 70%;
 }
 #pengpai{
     height: 6%;
     width: 4.2%;
-    background-color: darkgreen;
-    border: none;
-    color: white;
-    text-align: center;
-    font-size: 16px;
-    font-family: Arial;
-    border-radius: 6% 6% 6% 6%;
     left: 65%;
     top: 70%;
-    z-index: 2;
-    position: absolute;
-    display: none;
 }
 #xiaopai{
     height: 6%;
     width: 4.2%;
-    background-color: darkgreen;
-    border: none;
-    color: white;
-    text-align: center;
-    font-size: 16px;
-    font-family: Arial;
-    border-radius: 6% 6% 6% 6%;
     left: 75%;
     top: 70%;
-    z-index: 2;
-    position: absolute;
-    display: none;
 }
 #buyao{
     height: 6%;
     width: 6%;
-    background-color: darkgreen;
-    border: none;
-    color: white;
-    text-align: center;
-    font-size: 16px;
-    font-family: Arial;
-    border-radius: 6% 6% 6% 6%;
     left: 85%;
     top: 70%;
-    z-index: 5;
-    position: absolute;
-    display: none;
 }
 #chupai{
     height: 6%;
     width: 6%;
-    background-color: darkgreen;
-    border: none;
-    color: white;
-    text-align: center;
-    font-size: 16px;
-    font-family: Arial;
-    border-radius: 6% 6% 6% 6%;
     left: 80%;
     top: 70%;
-    z-index: 2;
-    position: absolute;
-    display: none;
 }
 #chupaiqu{
     position: absolute;
@@ -130,14 +92,12 @@
     height: 12%;
     bottom: 9%;
     left: 50%;
-    /* background-color: blue; */
 }
 #chupaiqu img{
     position: absolute;
     /*background-color: yellow;*/
     background-size: 100% 100%;
     right:0;
-
 }
 
 #myDiscard{
