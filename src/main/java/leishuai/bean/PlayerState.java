@@ -26,7 +26,8 @@ public class PlayerState {
 
     //以下变量在发牌阶段修改（此前大多数据需要还原成默认值）
     //此数组同时记录了牌、点笑、自笑等等信息，可用长14的map代替，但可能影响效率
-    public int[] cardArr = new int[28]; //下标0不用，取值0表示没有，1-4表示个数，15-19 看上面常量定义，
+    public static int cardArrLength=40;
+    public int[] cardArr = new int[cardArrLength]; //下标0不用，取值0表示没有，1-4表示个数，15-19 看上面常量定义，
 
     //以下信息在生成出牌指令时修改
     public int getCardTimes = 0;//拿牌的次数，用于自笑和回头笑的合法验证
@@ -42,7 +43,7 @@ public class PlayerState {
     public int responseFlag = V.BU_YAO;//响应类型，与是否可以响应，用于验证响应与记录，以及用作恢复的依据
 
     public void recoverDefault() {
-        for(int i=0;i<28;i++){
+        for(int i=0;i<cardArrLength;i++){
             cardArr[i]=0;
         }
         //以下信息在生成出牌指令时修改

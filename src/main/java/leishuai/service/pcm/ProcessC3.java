@@ -57,14 +57,25 @@ public class ProcessC3 {
         return new int[]{laiGen,laiZi};
     }
      private static int[] creadAllCards(int sumCard){
-         int allCards[]=new int[sumCard];  //值为1-27
-         int sumPoint=sumCard/4;
-         for(int i=0;i<sumCard;i++){
-//             allCards[i]=i%27+1;
-             allCards[i]=i%sumPoint+1;  //todo 调试
+         int maxPoint=sumCard/4; //最大的点数
+         int count=Rule.DaiHongzhong?sumCard+4:sumCard;
+         int allCards[]=new int[count];
+         //发 sumCard 张牌
+         for(int i=0;i<4;i++){
+             for(int j=0;j<maxPoint;j++){
+                 int index=i*maxPoint+j;
+                 allCards[index]=j+1;//j+1 是点数
+             }
          }
-         for(int i=0;i<sumCard;i++){ //打乱
-             int random=(int)(Math.random()*sumCard);
+         //发红中
+         if(Rule.DaiHongzhong){
+             for(int i=0;i<4;i++){
+                 allCards[sumCard+i]=Rule.HongZhongPoint; //红中固定 28 点
+             }
+         }
+         //打乱
+         for(int i=0;i<count;i++){
+             int random=(int)(Math.random()*count);
              int temp=allCards[i];
              allCards[i]=allCards[random];
              allCards[random]=temp;
@@ -88,7 +99,18 @@ public class ProcessC3 {
         }
 
         allCards=creadAllCards(sumCard);
+
+        //保证最后一张不是红中
+        for(int i=allCards.length-1;i>0;i--){
+            if(allCards[i]!=Rule.HongZhongPoint){ //不是红中
+                int temp=allCards[i];
+                allCards[i]=allCards[allCards.length-1];
+                allCards[allCards.length-1]=temp;
+            }
+        }
+
         int laiGenLaiZi[]=creatLaiZi(allCards[allCards.length-1]); //0赖根，1癞子
+
         roomState.laiGen=laiGenLaiZi[0];
         roomState.laiZi=laiGenLaiZi[1];
         roomState.playedTurn++;
@@ -106,10 +128,10 @@ public class ProcessC3 {
         }
 
         for(int i=0;i<sumPlayer;i++){  //给四个玩家发牌
-            int cardArr[]=playerStates[i].cardArr;
+            int cardArr[]=playerStates[i].cardArr; //服务端玩家的牌
             int returnCardArr[]=new int[13];
             for(int j=0;j<13;j++){
-                int temp=allCards[i*13+j];
+                int temp=allCards[i*13+j]; //temp 是牌的点数
                 cardArr[temp]++;  //存服务器
                 returnCardArr[j]=temp;  //发给客户端
             }
@@ -121,7 +143,6 @@ public class ProcessC3 {
         List<Integer> roomYupai=roomState.yuPai;
         roomYupai.clear();
         for(int i=13*sumPlayer;i<allCards.length-1;i++){ //余牌存room  todo 调试
-//        for(int i=13*sumPlayer;i<allCards.length-1-40;i++){ //余牌存room  todo 调试
             roomYupai.add(allCards[i]);
         }
         return allPlayCard;

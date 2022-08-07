@@ -75,6 +75,7 @@
 
 <script src="js/jquery.min.js"></script>
 <script src="js/playerinformation.js"></script>
+<script src="js/rule.js"></script>
 <script src="js/Do.js"></script>
 <script src="js/socket.js"></script>
 <script src="js/huPai(1).js"></script>

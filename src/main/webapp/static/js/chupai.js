@@ -149,21 +149,32 @@ function compartor(param1,param2) {
 }
 // 显示我的手牌
 function myCard(){
-    //将赖子取出、再排序、再加入数组
+    //将赖子取出、再排序、再赖子加入数组
     var laizi=0;
+    var hongzhong=0;
     var temp=myInformation.pai.length
     for(var a=0;a<temp;){
         if (myInformation.pai[a]==roomInformation.laizi){
             myInformation.pai.splice(a,1);
             laizi++;
             temp--;
-        } else{
+        } else if(myInformation.pai[a]==Rule.HongZhongPoint){
+            myInformation.pai.splice(a,1);
+            hongzhong++;
+            temp--;
+        }
+        else{
             a++;
         }
     }
     //逆序
     myInformation.pai.sort(compartor);
     myInformation.pai.reverse();
+    //加红中到左侧
+    for (var b=0;b<hongzhong;b++){
+        myInformation.pai.push(Rule.HongZhongPoint);
+    }
+    //加赖子到左侧
     for (var b=0;b<laizi;b++){
         myInformation.pai.push(roomInformation.laizi);
     }
@@ -173,13 +184,11 @@ function myCard(){
         if(parseInt(myInformation.pai[i])>=0){
             var image=new Image();
             image.src="img/"+zhuanhuan[myInformation.pai[i]]+".png";
-            // image.backgroundImage=;
             image.id=i;
             image.ondblclick=function(){doubleClick(this.id)};
             image.onclick=function(){clickPai(this.id)};
             image.style.width="12%";
             image.style.height="140%";
-            // image.style.height="90%"
             image.style.right=(11.6*i+23.2)+"%";
             image.style.backgroundImage='url(img/自己手牌.png)';
 

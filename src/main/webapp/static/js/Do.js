@@ -8,7 +8,7 @@ var acrossInformation=new Object();
 acrossInformation.idString="#acrossplayer";
 var roomInformation={sumTurn:"",playedTurn:"",diFen:"",roomId:"",laizi:"",laiGen:""};
 //将牌通过数组进行转换，只用于显示。
-var zhuanhuan=[-1,"suo1","suo2","suo3","suo4","suo5","suo6","suo7","suo8","suo9","wan1","wan2","wan3","wan4","wan5","wan6","wan7","wan8","wan9","tong1","tong2","tong3","tong4","tong5","tong6","tong7","tong8","tong9"];
+var zhuanhuan=[-1,"suo1","suo2","suo3","suo4","suo5","suo6","suo7","suo8","suo9","wan1","wan2","wan3","wan4","wan5","wan6","wan7","wan8","wan9","tong1","tong2","tong3","tong4","tong5","tong6","tong7","tong8","tong9","自己手牌"];
 rightInformation.jiFen=0;
 acrossInformation.jiFen=0;
 leftInformation.jiFen=0;
@@ -203,9 +203,9 @@ function setOtherPlayer(sumPlayer,selfSeatNo) {
      rightInformation.pai=13;
      showLaiGen();
      for(var i=0;i<roomInformation.sumPlayer;i++){
-         if(i==myInformation.seatNo){
+         if(i==myInformation.seatNo){ //展示自己的牌
              myCard();
-         }else{
+         }else{ //展示别人的牌
              roomInformation.allPlayer[i].showPai();
          }
      }
