@@ -319,6 +319,17 @@ var huPai3 = {
         if(otherCard === laiZi || cardSum%3!==2){ //出牌为癞子或者数量不对
             return false;
         }
+        //别人的红中不能胡
+        if(otherCard==Rule.HongZhongPoint){
+            return false;
+        }
+        //自己有红中也不能胡
+        for(var i=0;i<cardArr.length;cardArr++){
+            if(cardArr[i]==Rule.HongZhongPoint){
+                return false;
+            }
+        }
+        //todo 三番起胡
         if(room.maxLaiZiNum_ziMo === undefined){
             room.maxLaiZiNum_ziMo=1;
         }

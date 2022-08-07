@@ -215,7 +215,7 @@ function Dos7(data) {
     roomInformation.yuPaiSum=data.yuPaiSum;
     showDuiJuShu();
 
-    if(data.lastFourCards!=undefined ){
+    if(data.lastFourCards!=undefined ){ //最后四张
         moPai(data.lastFourCards[myInformation.seatNo]);
         myInformation.canHu=huPai3.test2(myInformation.pai,null,roomInformation.laizi,roomInformation);
         if(myInformation.canHu!=null){
@@ -236,6 +236,7 @@ function Dos7(data) {
         return;
     }
 
+    //不是最后四张
     var seatNo=data.seatNo;
     //出牌人不为自己时，只需要更新当前出牌人图标
     if(seatNo!=myInformation.seatNo){
@@ -244,7 +245,7 @@ function Dos7(data) {
         chuPaiRen("#myplayer");
         roomInformation.isMyTurn=true;
         if(data.paiNo>0){
-            //自己为出牌人 -1,不拿牌直接出牌、1-27 拿牌编号
+            //自己为出牌人 -1,不拿牌直接出牌（碰）、1-27 拿牌编号
             //进牌区显示该牌
             moPai(data.paiNo);
             myInformation.laiPai=data.paiNo;
