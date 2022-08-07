@@ -739,7 +739,7 @@ function Dos14(data){
             paiArr:data.paiArr
         });
         playerInfo.pai-=3;
-        playerInfo.showPai(); //todo fix 吃牌
+        playerInfo.showPai();
     }else{
         //添加牌到碰中，删除手牌中两张该牌，重新显示碰、手牌
         myInformation.chiArr.push({
@@ -752,7 +752,6 @@ function Dos14(data){
                 myInformation.pai.splice(myInformation.pai.indexOf(pai),1);
             }
         }
-        //todo fix
         myCard();
         woPeng();
     }
@@ -782,6 +781,7 @@ function Dos13(data){
             myInformation.headImgUrl = data[i].headImgUrl;
             myInformation.accountId = data[i].accountId;
             myInformation.userName = data[i].username;
+            myInformation.chiArr=data[i].chiArr
             //将后台牌数组转换为前台对应格式
             for (var j = 1; j < data[i].cardArr.length; j++) {
                 switch (data[i].cardArr[j]) {
@@ -870,6 +870,7 @@ function Dos13(data){
             playerInfo.headImgUrl = data[i].headImgUrl;
             playerInfo.accountId = data[i].accountId;
             playerInfo.userName = data[i].username;
+            myInformation.chiArr=data[i].chiArr
             playerInfo.pai=13;
             var idString=playerInfo.idString;
             $(idString).css("background-image", "url(" + data[i].headImgUrl + ")");

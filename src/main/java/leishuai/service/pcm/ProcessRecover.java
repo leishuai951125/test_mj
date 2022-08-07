@@ -64,6 +64,7 @@ public class ProcessRecover {
             put("jifen",playerState.jifen);
             put("disCardArr",playerState.disCardArr);
             put("superFlag",playerState.superFlag);
+            put("chiArr",playerState.allChi);
         }};
     }
     private static int[] getPengAndXiao(int[]cardArr){

@@ -235,8 +235,8 @@ var s12_suggest={
 }
 
 //吃的信息发给所有人s13，并指定出牌s7
-var s12_suggest={
-    msgId:"s13",
+var s14_suggest={
+    msgId:"s14",
     msgBody:{
         paiNo:12,//吃的牌编号
         seatNo:2, //吃的人座位号

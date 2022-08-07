@@ -325,6 +325,25 @@ function leftPai(){
         pai.append(image);
         $("#left-pai").append(pai);
     }
+    //左边吃
+    for (var i = 0; i < leftInformation.chiArr.length; i++) {
+        for (var b = 0; b < 3; b++) {
+            var paiNo=leftInformation.chiArr[i].paiArr[b]
+            var image=newImg("img/"+zhuanhuan[paiNo]+".png")
+            var pai = document.createElement("div");
+            // 设置背景样式
+            pai.style.width="98%";
+            pai.style.height="15%";
+            pai.style.position = "absolute";
+            pai.style.left="30%";
+            pai.style.top = ((leftInformation.pai * 8) + (leftInformation.peng.length + leftInformation.xiao.length)*28+(b * 9.5))+(28*i)+ 6 + "%";
+            pai.style.background = "url(img/侧家出牌.png)";
+            pai.style.backgroundRepeat = "no-repeat";
+            pai.style.backgroundSize = "100% 100%";
+            pai.append(image);
+            $("#left-pai").append(pai);
+        }
+    }
 }
 
 function rightPai(){
@@ -407,7 +426,25 @@ function rightPai(){
         pai.append(image);
         $("#right-pai").append(pai);
     }
-
+    //右边边吃
+    for (var i = 0; i < rightInformation.chiArr.length; i++) {
+        for (var b = 0; b < 3; b++) {
+            var paiNo=rightInformation.chiArr[i].paiArr[b]
+            var image=newImg("img/"+zhuanhuan[paiNo]+".png")
+            var pai = document.createElement("div");
+            // 设置背景样式
+            pai.style.width="98%";
+            pai.style.height="15%";
+            pai.style.position = "absolute";
+            pai.style.left = "20%";
+            pai.style.top = ((rightInformation.pai * 8) + (rightInformation.peng.length + rightInformation.xiao.length)*28+(b * 9.5))+(28*i)+ 6 + "%";
+            pai.style.background = "url(img/侧家出牌.png)";
+            pai.style.backgroundRepeat = "no-repeat";
+            pai.style.backgroundSize = "100% 100%";
+            pai.append(image);
+            $("#left-pai").append(pai);
+        }
+    }
 }
 
 // 对面玩家手牌
@@ -491,6 +528,26 @@ function acrossPai(){
         $("#across-pai").append(pai);
     }
 
+    //对面吃
+    for (var i = 0; i < acrossInformation.chiArr.length; i++) {
+        for (var b = 0; b < 3; b++) {
+            var paiNo=acrossInformation.chiArr[i].paiArr[b]
+            var image=newImg("img/"+zhuanhuan[paiNo]+".png")
+            var pai = document.createElement("div");
+            // 设置背景样式
+            pai.style.width="5%";
+            pai.style.height="80%";
+            pai.style.position = "absolute";
+            pai.style.top="18%";
+            pai.style.left = (acrossInformation.peng.length+acrossInformation.xiao.length)*13.5+(5.55*acrossInformation.pai)+25+(b*4.5)+(13.5*i)+ "%";
+            pai.style.background = "url(img/自己出牌对家出牌对家碰牌.png)";
+            pai.style.backgroundRepeat = "no-repeat";
+            pai.style.backgroundSize = "100% 100%";
+            pai.append(image);
+            $("#across-pai").append(pai);
+        }
+    }
+
 }
 
 
@@ -542,9 +599,6 @@ function leftDaZi(zi){
 
 // 显示右边玩家打一张字
 function rightDaZi(zi) {
-
-    // rightInformation.chuPai.push(zi);
-
     var image = new Image();
     //设置图片样式
     image.src="img/"+zhuanhuan[zi]+".png";
@@ -580,7 +634,6 @@ function rightDaZi(zi) {
         pai.style.zIndex= 20-rightInformation.chuPai.length;
         pai.style.bottom=((rightInformation.chuPai.length-10)*14-30)+"%";
     }
-
     $("#right-chupai").append(pai);
 }
 
@@ -714,27 +767,6 @@ function woPeng(){
         /* clip:rect(0px,0px,0px,0px); */
         return image
     }
-    for(var i=0;i<myInformation.peng.length;i++){
-        for(var b=0;b<3;b++){
-            var image=newImg("img/"+zhuanhuan[myInformation.peng[i]]+".png")
-        
-            var pai=document.createElement("div");
-            // 设置背景样式
-            pai.style.position="absolute";
-    
-            pai.style.top="100%";
-            pai.style.left=((i*35)+(b*11))+myInformation.xiao.length*35+"%";
-    
-            pai.style.width="11.5%";
-            pai.style.height="53%";
-            pai.style.background="url(img/自己出牌对家出牌对家碰牌.png)";
-            pai.style.backgroundRepeat="no-repeat";
-            pai.style.backgroundSize="100% 100%";
-            pai.append(image);
-            $("#myPengXiao").append(pai);
-        }
-    }
-
     for(var i=0;i<myInformation.xiao.length;i++){
         for(var b=0;b<3;b++){
             var image=newImg("img/"+zhuanhuan[myInformation.xiao[i]]+".png")
@@ -768,6 +800,44 @@ function woPeng(){
         pai.style.backgroundSize="100% 100%";
         pai.append(image);
         $("#myPengXiao").append(pai);
+    }
+    for(var i=0;i<myInformation.peng.length;i++){
+        for(var b=0;b<3;b++){
+            var image=newImg("img/"+zhuanhuan[myInformation.peng[i]]+".png")
+
+            var pai=document.createElement("div");
+            // 设置背景样式
+            pai.style.position="absolute";
+
+            pai.style.top="100%";
+            pai.style.left=((i*35)+(b*11))+myInformation.xiao.length*35+"%";
+
+            pai.style.width="11.5%";
+            pai.style.height="53%";
+            pai.style.background="url(img/自己出牌对家出牌对家碰牌.png)";
+            pai.style.backgroundRepeat="no-repeat";
+            pai.style.backgroundSize="100% 100%";
+            pai.append(image);
+            $("#myPengXiao").append(pai);
+        }
+    }
+    //我的吃
+    for (var i = 0; i < myInformation.chiArr.length; i++) {
+        for (var b = 0; b < 3; b++) {
+            var paiNo=myInformation.chiArr[i].paiArr[b]
+            var image=newImg("img/"+zhuanhuan[paiNo]+".png")
+            // 设置背景样式
+            pai.style.position="absolute";
+            pai.style.top="100%";
+            pai.style.left=((i*35)+(b*11))+(myInformation.xiao.length+myInformation.peng.length)*35+"%";
+            pai.style.width="11.5%";
+            pai.style.height="53%";
+            pai.style.background="url(img/自己出牌对家出牌对家碰牌.png)";
+            pai.style.backgroundRepeat="no-repeat";
+            pai.style.backgroundSize="100% 100%";
+            pai.append(image);
+            $("#myPengXiao").append(pai);
+        }
     }
 }
 
@@ -814,16 +884,6 @@ function showLaiGen() {
 }
 
 function showRoomId(roomId){
-    // var roomIdDiv = document.createElement("div");
-    // roomIdDiv.style.position="absolute";
-    // roomIdDiv.id="roomIdDiv";
-    // roomIdDiv.width="15%";
-    // roomIdDiv.height="100%";
-    // roomIdDiv.style.fontSize="1em";
-    // roomIdDiv.style.bottom="0%";
-    // roomIdDiv.style.right="10%";
-    // roomIdDiv.append("房间号:"+roomId);
-    // $("#duijushu").append(roomIdDiv);
     showDuiJuShu();
 }
 
