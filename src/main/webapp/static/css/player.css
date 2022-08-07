@@ -148,19 +148,23 @@
     height: 22.5%;
     top:  35%;
     left: 46%;
-    background-image: url(../img/time11.png);
-    background-repeat: no-repeat;
+}
+
+#lunpan{
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 82%;
 }
 
 #myChuPai{
     position: absolute;
-    bottom: -108%;
-    left: -103%;
-    width: 350%;
+    bottom: -106%;
+    left: -95%;
+    width: 330%;
     height: 150%;
-    z-index: 1;
     display: none;
-
 }
 #acrossChuPai{
     position: absolute;

@@ -58,6 +58,7 @@
     <div id="chupaiqu"></div>
 
     <div id="chupairen">
+        <img id="lunpan" src="img/time11.png"/>
         <img id="myChuPai" src="img/time33.png"/>
         <img id="acrossChuPai" src="img/time22.png"/>
         <img id="leftChuPai" src="img/time44.png"/>
