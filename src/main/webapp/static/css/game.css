@@ -54,7 +54,7 @@
     border-radius: 6% 6% 6% 6%;
     z-index: 2;
     position: absolute;
-    /*display: none;*/
+    display: none;
 }
 #chizuo{
     height: 6%;

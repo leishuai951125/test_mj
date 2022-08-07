@@ -91,6 +91,60 @@ function canPengXiao(chuDePai){
         return 3;
     } else return 0;
 }
+
+//  处理其他玩家出牌,返回数组，1 吃最左 2 吃中间 3 吃最右
+// 吃最右，例如：1筒 2筒 吃 3筒
+function canChi(chuDePai,chuPaiSeatNo){
+    var ret=new Array()
+    if(chuDePai==roomInformation.laizi || chuDePai==Rule.HongZhongPoint){
+        return ret;
+    }
+    //如果不是上一家的出牌，直接返回
+    if((myInformation.seatNo-chuPaiSeatNo+roomInformation.sumPlayer)%roomInformation.sumPlayer!=1){
+        return ret;
+    }
+    var arr=new Array(4) //自己牌中，相对于当前牌的 -2 -1 +1 +2 是否存在
+    var chuPaiHuaSe=parseInt((chuDePai-1)/9);
+    var chuPaiDianShu=(chuDePai-1)%9
+    for(var i=0;i<myInformation.pai.length;i++) {
+        var huaSe=parseInt((myInformation.pai[i]-1)/9)
+        var dianShu=(myInformation.pai[i]-1)%9
+        if(huaSe!=chuPaiHuaSe){
+            continue
+        }
+        switch (dianShu-chuPaiDianShu){
+            case -2:{
+                arr[0]=true;
+                break
+            }
+            case -1:{
+                arr[1]=true;
+                break
+            }
+            case 1:{
+                arr[2]=true;
+                break
+            }
+            case 2:{
+                arr[3]=true;
+                break
+            }
+        }
+    }
+    if(arr[0]==true && arr[1]==true){
+        //最右吃，例如：1 2 吃 3
+        ret.push(3)
+    }
+    if(arr[1]==true && arr[2]==true){
+        //中间吃
+        ret.push(2)
+    }
+    if(arr[2]==true&&arr[3]==true){
+        //最左吃
+        ret.push(1)
+    }
+    return ret
+}
 function canXiao() { //判断回头笑、点笑、闷笑
     //长度28，第一位不需要
     var b=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
@@ -298,6 +352,8 @@ function Dos8(data) {
     //对其他玩家出牌处理 0要不起 1小朝天 2碰 3点笑
     myInformation.canHu=huPai3.test2(myInformation.pai,data.paiNo,roomInformation.laizi,roomInformation);
     var canPengXiaoV=canPengXiao(disCard);
+    // 1 吃最左 2 吃中间 3 吃最右
+    var canChiArr=canChi(disCard,seatNo);
     if(data.paiNo==roomInformation.laizi){
         var c7={
             msgId:"c7",
@@ -307,29 +363,44 @@ function Dos8(data) {
         return;
     }
     if(myInformation.canHu!=null){
-        $("#buyao").css("display","block");
         $("#hupai").css("display","block");
     }
     if(canPengXiaoV==1){
-        $("#buyao").css("display","block");
         $("#xiaopai").css("display","block");
     }
     if(canPengXiaoV==3){
-        $("#buyao").css("display","block");
         $("#xiaopai").css("display","block");
         $("#pengpai").css("display","block");
-
     }
     if (canPengXiaoV==2){
-        $("#buyao").css("display","block");
         $("#pengpai").css("display","block");
     }
-    if(canPengXiaoV==0 &&myInformation.canHu==null){
+    for(var i=0;i<canChiArr.length;i++){
+        // 1 吃最左 2 吃中间 3 吃最右
+        var tmp=parseInt(canChiArr[i])
+        switch (tmp){
+            case 1:{
+                $("#chizuo").css("display","block");
+                break;
+            }
+            case 2:{
+                $("#chizhong").css("display","block");
+                break
+            }
+            case 3:{
+                $("#chiyou").css("display","block");
+                break
+            }
+        }
+    }
+    if(canPengXiaoV==0 && canChiArr.length==0 && myInformation.canHu==null){ //什么都要不起
         var c7={
             msgId:"c7",
             type:"bu_yao"
         };
         ws.send(JSON.stringify(c7));
+    }else{
+        $("#buyao").css("display","block");
     }
 }
 

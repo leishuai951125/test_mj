@@ -28,6 +28,7 @@
         <button id="chizuo">吃最左</button>
         <button id="chizhong">吃中间</button>
         <button id="chiyou">吃最右</button>
+
         <button id="hupai">胡</button>
         <button id="pengpai">碰</button>
         <button id="xiaopai">笑</button>
