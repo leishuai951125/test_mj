@@ -124,10 +124,6 @@
     position: absolute;
     display: none;
 }
-#buyao{
-    z-index: 2;
-    display: none;
-}
 #chupaiqu{
     position: absolute;
     width: 50%;
