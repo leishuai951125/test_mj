@@ -31,8 +31,15 @@ function init(){
     myInformation.xuanPai=-1;
     //赖子是否出现，初始化为false。
     roomInformation.laiZiApprience=false;
-
     myInformation.peng=[];
+    myInformation.chiArr=[];
+    /*
+    chiArr.Obj = {
+       {
+        chiType:1
+        paiArr:[]
+    }
+     */
     myInformation.xiao=[];
     myInformation.laiPai="";
     myInformation.notAdminXiao=[];
@@ -44,6 +51,7 @@ function init(){
     leftInformation.chuPai=[];
     leftInformation.pai=13;
     leftInformation.peng=[];
+    myInformation.chiArr=[];
     leftInformation.xiao=[];
     // roomInformation.diFen=5;
     // roomInformation.playedTurn=0;
@@ -51,11 +59,13 @@ function init(){
     rightInformation.chuPai=[];
     rightInformation.pai=13;
     rightInformation.peng=[];
+    myInformation.chiArr=[];
     rightInformation.xiao=[];
 
     acrossInformation.chuPai=[];
     acrossInformation.pai=13;
     acrossInformation.xiao=[];
+    myInformation.chiArr=[];
     acrossInformation.peng=[];
 }
 
@@ -335,6 +345,8 @@ function Dos8(data) {
     if(data.paiNo==roomInformation.laizi){
         roomInformation.laiZiApprience=true;
     }
+    roomInformation.disCardSeatNo=data.seatNo
+    roomInformation.disCardNo=data.paiNo
 
     if(data.seatNo==myInformation.seatNo){ //自己的出牌，只显示
         var index=myInformation.pai.indexOf(disCard);
@@ -707,6 +719,46 @@ function Dos12(data){
     }
 }
 
+// 显示吃
+function Dos14(data){
+    //清除上一个人打的字
+    if($("#myChuPai").css("display")=="block"){
+        removeChuPai("mychupai");
+    } else if($("#leftChuPai").css("display")=="block"){
+        removeChuPai("leftchupai");
+    }else if($("#rightChuPai").css("display")=="block"){
+        removeChuPai("rightchupai");
+    }else if($("#acrossChuPai").css("display")=="block"){
+        removeChuPai("acrosschupai");
+    };
+    var seatNo=data.seatNo;
+    if(seatNo!=myInformation.seatNo){ //不是我吃的
+        var playerInfo=roomInformation.allPlayer[seatNo];
+        playerInfo.chiArr.push({
+            chiType:data.chiType,
+            paiArr:data.paiArr
+        });
+        playerInfo.pai-=3;
+        playerInfo.showPai(); //todo fix 吃牌
+    }else{
+        //添加牌到碰中，删除手牌中两张该牌，重新显示碰、手牌
+        myInformation.chiArr.push({
+            chiType:data.chiType,
+            paiArr:data.paiArr
+        });
+        for(var i=0;i<data.paiArr.length;i++){
+            var pai=data.paiArr[i]
+            if(pai!=data.paiNo){
+                myInformation.pai.splice(myInformation.pai.indexOf(pai),1);
+            }
+        }
+        //todo fix
+        myCard();
+        woPeng();
+    }
+}
+
+//恢复房间
 function Dos13(data){
     endClear();
     //赋值房间信息

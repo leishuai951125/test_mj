@@ -59,7 +59,10 @@ ws.onmessage = function(evt)
                 Dos13(jsondata[i].msgBody)
                 break;
             }
-
+            case "s14" :{
+                Dos14(jsondata[i].msgBody)
+                break;
+            }
         }
     }
 

@@ -7,6 +7,7 @@ import leishuai.utils.HuPaiByGuide;
 import org.springframework.stereotype.Component;
 
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.*;
 
 /**
@@ -22,6 +23,7 @@ public class ProcessC7 {
         String ZHUO_CHONG="zhuo_chong";
         String PENG="peng";
         String BU_YAO="bu_yao";
+        String CHI="chi";
     }
     {
 
@@ -72,6 +74,12 @@ public class ProcessC7 {
         int pengSeat=getPengSeat(room,disCardSeatNo);
         if(pengSeat!=-1){//有人碰
             return getPengMsg(room,disCardSeatNo,pengSeat);
+        }
+       //吃的处理
+        int nextSeatNo=(disCardSeatNo+1)%room.getSumPlayer(); //下一个玩家的座位
+        int chiType=getChiType(room,nextSeatNo);
+        if(chiType!=PlayerState.V.BU_YAO){//下家吃
+            return getChiMsg(room,disCardSeatNo,nextSeatNo,chiType);
         }
         return getNormalMsg(room,disCardSeatNo);
     }
@@ -130,12 +138,62 @@ public class ProcessC7 {
         return resultList;
     }
 
+    private static List<ProcessResult> getChiMsg(Room room, int disCardSeatNo, int chiSeatNo,int chiType) {
+        RoomState roomState=room.getRoomState();
+        changeStatusWhenChi(room,chiSeatNo,chiType,roomState.disCardNo);//修改出牌人
+        List<ProcessResult> resultList=new LinkedList<ProcessResult>();
+        Suggest s10_suggest=ProcessC5.getS10(roomState); //积分
+        Suggest s12_suggest=getS13(chiSeatNo,roomState.disCardNo,chiType);//获取吃的信息
+        Suggest s7_suggest[]= ProcessC3.getS7(room,false);
+        for(int i=0;i<room.getSumPlayer();i++){
+            List<Suggest> suggestList=new LinkedList<Suggest>();
+            suggestList.add(s10_suggest);
+            suggestList.add(s12_suggest);
+            suggestList.add(s7_suggest[i]);
+            ProcessResult result=new ProcessResult();
+            result.setSeatNo(i);
+            result.setSuggestList(suggestList);
+            resultList.add(result);
+        }
+        return resultList;
+    }
+
     private static Suggest getS12(int pengSeat, int disCardNo) {
         Suggest s12_suggest=new Suggest();
         s12_suggest.setMsgId("s12");
         Map body=new HashMap();
         body.put("paiNo",disCardNo);
         body.put("seatNo",pengSeat);
+        s12_suggest.setMsgBody(body);
+        return s12_suggest;
+    }
+
+    static int[] getPaiArrByChiType(int disCardNo,int chiType){
+        int[] paiArr=null;
+        switch (chiType){
+            case PlayerState.V.CHIZUO:{
+                paiArr=new int[]{disCardNo,disCardNo+1,disCardNo+2};
+                break;
+            }
+            case PlayerState.V.CHIZHONG:{
+                paiArr=new int[]{disCardNo-1,disCardNo,disCardNo+1};
+                break;
+            }
+            case PlayerState.V.CHIYOU:{
+                paiArr=new int[]{disCardNo-2,disCardNo-1,disCardNo};
+                break;
+            }
+        }
+        return paiArr;
+    }
+    private static Suggest getS13(int pengSeat, int disCardNo,int chiType) {
+        Suggest s12_suggest=new Suggest();
+        s12_suggest.setMsgId("s12");
+        Map body=new HashMap();
+        body.put("paiNo",disCardNo);
+        body.put("seatNo",pengSeat);
+        body.put("chiType",chiType-20); //前后端相差20
+        body.put("paiArr",getPaiArrByChiType(disCardNo,chiType));
         s12_suggest.setMsgBody(body);
         return s12_suggest;
     }
@@ -156,6 +214,24 @@ public class ProcessC7 {
         roomState.beforeGetCard=RoomState.V.PENG;
     }
 
+    //更新出牌人,和碰信息
+    private static void changeStatusWhenChi(Room room,int chiSeatNo,int chiType,int disCardNo ) {
+        int []paiArr=getPaiArrByChiType(disCardNo,chiType);
+        RoomState roomState=room.getRoomState();
+        //移除原出牌人的出牌信息
+        List<Integer> disCardArr=roomState.playerStates[roomState.disCardSeatNo].disCardArr;//原出牌人的出牌数组
+        disCardArr.remove(disCardArr.size()-1);
+        for(int i=0;i<paiArr.length;i++){
+            if(paiArr[i]!=disCardNo){
+                roomState.playerStates[chiSeatNo].cardArr[paiArr[i]]--;
+            }
+        }
+        room.getRoomState().playerStates[chiSeatNo].allChi.add(new PlayerState.Chi(chiType,paiArr));
+        //出牌人要变了
+        roomState.disCardSeatNo=chiSeatNo;
+        roomState.beforeGetCard=chiType;
+    }
+
     private static int getPengSeat(Room room, int disCardSeatNo) {
         RoomState roomState=room.getRoomState();
         for(int i=0;i<room.getSumPlayer();i++){
@@ -164,6 +240,14 @@ public class ProcessC7 {
             }
         }
         return -1;
+    }
+
+    private static int getChiType(Room room, int nextSeatNo) {
+        int flag=room.getRoomState().playerStates[nextSeatNo].responseFlag;
+        if(flag==PlayerState.V.CHIZUO || flag==PlayerState.V.CHIZHONG || flag==PlayerState.V.CHIYOU){
+            return flag;
+        }
+        return PlayerState.V.BU_YAO;
     }
 
 
@@ -338,11 +422,23 @@ public class ProcessC7 {
             }
         } else if (V.PENG.equals(type) && (cardArr[disCardNo] == 2 || cardArr[disCardNo] ==3) ){ //碰
             return PlayerState.V.PENG;
+        }else if(V.CHI.equals(type)){ //todo 吃牌没检查，因为没时间做精细
+            int chiType=jsonObject.getInteger("chiType");
+            HashMap<Integer,Integer> map=new HashMap<Integer, Integer>(){
+                {
+                    put(1,PlayerState.V.CHIZUO);
+                    put(2,PlayerState.V.CHIZHONG);
+                    put(3,PlayerState.V.CHIYOU);
+                }
+            };
+            Integer v=map.get(chiType);
+            if(v==null){
+                return PlayerState.V.BU_YAO;
+            }else {
+                return v;
+            }
         }
         int paiNo = disCardNo;
-//        try{ paiNo=jsonObject.getInteger("paiNo");
-//        }catch (Exception e){ return PlayerState.V.BU_YAO;}
-
         //剩下的只有捉冲
         if(!V.ZHUO_CHONG.equals(type)){ //不是捉冲，说明非法输入，返回假
             return PlayerState.V.BU_YAO;

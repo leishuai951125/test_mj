@@ -54,14 +54,34 @@ function hideButton(){
     $("#xiaopai").css("display","none")
     $("#chupai").css("display","none")
     $("#buyao").css("display","none");
-
+    $("#chiyou").css("display","none");
+    $("#chizuo").css("display","none");
+    $("#chizhong").css("display","none");
 }
 //点击碰之后隐藏胡、笑、碰
 $("#pengpai").click(function(){
-
     hideButton();
     $("#chupai").css("display","block");
     var c7={msgId:"c7",type:"peng",paiNo:myInformation.canPengNo}
+    ws.send(JSON.stringify(c7));
+});
+
+$("#chizuo").click(function(){
+    hideButton();
+    $("#chupai").css("display","block");
+    var c7={msgId:"c7",type:"chi",chiType:1}
+    ws.send(JSON.stringify(c7));
+});
+$("#chizhong").click(function(){
+    hideButton();
+    $("#chupai").css("display","block");
+    var c7={msgId:"c7",type:"chi",chiType:2}
+    ws.send(JSON.stringify(c7));
+});
+$("#chiyou").click(function(){
+    hideButton();
+    $("#chupai").css("display","block");
+    var c7={msgId:"c7",type:"chi",chiType:3}
     ws.send(JSON.stringify(c7));
 });
 
@@ -232,39 +252,37 @@ function doubleClick(id) {
 }
 
 // 左边玩家手牌
-
 function leftPai(){
     $("#left-pai").empty();
-
     for(var i=0;i<leftInformation.pai;i++){
         var image = new Image();
         image.src="img/leftpai.png";
         image.style.top=8*i+"%";
         $("#left-pai").append(image);
-
+    }
+    var newImg=function (imgUrl) {
+        //设置图片样式
+        var image = new Image();
+        image.src=imgUrl
+        image.style.width="78%";
+        image.style.height="92%";
+        image.style.top="-10%";
+        image.style.position="absolute";
+        image.style.left="16%";
+        image.style.transform="rotate(90deg)";
+        return image
     }
     //左边碰
     for (var i = 0; i < leftInformation.peng.length; i++) {
         for (var b = 0; b < 3; b++) {
-            var image = new Image();
-            //设置图片样式
-            image.src="img/"+zhuanhuan[leftInformation.peng[i]]+".png";
-            image.style.width="78%";
-            image.style.height="92%";
-            image.style.top="-10%";
-            image.style.position="absolute";
-            image.style.left="16%";
-            image.style.transform="rotate(90deg)";
-
+            var image=newImg("img/"+zhuanhuan[leftInformation.peng[i]]+".png")
             var pai = document.createElement("div");
             // 设置背景样式
             pai.style.width="98%";
             pai.style.height="15%";
             pai.style.position = "absolute";
             pai.style.left="30%";
-
             pai.style.top = ((leftInformation.pai * 8) + (b * 9.5))+(28*i)+ 6 + "%";
-
             pai.style.background = "url(img/侧家出牌.png)";
             pai.style.backgroundRepeat = "no-repeat";
             pai.style.backgroundSize = "100% 100%";
@@ -275,16 +293,7 @@ function leftPai(){
     // 左边笑
     for (var j = 0; j < leftInformation.xiao.length; j++) {
         for (var b = 0; b < 3; b++) {
-            var image = new Image();
-            //设置图片样式
-            image.src = "img/" + zhuanhuan[leftInformation.xiao[j]] + ".png";
-            image.style.width = "78%";
-            image.style.height = "92%";
-            image.style.top = "-10%";
-            image.style.position = "absolute";
-            image.style.left = "16%";
-            image.style.transform = "rotate(90deg)";
-
+            var image=newImg( "img/" + zhuanhuan[leftInformation.xiao[j]] + ".png")
             var pai = document.createElement("div");
             // 设置背景样式
             pai.style.width = "98%";
@@ -300,17 +309,8 @@ function leftPai(){
             pai.append(image);
             $("#left-pai").append(pai);
         }
-        var image = new Image();
-        //设置图片样式
-        image.src = "img/" + zhuanhuan[leftInformation.xiao[j]] + ".png";
-        image.style.width = "78%";
-        image.style.height = "92%";
-        image.style.top = "-10%";
-        image.style.position = "absolute";
-        image.style.left = "16%";
-        image.style.transform = "rotate(90deg)";
-
-
+        //顶上多一个字
+        var image=newImg("img/" + zhuanhuan[leftInformation.xiao[j]] + ".png")
         var pai = document.createElement("div");
         // 设置背景样式
         pai.style.width = "96%";
@@ -327,10 +327,7 @@ function leftPai(){
     }
 }
 
-
 function rightPai(){
-
-
     $("#right-pai").empty();
     // 右边玩家手牌
     for(var i=0;i<rightInformation.pai;i++){
@@ -342,19 +339,22 @@ function rightPai(){
         image.style.left=0;
         $("#right-pai").append(image);
     }
+    var newImg=function (imgUrl) {
+        //设置图片样式
+        var image = new Image();
+        image.src=imgUrl
+        image.style.width="78%";
+        image.style.height="92%";
+        image.style.top="-10%";
+        image.style.position="absolute";
+        image.style.left="3%";
+        image.style.transform="rotate(270deg)";
+        return image
+    }
     //右边碰
     for (var i = 0; i < rightInformation.peng.length; i++) {
         for (var b = 0; b < 3; b++) {
-            var image = new Image();
-            //设置图片样式
-            image.src="img/"+zhuanhuan[rightInformation.peng[i]]+".png";
-            image.style.width="78%";
-            image.style.height="92%";
-            image.style.top="-10%";
-            image.style.position="absolute";
-            image.style.left="3%";
-            image.style.transform="rotate(270deg)";
-
+            var image=newImg("img/"+zhuanhuan[rightInformation.peng[i]]+".png")
             var pai = document.createElement("div");
             // 设置背景样式
             pai.style.width="98%";
@@ -374,15 +374,7 @@ function rightPai(){
     // 右边笑
     for (var j = 0; j < rightInformation.xiao.length; j++) {
         for (var b = 0; b < 3; b++) {
-            var image = new Image();
-            //设置图片样式
-            image.src = "img/" + zhuanhuan[rightInformation.xiao[j]] + ".png";
-            image.style.width = "78%";
-            image.style.height = "92%";
-            image.style.top = "-10%";
-            image.style.position = "absolute";
-            image.style.left = "3%";
-            image.style.transform = "rotate(270deg)";
+            var image=newImg("img/" + zhuanhuan[rightInformation.xiao[j]] + ".png")
 
             var pai = document.createElement("div");
             // 设置背景样式
@@ -399,17 +391,8 @@ function rightPai(){
             pai.append(image);
             $("#right-pai").append(pai);
         }
-        var image = new Image();
-        //设置图片样式
-        image.src = "img/" + zhuanhuan[rightInformation.xiao[j]] + ".png";
-        image.style.width = "78%";
-        image.style.height = "92%";
-        image.style.top = "-10%";
-        image.style.position = "absolute";
-        image.style.left = "3%";
-        image.style.transform = "rotate(270deg)";
 
-
+        var image=newImg("img/" + zhuanhuan[rightInformation.xiao[j]] + ".png")
         var pai = document.createElement("div");
         // 设置背景样式
         pai.style.width = "96%";
@@ -439,20 +422,22 @@ function acrossPai(){
         image.style.left=5.55*i+25+"%";
         $("#across-pai").append(image);
     }
-
+    var newImg=function (imgUrl) {
+        //设置图片样式
+        var image = new Image();
+        image.src=imgUrl
+        image.style.width="90%";
+        image.style.height="92%";
+        image.style.top="0%";
+        image.style.position="absolute";
+        image.style.left="3%";
+        image.style.transform="rotate(180deg)";
+        return image
+    }
     //对面碰
     for (var i = 0; i < acrossInformation.peng.length; i++) {
         for (var b = 0; b < 3; b++) {
-            var image = new Image();
-            //设置图片样式
-            image.src="img/"+zhuanhuan[acrossInformation.peng[i]]+".png";
-            image.style.width="90%";
-            image.style.height="92%";
-            image.style.top="0%";
-            image.style.position="absolute";
-            image.style.left="3%";
-            image.style.transform="rotate(180deg)";
-
+            var image=newImg("img/"+zhuanhuan[acrossInformation.peng[i]]+".png")
             var pai = document.createElement("div");
             // 设置背景样式
             pai.style.width="5%";
@@ -472,15 +457,7 @@ function acrossPai(){
     // 对面笑
     for (var j = 0; j < acrossInformation.xiao.length; j++) {
         for (var b = 0; b < 3; b++) {
-            var image = new Image();
-            //设置图片样式
-            image.src="img/"+zhuanhuan[acrossInformation.xiao[j]]+".png";
-            image.style.width="90%";
-            image.style.height="92%";
-            image.style.top="0%";
-            image.style.position="absolute";
-            image.style.left="3%";
-            image.style.transform="rotate(180deg)";
+            var image=newImg("img/"+zhuanhuan[acrossInformation.xiao[j]]+".png")
 
             var pai = document.createElement("div");
             // 设置背景样式
@@ -498,16 +475,7 @@ function acrossPai(){
             $("#across-pai").append(pai);
         }
 
-        var image = new Image();
-        //设置图片样式
-        image.src="img/"+zhuanhuan[acrossInformation.xiao[j]]+".png";
-        image.style.width="90%";
-        image.style.height="92%";
-        image.style.top="0%";
-        image.style.position="absolute";
-        image.style.left="3%";
-        image.style.transform="rotate(180deg)";
-
+        var image=newImg("img/"+zhuanhuan[acrossInformation.xiao[j]]+".png")
         var pai = document.createElement("div");
         // 设置背景样式
         pai.style.width="5%";
@@ -682,10 +650,7 @@ function moPai(moDePai){
         image.ondblclick=function(){doubleClick(this.id)};
         image.onclick=function(){clickPai(this.id)};
         $("#chupaiqu").append(image);
-
     }
-
-
 }
 
 //页面中间指示当前出牌人
@@ -736,18 +701,22 @@ function woChuPai(daPai){
 }
 
 function woPeng(){
+    var newImg=function (imgUrl) {
+        //设置图片样式
+        var image = new Image();
+        image.src=imgUrl
+        image.style.width="80%";
+        image.style.height="80%";
+        image.style.top="-5%";
+        image.style.position="absolute";
+        image.style.left="7%";
+        // image.style.backgroundImage='url(img/自己出牌对家出牌对家碰牌.png)';
+        /* clip:rect(0px,0px,0px,0px); */
+        return image
+    }
     for(var i=0;i<myInformation.peng.length;i++){
         for(var b=0;b<3;b++){
-            var image = new Image();
-            //设置图片样式
-            image.src="img/"+zhuanhuan[myInformation.peng[i]]+".png";
-            image.style.width="80%";
-            image.style.height="80%";
-            image.style.top="-5%";
-            image.style.position="absolute";
-            image.style.left="7%";
-            // image.style.backgroundImage='url(img/自己出牌对家出牌对家碰牌.png)';
-            /* clip:rect(0px,0px,0px,0px); */
+            var image=newImg("img/"+zhuanhuan[myInformation.peng[i]]+".png")
         
             var pai=document.createElement("div");
             // 设置背景样式
@@ -768,17 +737,7 @@ function woPeng(){
 
     for(var i=0;i<myInformation.xiao.length;i++){
         for(var b=0;b<3;b++){
-            var image = new Image();
-            //设置图片样式
-            image.src="img/"+zhuanhuan[myInformation.xiao[i]]+".png";
-            image.style.width="80%";
-            image.style.height="80%";
-            image.style.top="-5%";
-            image.style.position="absolute";
-            image.style.left="7%";
-            // image.style.backgroundImage='url(img/自己出牌对家出牌对家碰牌.png)';
-            /* clip:rect(0px,0px,0px,0px); */
-        
+            var image=newImg("img/"+zhuanhuan[myInformation.xiao[i]]+".png")
             var pai=document.createElement("div");
             // 设置背景样式
             pai.style.position="absolute";
@@ -794,17 +753,7 @@ function woPeng(){
             pai.append(image);
             $("#myPengXiao").append(pai);
         }
-        var image = new Image();
-        //设置图片样式
-        image.src="img/"+zhuanhuan[myInformation.xiao[i]]+".png";
-        image.style.width="80%";
-        image.style.height="80%";
-        image.style.top="-5%";
-        image.style.position="absolute";
-        image.style.left="7%";
-        // image.style.backgroundImage='url(img/自己出牌对家出牌对家碰牌.png)';
-        /* clip:rect(0px,0px,0px,0px); */
-    
+        var image=newImg("img/"+zhuanhuan[myInformation.xiao[i]]+".png")
         var pai=document.createElement("div");
         // 设置背景样式
         pai.style.position="absolute";

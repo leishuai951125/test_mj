@@ -49,15 +49,19 @@ var c6_msg={
 // 点笑、捉冲、碰、不要 c7
 var c7_msg={
     msgId:"c7",
+    /*
+      dian_xiao
+      zhuo_chong
+      peng
+      bu_yao
+      chi
+       */
     type:"dian_xiao",
     //当type为捉冲时增加以下两个字段
     matchMethod:[1,1,1,2],//取值1，2，3，对应'顺','对'，'杠'，
-        /*
-        dian_xiao
-        zhuo_chong
-        peng
-        bu_yao
-         */
+    actAs:[],  //癞子充当的牌,一赖时此值为空，或者一个元素,多赖为多个元素。黑摸为空
+    //吃类型时有下面字段
+    chiType:1, //1 吃最左 2 吃中间 3 吃最右
 }
 //==========================
 
