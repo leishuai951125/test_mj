@@ -14,7 +14,8 @@ import java.util.Map;
  * @auther: leishuai
  * @date: 2018/12/17 20:08
  */
-public interface ProcessMsg{
-    Map<String,ProcessMsg> map=new HashMap<String,ProcessMsg>(16); //静态资源
+public interface ProcessMsg {
+    Map<String, ProcessMsg> map = new HashMap<String, ProcessMsg>(16); //静态资源
+
     List<ProcessResult> processMsg(JSONObject jsonObject, Player player) throws LsmjException;
 }

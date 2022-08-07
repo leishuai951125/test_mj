@@ -18,7 +18,9 @@ import javax.websocket.Session;
 public interface ConnectService {
     //上线，绑定account，player，ws，session
     void onLine(WebSocket webSocket, Session session, Account account);
+
     //进入房间，包括私人房和公共房
-    boolean intoRoom(Player player,Long roomId,Integer diFen) throws LsmjException;
+    boolean intoRoom(Player player, Long roomId, Integer diFen) throws LsmjException;
+
     void stateRecovery(WebSocket webSocket, Session session, Account account);
 }

@@ -25,10 +25,10 @@ public class Time {
 //        System.out.println(d2.toLocaleString());
 
     @Test
-    public void test(){
-        Timestamp timestamp=new Timestamp(System.currentTimeMillis());
-        Date date=new Date();
-        DateFormat dateFormat=new SimpleDateFormat("yy/MM/dd hh:mm:ss:SSSSSS");
+    public void test() {
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        Date date = new Date();
+        DateFormat dateFormat = new SimpleDateFormat("yy/MM/dd hh:mm:ss:SSSSSS");
         System.out.println(dateFormat.format(timestamp));
         System.out.println(dateFormat.format(date));
 //        Date date=new Date();

@@ -9,35 +9,35 @@
 <form id="loginform" method="post">
     <p>用户名：<input name="username" type="text" id="username" tabindex="1" size="15" value=""/></p>
     <p>密　码：<input name="password" type="password" id="password" tabindex="2" size="16" value=""/></p>
-    <p><input  type="button" value="登录" onclick="login()">&nbsp;<input type="reset" value="重置"></p>
+    <p><input type="button" value="登录" onclick="login()">&nbsp;<input type="reset" value="重置"></p>
 </form>
 
 <script>
     function login() {
-        if($("#username").val()==""||$("#username").val()==null){
+        if ($("#username").val() == "" || $("#username").val() == null) {
             alert("用户名不能为空");
             return;
         }
-        if($("#password").val()==null||$("#password").val()==""){
+        if ($("#password").val() == null || $("#password").val() == "") {
             alert("密码不能为空");
             return;
         }
         $.ajax({
-            type:post,
-            dataType:json,
-            url:"http://localhost:8080/user/login",
+            type: post,
+            dataType: json,
+            url: "http://localhost:8080/user/login",
             data: $('#loginform').serialize(),
             success: function (result) {
-                if(result.valueOf().get("key")!=null){
+                if (result.valueOf().get("key") != null) {
                     localStorage.key = "lu";
-                    window.location.href="index.html";
+                    window.location.href = "index.html";
                 }
                 if (result.resultCode == 200) {
                     alert("SUCCESS");
                 }
                 ;
             },
-            error : function() {
+            error: function () {
                 alert("异常！");
             }
         });

@@ -1,3 +1,3 @@
-var Rule={
-    HongZhongPoint:28
+var Rule = {
+    HongZhongPoint: 28
 }

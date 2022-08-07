@@ -1,4 +1,3 @@
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -6,7 +5,8 @@
     <meta charset="UTF-8">
     <base href="<%= request.getContextPath()+"/" %>">
     <title>Title</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=false" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=false"/>
 
     <script src="static/js/jquery.min.js"></script>
     <style>
@@ -34,11 +34,12 @@
     <script>
         function isPriExist(roomId) { //私人房是否存在
             return $.ajax({
-                url:"room/checkPriRoom",
-                data:"roomId="+roomId,
-                async:false
-            }).responseText==="success";
+                url: "room/checkPriRoom",
+                data: "roomId=" + roomId,
+                async: false
+            }).responseText === "success";
         }
+
         function intoRoom(diFen) { //进入房间
             console.log(diFen);
             var f = gameForm;
@@ -65,16 +66,17 @@
                     }
                 }
             }
-            f.action="static/room.jsp";
+            f.action = "static/room.jsp";
             f.submit();
         }
+
         function createPriRoom() { //创建私人房
             var f = gameForm;
             // f.roomId.value=null;
-            f.diFen.value=$("#diFenSel").val();
-            f.sumTurn.value=$("#sumTurnSel").val();
-            f.sumPlayer.value=$("#sumPlayerSel").val();
-            f.action="room/createPriRoom";
+            f.diFen.value = $("#diFenSel").val();
+            f.sumTurn.value = $("#sumTurnSel").val();
+            f.sumPlayer.value = $("#sumPlayerSel").val();
+            f.action = "room/createPriRoom";
             f.submit();
         }
     </script>
@@ -148,7 +150,7 @@
     </tr>
 </table>
 <%--<h4 style="color: white;text-align: center;">--%>
-    <%--要获取房间页面，所以必须提交表单，如果是本地应用，不需要经过后台--%>
+<%--要获取房间页面，所以必须提交表单，如果是本地应用，不需要经过后台--%>
 <%--</h4>--%>
 </body>
 </html>

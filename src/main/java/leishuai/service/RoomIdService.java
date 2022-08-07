@@ -8,6 +8,8 @@ package leishuai.service;
  */
 public interface RoomIdService {
     long getPriRoomId();
+
     void putPriRoomId(long priRoomId);
+
     long getUURoomId();
 }

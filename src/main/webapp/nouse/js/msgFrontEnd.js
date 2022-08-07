@@ -3,11 +3,11 @@
  */
 //==================
 //建立连接  c3
-var c3_param={  //以下参数是接在ws连接地址后的值
-    accountId:12344,
-    token:"tokenString",
-    roomId:234535345, //公共房不需要roomId参数
-    diFen:5  //私人房不需要difen
+var c3_param = {  //以下参数是接在ws连接地址后的值
+    accountId: 12344,
+    token: "tokenString",
+    roomId: 234535345, //公共房不需要roomId参数
+    diFen: 5  //私人房不需要difen
 }
 //===================
 // JSESSIONID 0970F763D7AA4B055C942C6B7EBA2227
@@ -16,39 +16,39 @@ var c3_param={  //以下参数是接在ws连接地址后的值
 //==================
 //对s7的处理
 // 拿一张并出牌 	c4
-var c4_msg={
-    msgId:"c4",
-    paiNo:12
+var c4_msg = {
+    msgId: "c4",
+    paiNo: 12
 }
 // 拿一张自摸 	c5
-var c5_msg={
-    msgId:"c5",
-    type:"pi_hu",
-    matchMethod:[1,1,1,2],//取值1，2，3，对应'顺','对'，'杠'，
-    actAs:[]  //癞子充当的牌,一赖时此值为空，或者一个元素,多赖为多个元素。黑摸为空
-        /*
-        pi_hu
-        hei_mo
-         */
+var c5_msg = {
+    msgId: "c5",
+    type: "pi_hu",
+    matchMethod: [1, 1, 1, 2],//取值1，2，3，对应'顺','对'，'杠'，
+    actAs: []  //癞子充当的牌,一赖时此值为空，或者一个元素,多赖为多个元素。黑摸为空
+    /*
+    pi_hu
+    hei_mo
+     */
 }
 // 拿一张自笑、回头笑、朝天 	c6
-var c6_msg={
-    msgId:"c6",
-        /*
-        zi_xiao
-        hui_tou_xiao
-        注：没有点笑
-         */
-    type:"zi_xiao",
-    paiNo:10
+var c6_msg = {
+    msgId: "c6",
+    /*
+    zi_xiao
+    hui_tou_xiao
+    注：没有点笑
+     */
+    type: "zi_xiao",
+    paiNo: 10
 }
 //============================
 
 //=========================
 // 对s8 的处理
 // 点笑、捉冲、碰、不要 c7
-var c7_msg={
-    msgId:"c7",
+var c7_msg = {
+    msgId: "c7",
     /*
       dian_xiao
       zhuo_chong
@@ -56,21 +56,21 @@ var c7_msg={
       bu_yao
       chi
        */
-    type:"dian_xiao",
+    type: "dian_xiao",
     //当type为捉冲时增加以下两个字段
-    matchMethod:[1,1,1,2],//取值1，2，3，对应'顺','对'，'杠'，
-    actAs:[],  //癞子充当的牌,一赖时此值为空，或者一个元素,多赖为多个元素。黑摸为空
+    matchMethod: [1, 1, 1, 2],//取值1，2，3，对应'顺','对'，'杠'，
+    actAs: [],  //癞子充当的牌,一赖时此值为空，或者一个元素,多赖为多个元素。黑摸为空
     //吃类型时有下面字段
-    chiType:1, //1 吃最左 2 吃中间 3 吃最右
+    chiType: 1, //1 吃最左 2 吃中间 3 吃最右
 }
 //==========================
 
 //=========================
-var c8_msg={
-    msgId:"c8",
-    type:"pi_hu",
-    matchMethod:[1,1,1,2],//取值1，2，3，对应'顺','对'，'杠'，
-    actAs:[]  //癞子充当的牌,一赖时此值为空，或者一个元素,多赖为多个元素。黑摸为空
+var c8_msg = {
+    msgId: "c8",
+    type: "pi_hu",
+    matchMethod: [1, 1, 1, 2],//取值1，2，3，对应'顺','对'，'杠'，
+    actAs: []  //癞子充当的牌,一赖时此值为空，或者一个元素,多赖为多个元素。黑摸为空
     /*
     pi_hu
     hei_mo
@@ -83,9 +83,9 @@ var c8_msg={
 //=================================
 //对s9的处理
 //重新在原房间开始新的一局 c9
-var c9_msg={
-    msgId:"c9",
-    roomId:23,
-    diFen:2
+var c9_msg = {
+    msgId: "c9",
+    roomId: 23,
+    diFen: 2
 }
 //=================================

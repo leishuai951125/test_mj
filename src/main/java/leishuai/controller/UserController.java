@@ -25,67 +25,67 @@ import java.util.Map;
 public class UserController {
     Map<Long, String> accountMap = new HashMap(8);
     @Autowired
-    AccountService accountService ;
+    AccountService accountService;
 
     @RequestMapping("login")
-    public String login(HttpServletRequest request, HttpSession session){
+    public String login(HttpServletRequest request, HttpSession session) {
         String s = request.getParameter("accountId");
-        Long accountId=0L;
-        try{
-            accountId= Long.parseLong(s);
-        }catch (Exception e){
-            request.setAttribute("error","账户应该为数字");
+        Long accountId = 0L;
+        try {
+            accountId = Long.parseLong(s);
+        } catch (Exception e) {
+            request.setAttribute("error", "账户应该为数字");
             return "../index";
         }
-        String []nameAndImg=null;
+        String[] nameAndImg = null;
         try {
-             nameAndImg=accountMap.get(accountId).toString().split("#");
-        }catch (Exception e){
-            request.setAttribute("error","账户不存在");
+            nameAndImg = accountMap.get(accountId).toString().split("#");
+        } catch (Exception e) {
+            request.setAttribute("error", "账户不存在");
             return "../index";
         }
         String username = nameAndImg[0];
         if (username != null) { //验证通过
             //创建account
-            Account account=accountService.getAccountOnGame(accountId);
-            boolean isOnGame=false;
-            if(account!=null){
-                isOnGame=true;
-            }else {
+            Account account = accountService.getAccountOnGame(accountId);
+            boolean isOnGame = false;
+            if (account != null) {
+                isOnGame = true;
+            } else {
                 account = new Account(accountId, username);
-                int imgNo=(int)(Math.random()*12);
-                imgNo=Integer.parseInt(nameAndImg[1]);
-                String url="img/head/"+imgNo+".jpg";
+                int imgNo = (int) (Math.random() * 12);
+                imgNo = Integer.parseInt(nameAndImg[1]);
+                String url = "img/head/" + imgNo + ".jpg";
                 account.setHeadImgUrl(url);
             }
             //把account存储到session中
             session.setAttribute("account", account);
             session.setMaxInactiveInterval(-1);
             accountService.addAccountIntoSessionMap(accountId, session);
-            if(isOnGame){
+            if (isOnGame) {
                 return "redirect:/static/room.jsp"; //不使用重定向会出错
-            }else {
+            } else {
                 return "hall";
             }
         }
-        request.setAttribute("error","账户不存在");
+        request.setAttribute("error", "账户不存在");
         return "../index";
     }
 
     @RequestMapping("logout")
-    public String logout(){
+    public String logout() {
         return null;
     }
 
     @RequestMapping("register")
     @ResponseBody
-    public Object register(long accountId, String username, HttpServletResponse response){
-        System.out.println(accountId +" "+username);
+    public Object register(long accountId, String username, HttpServletResponse response) {
+        System.out.println(accountId + " " + username);
 //        response.setContentType("text/html;charset=utf-8");
-        if(accountMap.get(accountId)!=null){
+        if (accountMap.get(accountId) != null) {
             return "该账户已存在，添加失败".toCharArray();
-        }else {
-            accountMap.put(accountId,username+"#"+(int)(Math.random()*12));
+        } else {
+            accountMap.put(accountId, username + "#" + (int) (Math.random() * 12));
             return "注册成功".toCharArray();
         }
     }

@@ -11,7 +11,8 @@ import java.util.List;
  */
 public class ProcessResult {
     int seatNo;//收信人的座位号
-    List<Suggest> suggestList =new ArrayList<Suggest>(4);//指令列表
+    List<Suggest> suggestList = new ArrayList<Suggest>(4);//指令列表
+
     public int getSeatNo() {
         return seatNo;
     }

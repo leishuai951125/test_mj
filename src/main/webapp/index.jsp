@@ -11,44 +11,53 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=false" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=false"/>
 
     <base href="<%= request.getContextPath()+"/" %>">
     <style>
-        *{
+        * {
             font-family: "Microsoft YaHei UI";
         }
-        body{
+
+        body {
             background-color: ghostwhite;
         }
-        form{
+
+        form {
             width: 200px;
             height: 200px;
             background-color: dimgrey;
             text-align: center;
             line-height: 45px;
         }
-        form div input{
+
+        form div input {
             height: 2em;
         }
-        form div input{
+
+        form div input {
             width: 8em;
             font-weight: bold;
             height: 2em;
         }
-        *{
+
+        * {
             margin: auto;
         }
-        .tishi{
+
+        .tishi {
             color: red;
             font-size: 1.5em;
         }
-        #error{
+
+        #error {
             font-size: 16px;
             line-height: 1em;
             color: red;
         }
-        .submit_div input{
+
+        .submit_div input {
             /*width: 5em;*/
         }
     </style>

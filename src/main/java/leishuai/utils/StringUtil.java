@@ -7,8 +7,8 @@ package leishuai.utils;
  * @Version 1.0
  */
 public class StringUtil {
-    public static boolean isNotNull(String s){
-        if(s==null || "".equals(s.trim())){
+    public static boolean isNotNull(String s) {
+        if (s == null || "".equals(s.trim())) {
             return false;
         }
         return true;

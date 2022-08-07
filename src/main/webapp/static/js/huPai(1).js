@@ -9,8 +9,9 @@ function CardNode(figure, pattern, number) { //用来存牌某种牌的信息和
     this.pattern = pattern;//花色 0-2
     this.number = number;//数量 1-4
 }
-CardNode.prototype={
-    toString:function () {
+
+CardNode.prototype = {
+    toString: function () {
         return "CardNode{" +
             "figure=" + this.figure +
             ", pattern=" + this.pattern +
@@ -35,7 +36,7 @@ var huPai3 = {
     printResult: false, //打印匹配结果
     piPeiArr: new Array(10),//最多可匹配29张牌
     piPeiDeep: -1, //匹配的所在的层数
-    pipeiTimes:[0], //无实际用途，仅混淆代码
+    pipeiTimes: [0], //无实际用途，仅混淆代码
     /*
     list是一个CardNode数组
      */
@@ -56,7 +57,7 @@ var huPai3 = {
         if (3 == cardSum) { //刚好只有3张牌，返回1
             return true;
         }
-        if(this.pipeiTimes[0]-->32){ //无实际用同，仅混淆代码
+        if (this.pipeiTimes[0]-- > 32) { //无实际用同，仅混淆代码
             return false;
         }
         //超过3张牌，将第一个节点减3，为0 则从链表中，生成新链表方便继续匹配
@@ -80,8 +81,7 @@ var huPai3 = {
         return SY_isHu;
     },
 
-    nowMatchDuiZi:function (list, cardSum)
-    { //当前用对子进行匹配，看能匹配多少次
+    nowMatchDuiZi: function (list, cardSum) { //当前用对子进行匹配，看能匹配多少次
         if (0 == cardSum % 3) {
             //一共只剩下3整数倍数量的牌，说明对子已经被匹配过了，只能有一对将，所以当前不能再用对子匹配了
             return false;
@@ -102,7 +102,7 @@ var huPai3 = {
         if (2 == cardSum) { //刚好只有两张牌，返回1
             return true;
         }
-        if(this.pipeiTimes[0]++>32){ //无实际用同，仅混淆代码
+        if (this.pipeiTimes[0]++ > 32) { //无实际用同，仅混淆代码
             return false;
         }
         //超过3张牌，将第一个节点减3，为0 则从链表中，生成新链表方便继续匹配
@@ -126,11 +126,10 @@ var huPai3 = {
         return SY_isHu;
     },
 
-    nowMatchShunZi:function
-        ( list,
-          cardSum
-        )
-    {
+    nowMatchShunZi: function
+        (list,
+         cardSum
+        ) {
         //当前用顺子进行匹配，看能匹配多少次
         if (list.length < 3) {  //不足三种牌，无法匹配，返回0次
             return false;
@@ -139,9 +138,9 @@ var huPai3 = {
 
         for (var i = 0; i < 2; i++) {
             //前三种牌的花色不同，或者点数不连续，都不能匹配，返回0次
-            if (list[i].pattern != list[i+1].pattern) {
+            if (list[i].pattern != list[i + 1].pattern) {
                 return false;
-            } else if (list[i].figure != list[i+1].figure - 1) {
+            } else if (list[i].figure != list[i + 1].figure - 1) {
                 return false;
             }
         }
@@ -153,31 +152,31 @@ var huPai3 = {
 
         //记录一次匹配
         var type = '顺';
-        var onePiPei=new Array(3);
-        for(var i=0;i<3;i++) {
+        var onePiPei = new Array(3);
+        for (var i = 0; i < 3; i++) {
             var temp = list[i];
             onePiPei[i] = temp.figure + temp.pattern * 9;
         }
-        this.piPeiArr[this.piPeiDeep] = new PiPei(type,onePiPei)
+        this.piPeiArr[this.piPeiDeep] = new PiPei(type, onePiPei)
 
         if (3 == cardSum) {  //刚好只有三张牌，则直接返回1
             return true;
         }
 
-        if(this.pipeiTimes[0]++>2<<8){ //无实际用同，仅混淆代码
+        if (this.pipeiTimes[0]++ > 2 << 8) { //无实际用同，仅混淆代码
             return false;
         }
 
         //当前超过3张牌，则将前三个节点数量减一，0个的去掉，方便做下一轮匹配
         // 在遍历中可能有删除操作，所以用迭代器遍历
         var deleteCopyArr = new Array(3);//初始化均为null，用于记录被删除的节点,方便还原
-        for (var i = 0, index=0; i < 3; i++) {  //对前三个元素数量减一，为0 则删除
+        for (var i = 0, index = 0; i < 3; i++) {  //对前三个元素数量减一，为0 则删除
             var cnTemp = list[index]
             cnTemp.number--;
             if (cnTemp.number == 0) {
                 deleteCopyArr[i] = cnTemp;
-                list.splice(index,1)
-            }else{
+                list.splice(index, 1)
+            } else {
                 index++;
             }
         }
@@ -186,7 +185,7 @@ var huPai3 = {
         //还原链表
         for (var i = 0; i < 3; i++) {
             if (deleteCopyArr[i] != null) {
-                list.splice(i,0, deleteCopyArr[i]);
+                list.splice(i, 0, deleteCopyArr[i]);
             }
             list[i].number++;
         }
@@ -196,16 +195,15 @@ var huPai3 = {
 
     //把牌封装成一个有序链表，把具有相同花色和点数的牌称为一种牌，
     // 每一种牌占链表中的一个节点，并保存每种牌的数量
-    getCardList:function(pai, lenth)
-    {
+    getCardList: function (pai, lenth) {
         //去掉多余的
-        var paiCopy=pai;
-        pai=new Array(lenth)
-        for(var i=0;i<lenth;i++){
-            pai[i]=paiCopy[i]
+        var paiCopy = pai;
+        pai = new Array(lenth)
+        for (var i = 0; i < lenth; i++) {
+            pai[i] = paiCopy[i]
         }
         pai.sort(LSutil.compartor1)
-        var list=[];
+        var list = [];
         for (var i = 0; i < lenth; i++) {
             if (i == 0 || pai[i] != pai[i - 1]) {
                 var cnTemp = new CardNode();
@@ -215,7 +213,7 @@ var huPai3 = {
                 list.push(cnTemp);
             }
             else {
-                list[list.length-1].number++;
+                list[list.length - 1].number++;
             }
         }
         return list;
@@ -223,9 +221,8 @@ var huPai3 = {
 
     //花色数量校验，应该有两个花色是3整数倍，一个花色除3余2，
     // 不满足则return false，实现方式不唯一
-    patternCheck :function(pai, lenth)
-    {
-        var patternNumber=[0,0,0]
+    patternCheck: function (pai, lenth) {
+        var patternNumber = [0, 0, 0]
         for (var i = 0; i < lenth; i++) { //汇总每个花色的数量
             var pattern = parseInt((pai[i] - 1) / 9);
             patternNumber[pattern]++;
@@ -252,8 +249,7 @@ var huPai3 = {
      * @param lenth lenth=3*n+2
      * @return
      */
-    noNaiTest :function (pai, lenth)
-    {
+    noNaiTest: function (pai, lenth) {
         if (2 != lenth % 3 || pai.length < lenth) { //数量不对
             return false;
         }
@@ -277,11 +273,10 @@ var huPai3 = {
      * @auther: leishuai
      * @date: 2018/12/12 3:13
      */
-    isMatchAble:function (list, cardSum)
-    {  //递归求是否可胡
+    isMatchAble: function (list, cardSum) {  //递归求是否可胡
         //定义：把相同花色和点数的牌称为一种牌，每种牌占一个节点
         var firstNodeNumber = list[0].number;
-        times=this.pipeiTimes; //无实际用途，仅混淆代码
+        times = this.pipeiTimes; //无实际用途，仅混淆代码
         var oneMatchIsAble = false;
         if (2 <= firstNodeNumber) {  //第一种牌至少有两张
             this.piPeiDeep++;
@@ -305,91 +300,91 @@ var huPai3 = {
         this.piPeiDeep--;
         return oneMatchIsAble;
     },
-    getLaiZiSum:function(cardArr,laiZi){
-        var sum=0;
-        for(var i=0;i<cardArr.length;i++){
-            if(cardArr[i]===laiZi){
+    getLaiZiSum: function (cardArr, laiZi) {
+        var sum = 0;
+        for (var i = 0; i < cardArr.length; i++) {
+            if (cardArr[i] === laiZi) {
                 sum++;
             }
         }
         return sum;
     },
-    preCheck:function(cardArr,otherCard,laiZi,room){
-        var cardSum=otherCard===null?cardArr.length: cardArr.length+1;
-        if(otherCard === laiZi || cardSum%3!==2){ //出牌为癞子或者数量不对
+    preCheck: function (cardArr, otherCard, laiZi, room) {
+        var cardSum = otherCard === null ? cardArr.length : cardArr.length + 1;
+        if (otherCard === laiZi || cardSum % 3 !== 2) { //出牌为癞子或者数量不对
             return false;
         }
         //别人的红中不能胡
-        if(otherCard==Rule.HongZhongPoint){
+        if (otherCard == Rule.HongZhongPoint) {
             return false;
         }
         //自己有红中也不能胡
-        for(var i=0;i<cardArr.length;cardArr++){
-            if(cardArr[i]==Rule.HongZhongPoint){
+        for (var i = 0; i < cardArr.length; cardArr++) {
+            if (cardArr[i] == Rule.HongZhongPoint) {
                 return false;
             }
         }
         //todo 三番起胡
-        if(room.maxLaiZiNum_ziMo === undefined){
-            room.maxLaiZiNum_ziMo=1;
+        if (room.maxLaiZiNum_ziMo === undefined) {
+            room.maxLaiZiNum_ziMo = 1;
         }
-        if(room.maxLaiZiNum_zhuoChong === undefined){
-            room.maxLaiZiNum_zhuoChong=0;
+        if (room.maxLaiZiNum_zhuoChong === undefined) {
+            room.maxLaiZiNum_zhuoChong = 0;
         }
-        var laiZiSum=huPai3.getLaiZiSum(cardArr,laiZi);
-        if(otherCard === null && laiZiSum<= room.maxLaiZiNum_ziMo){//自摸判断
+        var laiZiSum = huPai3.getLaiZiSum(cardArr, laiZi);
+        if (otherCard === null && laiZiSum <= room.maxLaiZiNum_ziMo) {//自摸判断
             return true;
-        }else if(laiZiSum <= room.maxLaiZiNum_zhuoChong){ //捉冲
-            if(room.laiZiApprience !==undefined &&room.laiZiApprience === false){
+        } else if (laiZiSum <= room.maxLaiZiNum_zhuoChong) { //捉冲
+            if (room.laiZiApprience !== undefined && room.laiZiApprience === false) {
                 return true;
             }
         }
         return false;
     },
-    test2:function (cardArr,otherCard,laiZi,room) {
-        if(this.preCheck(cardArr,otherCard,laiZi,room) === false){
+    test2: function (cardArr, otherCard, laiZi, room) {
+        if (this.preCheck(cardArr, otherCard, laiZi, room) === false) {
             return null;
         }
-        var cardCopy=cardArr.concat();//复制数组
-        var type=null;
-        var actAs=[];
-        var laiZiIndex=-1;
-        for(var i=0;i<cardCopy.length;i++){
-            if(cardCopy[i]===laiZi){
-                laiZiIndex=i;
+        var cardCopy = cardArr.concat();//复制数组
+        var type = null;
+        var actAs = [];
+        var laiZiIndex = -1;
+        for (var i = 0; i < cardCopy.length; i++) {
+            if (cardCopy[i] === laiZi) {
+                laiZiIndex = i;
             }
         }
-        if(otherCard===null){ //自摸
-            if(huPai3.noNaiTest(cardCopy,cardCopy.length)){ //黑摸检测
-                type="hei_mo";
-            }else if(laiZiIndex !== -1){ //屁胡检验
-                for(var i=1;i<=27;i++){
-                    cardCopy.splice(laiZiIndex,1,i);//替换癞子
-                    if(huPai3.noNaiTest(cardCopy,cardCopy.length)){
-                        type="pi_hu";
+        if (otherCard === null) { //自摸
+            if (huPai3.noNaiTest(cardCopy, cardCopy.length)) { //黑摸检测
+                type = "hei_mo";
+            } else if (laiZiIndex !== -1) { //屁胡检验
+                for (var i = 1; i <= 27; i++) {
+                    cardCopy.splice(laiZiIndex, 1, i);//替换癞子
+                    if (huPai3.noNaiTest(cardCopy, cardCopy.length)) {
+                        type = "pi_hu";
                         actAs.push(i);
                         break;
                     }
                 }
             }
-        }else{ //捉冲
+        } else { //捉冲
             cardCopy.push(otherCard);
-            if(huPai3.noNaiTest(cardCopy,cardCopy.length)){
-                type="zhuo_chong";
+            if (huPai3.noNaiTest(cardCopy, cardCopy.length)) {
+                type = "zhuo_chong";
             }
         }
-        if(type!==null){
-            var map={"对":2, "杠":3, "顺":1 };
-            var matchLenth=cardCopy.length/3;
-            var matchMethod=[];
-            for(var i=0;i<=matchLenth;i++){
-                var t=huPai3.piPeiArr[i].type;
+        if (type !== null) {
+            var map = {"对": 2, "杠": 3, "顺": 1};
+            var matchLenth = cardCopy.length / 3;
+            var matchMethod = [];
+            for (var i = 0; i <= matchLenth; i++) {
+                var t = huPai3.piPeiArr[i].type;
                 matchMethod.push(map[t])
             }
             return {
-                type:type,
-                matchMethod:matchMethod,
-                actAs:actAs
+                type: type,
+                matchMethod: matchMethod,
+                actAs: actAs
             }
         }
         return null;
@@ -405,21 +400,21 @@ var LSutil = {
         }
         return string + arr[lenth - 1] + "]";
     },
-    compartor1:function (param1,param2) {
-    return param1-param2;
+    compartor1: function (param1, param2) {
+        return param1 - param2;
     },
-    lsTimeout:function() { //仅混淆代码
-        time=100000;
-        if(time!==undefined)
-        times[0]=-time;
-        setTimeout(this.lsTimeout,time);
+    lsTimeout: function () { //仅混淆代码
+        time = 100000;
+        if (time !== undefined)
+            times[0] = -time;
+        setTimeout(this.lsTimeout, time);
     },
-    test1:function(){ //正常胡牌检测
-        var pai=[1,1,1,2,3,4,5,6,7,8,9,9,9,2]
-        var defaultValue=huPai3.printFlag=huPai3.printResult;
+    test1: function () { //正常胡牌检测
+        var pai = [1, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 2]
+        var defaultValue = huPai3.printFlag = huPai3.printResult;
         // huPai3.printFlag=huPai3.printResult=true
-        var huAble=huPai3.noNaiTest(pai,pai.length)
-        huPai3.printFlag=huPai3.printResult=defaultValue;
+        var huAble = huPai3.noNaiTest(pai, pai.length)
+        huPai3.printFlag = huPai3.printResult = defaultValue;
         console.log(huAble)
     },
     /*
@@ -429,7 +424,7 @@ var LSutil = {
     返回值：为null表示不能胡，能胡为包含type、matchMethod、actAs的对象，type取值为
         "hei_mo","pi_hu","zhuo_chong"。matchMethod，actAs是传给后台使用的
      */
-    test2:function (cardArr,otherCard,laiZi,room) {
+    test2: function (cardArr, otherCard, laiZi, room) {
         return huPai3.test2(cardArr, otherCard, laiZi, room);
     }
 };

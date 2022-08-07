@@ -13,13 +13,14 @@ import java.util.Set;
  * @Version 1.0
  */
 public class search {
-    Set<Integer> allSearched=new HashSet<>(100);
-    Set<Integer> nowSearch=new HashSet<>(100);
-    Set<Integer> newIndex=new HashSet<>(100);
-    int result[]=new int[100];
+    Set<Integer> allSearched = new HashSet<>(100);
+    Set<Integer> nowSearch = new HashSet<>(100);
+    Set<Integer> newIndex = new HashSet<>(100);
+    int result[] = new int[100];
+
     public static void main(String[] args) {
-        int arr[]={3,4,2,1,3,1};
-        
+        int arr[] = {3, 4, 2, 1, 3, 1};
+
 
     }
 }

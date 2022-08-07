@@ -18,36 +18,37 @@ import java.util.List;
  */
 @Component
 public class ProcessC9 {
-    ConnectService connectService=new ConnectServiceImpl();
+    ConnectService connectService = new ConnectServiceImpl();
+
     //对重新开始的处理
     {
         ProcessMsg.map.put("c9", ((jsonObject, player) -> {
-            if(player==null){
+            if (player == null) {
                 return null;
             }
 
-            if(player.getRoom()==null){ //分配房间，默认为底分5的公共房
+            if (player.getRoom() == null) { //分配房间，默认为底分5的公共房
 //                Long roomId = jsonObject.getLong("roomId");
                 Integer diFen = jsonObject.getInteger("diFen");//底分
-               if(diFen==null){
-                   diFen=5;
-               }
-                connectService.intoRoom(player,null,diFen);
-                return ProcessMsg.map.get("c3").processMsg(jsonObject,player);
+                if (diFen == null) {
+                    diFen = 5;
+                }
+                connectService.intoRoom(player, null, diFen);
+                return ProcessMsg.map.get("c3").processMsg(jsonObject, player);
             }
 
             //继续原来的房间
-            RoomState roomState=player.getRoom().getRoomState();
-            PlayerState[]playerStates=roomState.playerStates;
+            RoomState roomState = player.getRoom().getRoomState();
+            PlayerState[] playerStates = roomState.playerStates;
             //当前属于不可响应状态，直接返回null
-            if(playerStates[player.getSeatNo()].responseFlag != PlayerState.V.RESP_RESTART){
+            if (playerStates[player.getSeatNo()].responseFlag != PlayerState.V.RESP_RESTART) {
                 return null;
             }
             //可响应
-            synchronized (player.getRoom()){
+            synchronized (player.getRoom()) {
                 roomState.responseNum++;
-                playerStates[player.getSeatNo()].responseFlag = - PlayerState.V.RESP_RESTART; //已响应重新开始
-                if(roomState.responseNum == player.getRoom().getSumPlayer()){
+                playerStates[player.getSeatNo()].responseFlag = -PlayerState.V.RESP_RESTART; //已响应重新开始
+                if (roomState.responseNum == player.getRoom().getSumPlayer()) {
                     return onceAgain(player);
                 }
             }
@@ -56,19 +57,19 @@ public class ProcessC9 {
     }
 
     private List<ProcessResult> onceAgain(Player player) {
-        Room room=player.getRoom();
-        RoomState roomState=room.getRoomState();
-        Suggest[] s6_suggest=ProcessC3.getS6(room);
+        Room room = player.getRoom();
+        RoomState roomState = room.getRoomState();
+        Suggest[] s6_suggest = ProcessC3.getS6(room);
 
-        roomState.disCardSeatNo=roomState.zhuang;
-        roomState.beforeGetCard=RoomState.V.NORMAL;
-        Suggest[] s7_suggest=ProcessC3.getS7(room,true);
-        List<ProcessResult> resultList=new LinkedList<>();
-        for(int i=0;i<player.getRoom().getSumPlayer();i++){
-            List<Suggest> list=new LinkedList<>();
+        roomState.disCardSeatNo = roomState.zhuang;
+        roomState.beforeGetCard = RoomState.V.NORMAL;
+        Suggest[] s7_suggest = ProcessC3.getS7(room, true);
+        List<ProcessResult> resultList = new LinkedList<>();
+        for (int i = 0; i < player.getRoom().getSumPlayer(); i++) {
+            List<Suggest> list = new LinkedList<>();
             list.add(s6_suggest[i]);
             list.add(s7_suggest[i]);
-            ProcessResult result=new ProcessResult();
+            ProcessResult result = new ProcessResult();
             result.setSuggestList(list);
             result.setSeatNo(i);
             resultList.add(result);

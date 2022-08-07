@@ -8,7 +8,7 @@ import javax.websocket.Session;
  * @Description 玩家类，在游戏中的账户所具有的属性
  * 断网处理：拉取整个房间数据，然后查看是否有需要响应的命令，一个是自己出牌，一个是响应别人的出牌
  * 自己出牌再发条出牌命令（不拿牌），响应出牌同理
- *
+ * <p>
  * 服务器断网处理，服务器保存最容易处理的节点，如某人出牌操作的保存
  * @Author leishuai
  * @Date 2018/12/17 10:59
@@ -21,10 +21,10 @@ public class Player {  //玩家不需要单独做持久化
      * int player_id;  //玩家id
      * int room_id;   //房间id
      */
-    int seatNo=-1;//座位号
+    int seatNo = -1;//座位号
     long accountId;  //账号id，这个是用来持久化的,并关联玩家和账户，间接关联玩家、房间、账号三个属性
-    int sumJiFen=0; //总积分
-    boolean exitFlagWhenSessionClose=true; //当session关闭时，是否退出房间
+    int sumJiFen = 0; //总积分
+    boolean exitFlagWhenSessionClose = true; //当session关闭时，是否退出房间
     @JSONField(serialize = false)
     Room room;//房间
     @JSONField(serialize = false)

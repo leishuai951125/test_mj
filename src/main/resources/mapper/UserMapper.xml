@@ -3,23 +3,23 @@
 
 <mapper namespace="leishuai.dao.UserMapper">
     <!--<select id="getAllUser" resultType="User">-->
-<!--&#45;&#45;         SELECT * FROM tb_user-->
-        <!--SELECT * FROM  cux_users-->
-<!--&#45;&#45; ${sql}-->
+    <!--&#45;&#45;         SELECT * FROM tb_user-->
+    <!--SELECT * FROM  cux_users-->
+    <!--&#45;&#45; ${sql}-->
     <!--</select>-->
     <!--<select id="getUserByName2" resultType="User" parameterType="String">-->
-        <!--SELECT * FROM CUX_USERS WHERE USER_NAME = #{user_name}-->
+    <!--SELECT * FROM CUX_USERS WHERE USER_NAME = #{user_name}-->
     <!--</select>-->
     <!--<delete id="deleteUserByName" parameterType="String">-->
-        <!--DELETE FROM cux_users WHERE USER_NAME = #{user_name}-->
+    <!--DELETE FROM cux_users WHERE USER_NAME = #{user_name}-->
     <!--</delete>-->
     <!--<insert id="addUser" parameterType="User">-->
-        <!--INSERT INTO cux_users VALUES ( #{user_id},#{user_name},#{password},#{sex},-->
-        <!--#{age},#{phone_number},now() ,now() ,#{comments} )-->
+    <!--INSERT INTO cux_users VALUES ( #{user_id},#{user_name},#{password},#{sex},-->
+    <!--#{age},#{phone_number},now() ,now() ,#{comments} )-->
     <!--</insert>-->
     <!--<update id="updateUser" parameterType="User">-->
-        <!--UPDATE cux_users SET user_name=#{user_name},password=#{password},-->
-        <!--sex=#{sex},age=#{age},phone_number=#{phone_number},-->
-        <!--last_update_date=now(),comments=#{comments} WHERE user_name=#{user_name}-->
+    <!--UPDATE cux_users SET user_name=#{user_name},password=#{password},-->
+    <!--sex=#{sex},age=#{age},phone_number=#{phone_number},-->
+    <!--last_update_date=now(),comments=#{comments} WHERE user_name=#{user_name}-->
     <!--</update>-->
 </mapper>

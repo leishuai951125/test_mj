@@ -18,12 +18,13 @@ import java.io.IOException;
  */
 public class ConnectServiceImpl implements ConnectService {
     static RoomService roomService = new RoomServiceImpl();
-    static AccountService accountService=new AccountServiceImpl();
+    static AccountService accountService = new AccountServiceImpl();
+
     /**
-     第一次连接，或者重开一局都用这个方法
+     * 第一次连接，或者重开一局都用这个方法
      */
     @Override
-    public boolean intoRoom(Player player,Long roomId, Integer diFen) throws LsmjException { //生成玩家和房间
+    public boolean intoRoom(Player player, Long roomId, Integer diFen) throws LsmjException { //生成玩家和房间
 //        long roomId;//持久化用
 //        int creatorId; //创建者的account账户id
 //        int diFen=5;//底分 1，2，5
@@ -32,11 +33,11 @@ public class ConnectServiceImpl implements ConnectService {
 //        Player[] players=new Player[4];  //若房间以json字符串方式持久化，则存此字段，否则不存。
 //        RoomState roomState=null;
         Room room = null;//获取一个有空位的房间
-        room = getRoom(roomId,diFen);
-        if(room==null){
+        room = getRoom(roomId, diFen);
+        if (room == null) {
             return false;
-        }else {
-            room.getRoomState().updateTime=System.currentTimeMillis();
+        } else {
+            room.getRoomState().updateTime = System.currentTimeMillis();
         }
 
         Player[] players = room.getPlayers();
@@ -52,36 +53,36 @@ public class ConnectServiceImpl implements ConnectService {
             player.setRoom(room);
             player.setSeatNo(seatNo);
             //在房间占位后即可进入在线玩家列表
-            Account account=player.getAccount();
-            accountService.putOnGameAccount(account.getAccountId(),account);
+            Account account = player.getAccount();
+            accountService.putOnGameAccount(account.getAccountId(), account);
         }
         return true;
     }
 
     //获取一个可用的房间和座位号
-    private Room getRoom(Long roomId,Integer diFen) throws LsmjException {
-        if(roomId!=null){ //获取私人房, todo 房号可能会不合法
-            Room priRoom=roomService.getOnePrivateRoom(roomId);
-            if(priRoom==null){
+    private Room getRoom(Long roomId, Integer diFen) throws LsmjException {
+        if (roomId != null) { //获取私人房, todo 房号可能会不合法
+            Room priRoom = roomService.getOnePrivateRoom(roomId);
+            if (priRoom == null) {
                 throw new LsmjException("房间已满或者不存在");
             }
             return priRoom;
-        }else if(diFen!=null){ //获取公共房，低分可能不合法
-            if ( diFen < 1 || diFen > 5) {
+        } else if (diFen != null) { //获取公共房，低分可能不合法
+            if (diFen < 1 || diFen > 5) {
                 throw new LsmjException("底分不合法");
             }
             return roomService.getOnePublicRoom(diFen);//获取一个有空位的房间
-        }else { //获取房间失败
+        } else { //获取房间失败
             return null;
         }
     }
 
-    private Account copyAccount(Account account){  //复制account，多登陆且换头像时使用
-        long id=account.getAccountId();
-        String name=account.getUsername();
-        account=new Account(){{ //换个头像，并创建ws对象
-            int imgNo=(int)(Math.random()*12);
-            String url="img/head/"+imgNo+".jpg";
+    private Account copyAccount(Account account) {  //复制account，多登陆且换头像时使用
+        long id = account.getAccountId();
+        String name = account.getUsername();
+        account = new Account() {{ //换个头像，并创建ws对象
+            int imgNo = (int) (Math.random() * 12);
+            String url = "img/head/" + imgNo + ".jpg";
             setHeadImgUrl(url);
             setAccountId(id);
             setUsername(name);
@@ -97,11 +98,11 @@ public class ConnectServiceImpl implements ConnectService {
         //与ws关联的   Session session;
         //与account关联的     Account account;     int account_id;
         Player player = account.getPlayer();
-        boolean allowMuliplePlayers=false; //允许同一账号多登陆，如果为true，可多称为多个玩家，但不能进行游戏状态恢复
+        boolean allowMuliplePlayers = false; //允许同一账号多登陆，如果为true，可多称为多个玩家，但不能进行游戏状态恢复
         //账户第一次建ws连接时player为空，此时创建palyer对象
         //如果希望同一账户可以称为多用户，每次建ws创建palyer对象，否则无需创建，进行绑定即可方便做数据恢复。
-        if(player==null || allowMuliplePlayers) {//第一次开，或者希望多登陆
-            if(allowMuliplePlayers){
+        if (player == null || allowMuliplePlayers) {//第一次开，或者希望多登陆
+            if (allowMuliplePlayers) {
                 //同一账户多使用时，换头像，为了保留之前前几个玩家的头像，必须复制出新的账户对象
                 //主要方便测试阶段使用，正式环境下可去  todo
 //                account=copyAccount(account);
@@ -112,9 +113,9 @@ public class ConnectServiceImpl implements ConnectService {
             player.setAccountId(account.getAccountId());
             account.setPlayer(player);
         }
-       //关闭旧的session
-        Session oleSession=player.getSession();
-        if(oleSession!=null && oleSession.isOpen()){
+        //关闭旧的session
+        Session oleSession = player.getSession();
+        if (oleSession != null && oleSession.isOpen()) {
             try {
                 player.setExitFlagWhenSessionClose(false);
                 oleSession.close();

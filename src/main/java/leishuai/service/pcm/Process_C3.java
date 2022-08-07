@@ -19,24 +19,24 @@ import java.util.List;
 @Component
 public class Process_C3 {
     {
-        ProcessMsg.map.put("-c3",((jsonObject, player) -> { //玩家退出
-            Room room=player.getRoom();
-            if(room.getHavePalyerNum()==room.getSumPlayer()){
+        ProcessMsg.map.put("-c3", ((jsonObject, player) -> { //玩家退出
+            Room room = player.getRoom();
+            if (room.getHavePalyerNum() == room.getSumPlayer()) {
                 return null;
             }
-            Player[] players=room.getPlayers();
+            Player[] players = room.getPlayers();
             //以下生成消息
-            List<ProcessResult> resultList=new ArrayList<ProcessResult>(4);
-            Suggest s5_suggest=new Suggest(){{  //玩家退出
+            List<ProcessResult> resultList = new ArrayList<ProcessResult>(4);
+            Suggest s5_suggest = new Suggest() {{  //玩家退出
                 setMsgId("s5");
-                setMsgBody(ProcessC3.getPlayerInfo(player,true));
+                setMsgBody(ProcessC3.getPlayerInfo(player, true));
             }};
-            for(int i=0;i<room.getSumPlayer();i++){
-                ProcessResult result=null;
-                if(players[i]!=null){
-                    result=new ProcessResult();
+            for (int i = 0; i < room.getSumPlayer(); i++) {
+                ProcessResult result = null;
+                if (players[i] != null) {
+                    result = new ProcessResult();
                     result.setSeatNo(i);
-                    result.setSuggestList(new ArrayList(){{
+                    result.setSuggestList(new ArrayList() {{
                         add(s5_suggest);
                     }});
                     resultList.add(result);

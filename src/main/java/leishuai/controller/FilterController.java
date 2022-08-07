@@ -32,7 +32,7 @@ public class FilterController implements HandlerInterceptor {
         if (session.getAttribute("account") != null) { //已登陆
             return true;
         } else { //未登陆
-            response.sendRedirect(request.getContextPath()+"/index.jsp");
+            response.sendRedirect(request.getContextPath() + "/index.jsp");
             return false;
         }
     }

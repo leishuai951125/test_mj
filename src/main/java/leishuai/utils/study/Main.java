@@ -9,16 +9,17 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @Date 2019/3/30 12:02
  * @Version 1.0
  */
-public class Main{
-    static int sum=0;
-    static Main main=new Main();
-    volatile boolean isLock=false;
+public class Main {
+    static int sum = 0;
+    static Main main = new Main();
+    volatile boolean isLock = false;
+
     public static void main(String[] args) throws InterruptedException {
-        for(int k=0;k<10;k++){
-            new Thread(){
+        for (int k = 0; k < 10; k++) {
+            new Thread() {
                 @Override
-                public void run(){
-                    for(int kk=0;kk<100000;kk++){
+                public void run() {
+                    for (int kk = 0; kk < 100000; kk++) {
                         main.addOne();
 //                        try {
 //                            main.addOneSafe();
@@ -30,11 +31,13 @@ public class Main{
             }.start();
         }
         Thread.sleep(1000);
-        System.out.println("sum:"+sum);
+        System.out.println("sum:" + sum);
     }
-    void addOne(){
+
+    void addOne() {
         sum++;
     }
+
     void addOneSafe() throws InterruptedException {
         main.lock();
         sum++;
@@ -42,17 +45,18 @@ public class Main{
     }
 
     synchronized void lock() throws InterruptedException {
-        while (true){
-            if(!isLock){
-                isLock=!isLock;
+        while (true) {
+            if (!isLock) {
+                isLock = !isLock;
                 break;
-            }else {
+            } else {
                 this.wait();
             }
         }
     }
-    synchronized void unLock(){
-        isLock=false;
+
+    synchronized void unLock() {
+        isLock = false;
         notifyAll();
     }
 

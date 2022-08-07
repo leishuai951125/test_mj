@@ -10,7 +10,8 @@
 <head>
     <title>Title</title>
     <base href="<%= request.getContextPath()+"/"%>">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=false" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0,minimum-scale=1.0,user-scalable=false"/>
 </head>
 <body>
 <form action="user/register">
@@ -25,7 +26,7 @@
         </tr>
         <tr>
             <td colspan="2" style="text-align: center;">
-                <input type="submit" value="提交"  style="width: 10em">
+                <input type="submit" value="提交" style="width: 10em">
             </td>
         </tr>
     </table>

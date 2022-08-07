@@ -13,8 +13,8 @@ public class LsmjException extends Exception {
         return name;
     }
 
-    public LsmjException(String name){
-        this.name=name;
+    public LsmjException(String name) {
+        this.name = name;
     }
 
     public void setName(String name) {

@@ -21,32 +21,34 @@ import java.util.Map;
  */
 @Component
 public class ProcessC5 {
-    static RoomService roomService=new RoomServiceImpl();
-    public interface V{
-        int NOT_HU=0;//不能胡
-        int PI_HU=2;//屁胡
-        int HEI_MO=4;//黑摸
-        String PI_HU_STRING="pi_hu";
-        String HEI_MO_STRING="hei_mo";
+    static RoomService roomService = new RoomServiceImpl();
+
+    public interface V {
+        int NOT_HU = 0;//不能胡
+        int PI_HU = 2;//屁胡
+        int HEI_MO = 4;//黑摸
+        String PI_HU_STRING = "pi_hu";
+        String HEI_MO_STRING = "hei_mo";
     }
-     static int checkSelfHu(JSONObject jsonObject, Player player) {//0不胡，2屁胡，4黑摸
-        String type=jsonObject.getString("type");
+
+    static int checkSelfHu(JSONObject jsonObject, Player player) {//0不胡，2屁胡，4黑摸
+        String type = jsonObject.getString("type");
         RoomState roomState = player.getRoom().getRoomState();
         int cardArr[] = roomState.playerStates[player.getSeatNo()].cardArr;
         if (cardArr[roomState.laiZi] > player.getRoom().getMaxLaiZiNum_ziMo()) { //癞子超出
             return V.NOT_HU;
         }
-        int bieShu=HuPaiByGuide.isHu(jsonObject, cardArr, roomState.laiZi);
-        if(V.HEI_MO_STRING.equals(type) && bieShu==V.HEI_MO){
+        int bieShu = HuPaiByGuide.isHu(jsonObject, cardArr, roomState.laiZi);
+        if (V.HEI_MO_STRING.equals(type) && bieShu == V.HEI_MO) {
             return V.HEI_MO;
-        }else if(V.PI_HU_STRING.equals(type) && bieShu==V.PI_HU){
+        } else if (V.PI_HU_STRING.equals(type) && bieShu == V.PI_HU) {
             return V.PI_HU;
-        }else {
+        } else {
             return V.NOT_HU;
         }
     }
 
-     static void jiFenAfterSelfHu(Player player, RoomState roomState, int huMultiple) {
+    static void jiFenAfterSelfHu(Player player, RoomState roomState, int huMultiple) {
         int selfNo = player.getSeatNo();
         PlayerState[] playerStates = roomState.playerStates;
         int selfDisLaiZi = playerStates[selfNo].disLiaZiNum;
@@ -84,11 +86,11 @@ public class ProcessC5 {
     public static List<ProcessResult> getHuBySelfMsg(Player player, RoomState roomState, int huMultiple) {
         Suggest s10_sugget = getS10(roomState);
 //        String type= huMultiple == 2 ? V.PI_HU_STRING : V.HEI_MO_STRING;//倍数决定类型
-        String type= null;
-        if(huMultiple==2){
-            type=V.PI_HU_STRING;
-        }else {
-            type=V.HEI_MO_STRING;
+        String type = null;
+        if (huMultiple == 2) {
+            type = V.PI_HU_STRING;
+        } else {
+            type = V.HEI_MO_STRING;
         }
         Suggest s9_suggest = getS9_ziMo(player, roomState, type);
         List<ProcessResult> resultList = new ArrayList<ProcessResult>(4);
@@ -119,30 +121,30 @@ public class ProcessC5 {
 //}
     private static Suggest getS9_ziMo(Player player, RoomState roomState, String type) {
         //不想传player给getS9，所以写在这里
-        int []seatNoOfHu={player.getSeatNo()};
-        int seatNoOfBeiHu=-1;
-        return getS9(player,type,roomState,seatNoOfHu,seatNoOfBeiHu);
+        int[] seatNoOfHu = {player.getSeatNo()};
+        int seatNoOfBeiHu = -1;
+        return getS9(player, type, roomState, seatNoOfHu, seatNoOfBeiHu);
     }
 
-    public static Suggest getS9(Player player, String type,RoomState roomState,int []seatNoOfHu,int seatNoOfBeiHu) {
-        PlayerState[]playerStates=roomState.playerStates;
-        Player[]players=player.getRoom().getPlayers();
-        int sumPlayer=player.getRoom().getSumPlayer();
+    public static Suggest getS9(Player player, String type, RoomState roomState, int[] seatNoOfHu, int seatNoOfBeiHu) {
+        PlayerState[] playerStates = roomState.playerStates;
+        Player[] players = player.getRoom().getPlayers();
+        int sumPlayer = player.getRoom().getSumPlayer();
 
-        if(seatNoOfHu!=null){  //不是和局，则更换庄家
-            if(seatNoOfHu.length==1){
-                roomState.zhuang=seatNoOfHu[0];
-            }else {
-                roomState.zhuang=seatNoOfBeiHu;
+        if (seatNoOfHu != null) {  //不是和局，则更换庄家
+            if (seatNoOfHu.length == 1) {
+                roomState.zhuang = seatNoOfHu[0];
+            } else {
+                roomState.zhuang = seatNoOfBeiHu;
             }
         }
 
         //发送完消息后还要解散房间
         roomState.isOver = roomState.playedTurn == player.getRoom().getCanBeUsedTimes();
-        if(!roomState.isOver){
-            roomState.responseNum=0;
-            for(int i=0;i<sumPlayer;i++){
-                playerStates[i].responseFlag=PlayerState.V.RESP_RESTART;
+        if (!roomState.isOver) {
+            roomState.responseNum = 0;
+            for (int i = 0; i < sumPlayer; i++) {
+                playerStates[i].responseFlag = PlayerState.V.RESP_RESTART;
             }
         }
 
@@ -151,11 +153,11 @@ public class ProcessC5 {
             yuPai[i] = playerStates[i].cardArr;
         }
 
-        int currentJiFen[]=new int[sumPlayer];//四个玩家本轮积分
-        for(int i=0;i<sumPlayer;i++){
-            int temp=playerStates[i].jifen;
+        int currentJiFen[] = new int[sumPlayer];//四个玩家本轮积分
+        for (int i = 0; i < sumPlayer; i++) {
+            int temp = playerStates[i].jifen;
             //计算本轮积分并存储
-            currentJiFen[i]=temp-players[i].getSumJiFen();
+            currentJiFen[i] = temp - players[i].getSumJiFen();
             //积分记录到玩家中
             players[i].setSumJiFen(temp);
         }
@@ -165,8 +167,8 @@ public class ProcessC5 {
             put("type", type);
             put("seatNoOfHu", seatNoOfHu);
             put("yuPai", yuPai);
-            put("seatNoOfBeiHu",seatNoOfBeiHu);
-            put("currentJiFen",currentJiFen);
+            put("seatNoOfBeiHu", seatNoOfBeiHu);
+            put("currentJiFen", currentJiFen);
         }};
 
         return new Suggest() {{
@@ -196,14 +198,14 @@ public class ProcessC5 {
             }
             roomState.canDisCard = false;
 
-            long start=System.nanoTime()/100000;
+            long start = System.nanoTime() / 100000;
             int huMultiple = checkSelfHu(jsonObject, player);//胡的倍数，0表示不能胡，2屁胡，4黑摸
-            System.out.println(System.nanoTime()/100000-start);
+            System.out.println(System.nanoTime() / 100000 - start);
             if (huMultiple == 0) {  //不能胡，则随机出牌
-                return ProcessC4.disCardOne(player,roomState,0);
+                return ProcessC4.disCardOne(player, roomState, 0);
             }
             //计算不被捉时的积分变化，即出牌前操作造成的积分变化，不含大小朝天，
-            ProcessC7.jiFenBeforeNotRobbed(player.getRoom(),player.getSeatNo());
+            ProcessC7.jiFenBeforeNotRobbed(player.getRoom(), player.getSeatNo());
 
             roomState.zhuang = player.getSeatNo();//能胡则为庄
             jiFenAfterSelfHu(player, roomState, huMultiple);//计算自摸后的输赢

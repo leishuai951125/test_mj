@@ -16,7 +16,7 @@
         token: '',
         roomId: '<%= request.getParameter("roomId")%>'
     };
-    var wsUrl = "ws://"+location.host+'/TestGit/lsmj/websocket/{' + JSON.stringify(params) + "}";
+    var wsUrl = "ws://" + location.host + '/TestGit/lsmj/websocket/{' + JSON.stringify(params) + "}";
     var accountId = params.accountId;
 </script>
 <div id="yemian">
@@ -84,6 +84,7 @@
 <script>
     function requestFullScreen() {
     }
+
     var requestFullScreen = function () {
         var de = document.getElementById("yemian");
         if (de.requestFullscreen) {
@@ -96,7 +97,7 @@
         setTimeout(rotateYeMian, 1000);
     }
 
-    function setFontSize(){
+    function setFontSize() {
         $("*").css("fontSize", window.innerWidth / 100 + "px");
         $("#duijushu").css("fontSize", "1.5em");
     }

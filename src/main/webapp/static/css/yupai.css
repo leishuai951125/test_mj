@@ -1,4 +1,4 @@
-#yupai-information{
+#yupai-information {
     position: absolute;
     width: 80%;
     height: 90%;
@@ -8,13 +8,15 @@
     top: 5%;
     display: none;
 }
-#yupai-information img{
+
+#yupai-information img {
     position: absolute;
-/*background-color: yellow;*/
+    /*background-color: yellow;*/
     background-size: 100% 100%;
     background-repeat: no-repeat;
 }
-#continue{
+
+#continue {
     width: 10%;
     height: 8%;
     position: absolute;
@@ -23,7 +25,8 @@
     left: 90%;
     text-decoration-color: black;
 }
-#exitRoom{
+
+#exitRoom {
     width: 10%;
     height: 8%;
     position: absolute;

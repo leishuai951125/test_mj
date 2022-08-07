@@ -76,18 +76,18 @@ public class WebSocket {
             if (accountOnGame != null) { //在线，或者说在房间中
                 connectService.onLine(this, session, accountOnGame); //上线
                 Room room = accountOnGame.getPlayer().getRoom();
-                synchronized (room){
-                    if(isFull(room)){ //齐了
+                synchronized (room) {
+                    if (isFull(room)) { //齐了
                         ProcessMsg processMsg = ProcessMsg.map.get("recover"); //恢复
                         doMsgAndSendMsg(processMsg, null);
                         System.out.println("状态恢复");
-                    }else { //没齐
+                    } else { //没齐
                         ProcessMsg processMsg = ProcessMsg.map.get("c3"); //加入房间的信息发给每个人
                         doMsgAndSendMsg(processMsg, null);
 
                     }
                 }
-            }else { //不在房间中
+            } else { //不在房间中
                 Account account = accountService.getAccountBySession(accountId);
                 connectService.onLine(this, session, account);//上线
                 synchronized (player) {  //进入房间，包括公共房和私人房
@@ -165,11 +165,11 @@ public class WebSocket {
                 }
             }
             if (room != null) {
-                RoomState roomState=room.getRoomState();
-                if(roomState.isOver){
+                RoomState roomState = room.getRoomState();
+                if (roomState.isOver) {
                     roomService.destory(room);
-                }else{
-                    roomState.updateTime=System.currentTimeMillis();
+                } else {
+                    roomState.updateTime = System.currentTimeMillis();
                 }
             }
 //            startTime=System.nanoTime()/100000;

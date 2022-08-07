@@ -20,20 +20,21 @@ import java.util.Map;
 @Configuration
 @Import(A.class)
 public class Test2 {
-//    @Bean
+    //    @Bean
 //    A getA(){
 //        return new A();
 //    }
     @Bean
-    Tool getTool(){
+    Tool getTool() {
         return new Tool();
     }
+
     public static void main(String[] args) {
 //        ApplicationContext context=new AnnotationConfigApplicationContext(Test2.class);
 //        System.out.println(context.getBean("getA").getClass());
 //        System.out.println(context.getBean("getA"));
 //        ApplicationContext context=new AnnotationConfigApplicationContext(A.class);
-        ApplicationContext context2=new AnnotationConfigApplicationContext(Test2.class);
+        ApplicationContext context2 = new AnnotationConfigApplicationContext(Test2.class);
 //        System.out.println(context.getBean("tool"));
         System.out.println(context2.getBean("tool"));
 //        System.out.println(context2.getBean("getTool"));

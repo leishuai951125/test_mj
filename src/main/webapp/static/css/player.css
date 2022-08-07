@@ -1,4 +1,4 @@
-#leftplayer{
+#leftplayer {
     width: 6%;
     height: 10%;
     position: absolute;
@@ -10,7 +10,8 @@
     text-align: center;
     line-height: 1300%;
 }
-#left-information{
+
+#left-information {
     width: 10%;
     height: 16%;
     position: absolute;
@@ -20,7 +21,8 @@
     border-radius: 8% 8% 8% 8%;
     display: none;
 }
-#left-pai{
+
+#left-pai {
 
     width: 3%;
     height: 50%;
@@ -29,12 +31,14 @@
     top: 17%;
     /* background-color: darkgreen; */
 }
-#left-pai img{
+
+#left-pai img {
     position: absolute;
     width: 65%;
     height: 18%;
 }
-#left-chupai{
+
+#left-chupai {
     height: 35%;
     width: 10%;
     position: absolute;
@@ -43,7 +47,7 @@
     /*background-color: black;*/
 }
 
-#rightplayer{
+#rightplayer {
     width: 6%;
     height: 10%;
     position: absolute;
@@ -54,7 +58,8 @@
     text-align: center;
     line-height: 1300%;
 }
-#right-information{
+
+#right-information {
     width: 10%;
     height: 16%;
     position: absolute;
@@ -64,7 +69,8 @@
     border-radius: 8% 8% 8% 8%;
     display: none;
 }
-#right-pai{
+
+#right-pai {
     width: 3%;
     height: 50%;
     position: absolute;
@@ -72,12 +78,14 @@
     top: 17%;
     /* background-color: darkgreen; */
 }
-#right-pai img{
+
+#right-pai img {
     position: absolute;
     width: 65%;
     height: 18%;
 }
-#right-chupai{
+
+#right-chupai {
     height: 35%;
     width: 10%;
     position: absolute;
@@ -86,7 +94,7 @@
     /*background-color: black;*/
 }
 
-#acrossplayer{
+#acrossplayer {
     width: 6%;
     height: 10%;
     position: absolute;
@@ -98,7 +106,8 @@
     text-align: center;
     line-height: 1300%;
 }
-#across-information{
+
+#across-information {
     width: 10%;
     height: 16%;
     position: absolute;
@@ -108,19 +117,22 @@
     border-radius: 8% 8% 8% 8%;
     display: none;
 }
-#across-pai{
+
+#across-pai {
     position: absolute;
     width: 61%;
     height: 12%;
     left: 13%;
     top: 1%;
 }
-#across-pai img{
+
+#across-pai img {
     position: absolute;
-    width:6.1%;
+    width: 6.1%;
     height: 100%;
 }
-#across-chupai{
+
+#across-chupai {
     height: 10%;
     width: 20%;
     position: absolute;
@@ -128,12 +140,13 @@
     top: 20%;
     /*background-color: black;*/
 }
+
 /*#across-chupai img{*/
-    /*width: 3%;*/
-    /*height: 5%;*/
+/*width: 3%;*/
+/*height: 5%;*/
 /*}*/
 
-#duijushu{
+#duijushu {
     width: 80%;
     height: 4%;
     position: absolute;
@@ -141,16 +154,17 @@
     left: 12%;
     text-align: left;
 }
-#chupairen{
+
+#chupairen {
     position: absolute;
-    background-size: 100%,100%;
+    background-size: 100%, 100%;
     width: 9.5%;
     height: 22.5%;
-    top:  35%;
+    top: 35%;
     left: 46%;
 }
 
-#lunpan{
+#lunpan {
     position: absolute;
     top: 0%;
     left: 0%;
@@ -158,7 +172,7 @@
     height: 82%;
 }
 
-#myChuPai{
+#myChuPai {
     position: absolute;
     bottom: -106%;
     left: -95%;
@@ -166,7 +180,8 @@
     height: 150%;
     display: none;
 }
-#acrossChuPai{
+
+#acrossChuPai {
     position: absolute;
     width: 324%;
     height: 154%;
@@ -174,7 +189,8 @@
     left: -92%;
     display: none;
 }
-#leftChuPai{
+
+#leftChuPai {
     position: absolute;
     left: -132%;
     bottom: -62%;
@@ -182,7 +198,8 @@
     height: 275%;
     display: none;
 }
-#rightChuPai{
+
+#rightChuPai {
     position: absolute;
     right: -132%;
     bottom: -62%;
@@ -190,14 +207,16 @@
     height: 275%;
     display: none;
 }
-#myPengXiao{
+
+#myPengXiao {
     position: absolute;
     width: 50%;
     height: 30%;
     left: 10%;
     bottom: 21%;
 }
-#chaoTian{
+
+#chaoTian {
     position: absolute;
     width: 8%;
     height: 10%;

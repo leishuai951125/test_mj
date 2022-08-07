@@ -28,7 +28,7 @@ public class RoomState {
 
     //以下变量记录着关联关系
     public long roomId; //既是与room关联的外键，也是roomState的主键
-    public long updateTime=0;//更新时间
+    public long updateTime = 0;//更新时间
     public PlayerState[] playerStates = new PlayerState[4];//记录每个玩家在游戏开始后期间的专属数据
 
     {
@@ -67,7 +67,7 @@ public class RoomState {
 
     //发牌时的房间状态清空
     public void recoverDefault() { //重新设置为默认值,在发牌时会调用（或者在发送完结束消息，并重开时调用）
-        for(int i=0;i<4;i++){
+        for (int i = 0; i < 4; i++) {
             playerStates[i].recoverDefault();
         }
         isOver = false;//是否结束，可以去掉
