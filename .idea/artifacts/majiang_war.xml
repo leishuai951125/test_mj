@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="majiang:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="TestGit.war">
+      <element id="artifact" artifact-name="majiang:war exploded" />
+    </root>
+  </artifact>
+</component>
