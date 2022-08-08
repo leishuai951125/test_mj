@@ -52,6 +52,7 @@ var c7_msg = {
     /*
       dian_xiao
       zhuo_chong
+      zhuo_chong_pi_hu
       peng
       bu_yao
       chi

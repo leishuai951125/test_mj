@@ -21,6 +21,7 @@ public class PlayerState {
 
         int BU_YAO = 10;//不要，标识响应,以上常量也可以做响应标志，也可以做牌信息标志
         int ZHUO_CHONG = 20;//捉冲
+        int ZHUO_CHONG_PI_HU = 24;//捉冲屁胡
         int CHIZUO = 21;//吃最左
         int CHIZHONG = 22;//吃中间
         int CHIYOU = 23;//吃最右

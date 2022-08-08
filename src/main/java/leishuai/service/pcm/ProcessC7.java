@@ -20,6 +20,7 @@ public class ProcessC7 {
     interface V {
         String DIAN_XIAO = "dian_xiao";
         String ZHUO_CHONG = "zhuo_chong";
+        String ZHUO_CHONG_PI_HU = "zhuo_chong_pi_hu";
         String PENG = "peng";
         String BU_YAO = "bu_yao";
         String CHI = "chi";
@@ -381,26 +382,42 @@ public class ProcessC7 {
     private static void jiFenAfterZhuoChong(Room room, int disCardSeatNo, int[] zhuoChongSeats) {
         RoomState roomState = room.getRoomState();
         Player player = room.getPlayers()[disCardSeatNo];//当前被捉的人，也是出牌的人
-
-        int jiFenReduce =0;
-        if(Rule.FanMode==Rule.FanMode_LeiJia){ //累加模式，晃晃的玩法
-            //todo 需要计算番数，胡牌类型，每个人的番数不一样
-        }else{ //累乘模式，干瞪眼里面的玩法
-            int beiShu = 1;
-            if(Rule.HasGangShangPao){ //有杠上炮需要计算打牌前的动作，以来到底里面的玩法，晃晃走不到这里
-                if (roomState.beforeGetCard == RoomState.V.DIAN_XIAO) { //点笑被捉，3
-                    beiShu = 3;
-                } else if (roomState.beforeGetCard == RoomState.V.HUI_TOU_XIAO) { //回头笑被捉，5
-                    beiShu = 5;
-                } else if (roomState.beforeGetCard == RoomState.V.ZI_XIAO) {//自笑被捉，8
-                    beiShu = 8;
-                } else { //普通被捉
-                    beiShu = 2;
+        if(Rule.GameMode==Rule.GameMode_HuangHuang){
+            //累加模式，晃晃的玩法
+            PlayerState beFuckPlayer=room.getRoomState().playerStates[disCardSeatNo];
+            for(int i=0;i<zhuoChongSeats.length;i++){
+                int seatNo=zhuoChongSeats[i];
+                PlayerState fucker = room.getRoomState().playerStates[seatNo];
+                int respFlag=fucker.responseFlag;
+                int jiFenReduce=0;
+                if(respFlag==PlayerState.V.ZHUO_CHONG){
+                    jiFenReduce+=2+fucker.getFanCount()+beFuckPlayer.getFanCount();
+                }else if(respFlag==PlayerState.V.ZHUO_CHONG_PI_HU){
+                    jiFenReduce+=1+fucker.getFanCount()+beFuckPlayer.getFanCount();
+                }else{
+                    continue;
                 }
+                jiFenReduce*=room.getDiFen();
+                ProcessC6.jiFenAfterRobbed(roomState, player, new int[]{seatNo}, jiFenReduce);
             }
-            //todo 需要管打了几个赖子
-            jiFenReduce = beiShu * player.getRoom().getDiFen();
+            return;
         }
+
+        //累乘模式，干瞪眼里面的玩法
+        int beiShu = 1;
+        if(Rule.HasGangShangPao){ //有杠上炮需要计算打牌前的动作，以来到底里面的玩法，晃晃走不到这里
+            if (roomState.beforeGetCard == RoomState.V.DIAN_XIAO) { //点笑被捉，3
+                beiShu = 3;
+            } else if (roomState.beforeGetCard == RoomState.V.HUI_TOU_XIAO) { //回头笑被捉，5
+                beiShu = 5;
+            } else if (roomState.beforeGetCard == RoomState.V.ZI_XIAO) {//自笑被捉，8
+                beiShu = 8;
+            } else { //普通被捉
+                beiShu = 2;
+            }
+        }
+        int jiFenReduce =0;
+        jiFenReduce = beiShu * player.getRoom().getDiFen();    //todo 需要管打了几个赖子
         ProcessC6.jiFenAfterRobbed(roomState, player, zhuoChongSeats, jiFenReduce); //计算抢笑后的积分
     }
 
@@ -410,7 +427,9 @@ public class ProcessC7 {
         int[] zhuoChongSeats = new int[room.getSumPlayer()];
         int lenth = 0;
         for (int i = 0; i < room.getSumPlayer(); i++) {
-            if (i != disCardSeatNo && roomState.playerStates[i].responseFlag == PlayerState.V.ZHUO_CHONG) {
+            int respFlag=roomState.playerStates[i].responseFlag;
+            boolean isZhuoChong= respFlag == PlayerState.V.ZHUO_CHONG || respFlag == PlayerState.V.ZHUO_CHONG_PI_HU;
+            if (i != disCardSeatNo && isZhuoChong) {
                 zhuoChongSeats[lenth++] = i;
             }
         }
@@ -462,23 +481,29 @@ public class ProcessC7 {
             }
         }
         int paiNo = disCardNo;
-        //剩下的只有捉冲
-        if (!V.ZHUO_CHONG.equals(type)) { //不是捉冲，说明非法输入，返回假
-            return PlayerState.V.BU_YAO;
-        }
-        //如果癞子已经出现，或者自己的癞子数超过捉冲的癞子数量限制
-        if(Rule.GameMode==Rule.GameMode_GanDengYan && roomState.laiZiAppeared){
-            //干瞪眼见到赖子就不能胡
-            return PlayerState.V.BU_YAO;
-        }
+
+        //-----剩下的只有捉冲------
+
         if (cardArr[roomState.laiZi] > player.getRoom().getMaxLaiZiNum_zhuoChong()) {
             //手上赖子多也不允许胡
             return PlayerState.V.BU_YAO;
         }
-        int paiArr[] = HuPaiByGuide.copyCardArr(cardArr);
-        paiArr[paiNo]++;
-        if (HuPaiByGuide.isHu(jsonObject, paiArr, 0) == HuPaiByGuide.V.ZHUO_CHONG) {//
-            return PlayerState.V.ZHUO_CHONG;
+
+        if(Rule.GameMode==Rule.GameMode_HuangHuang){
+            if(V.ZHUO_CHONG.equals(type)){
+                return PlayerState.V.ZHUO_CHONG;
+            }else if(V.ZHUO_CHONG_PI_HU.equals(type)){
+                return PlayerState.V.ZHUO_CHONG_PI_HU;
+            }
+        }else{ //干瞪眼
+            if(roomState.laiZiAppeared){ //干瞪眼见到赖子就不能胡
+                return PlayerState.V.BU_YAO;
+            }
+            int paiArr[] = HuPaiByGuide.copyCardArr(cardArr);
+            paiArr[paiNo]++;
+            if (HuPaiByGuide.isHu(jsonObject, paiArr, 0) == HuPaiByGuide.V.ZHUO_CHONG) {//
+                return PlayerState.V.ZHUO_CHONG;
+            }
         }
         return PlayerState.V.BU_YAO;
     }
