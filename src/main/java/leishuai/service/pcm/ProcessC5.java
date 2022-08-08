@@ -51,13 +51,13 @@ public class ProcessC5 {
     static void jiFenAfterSelfHu(Player player, RoomState roomState, int huMultiple) {
         int selfNo = player.getSeatNo();
         PlayerState[] playerStates = roomState.playerStates;
-        int selfDisLaiZi = playerStates[selfNo].disLiaZiNum;
+        int selfDisLaiZi = playerStates[selfNo].disLiaZiCount;
         if (selfDisLaiZi + playerStates[selfNo].cardArr[roomState.laiZi] == 4) { //胡的人共有四个癞子
             huMultiple = 2 * huMultiple;
         }
         for (int i = 0; i < player.getRoom().getSumPlayer(); i++) {
             if (i != selfNo) {
-                int disLaiZi = playerStates[i].disLiaZiNum + selfDisLaiZi; //一共漂癞子数癞子
+                int disLaiZi = playerStates[i].disLiaZiCount + selfDisLaiZi; //一共漂癞子数癞子
                 int multipleI = huMultiple * (int) Math.pow(2, disLaiZi); //2的disLaiZi次方
                 int jiFenReduce = multipleI * player.getRoom().getDiFen();
                 playerStates[i].jifen -= jiFenReduce;

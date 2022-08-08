@@ -44,12 +44,35 @@ public class PlayerState {
     //此数组同时记录了牌、点笑、自笑等等信息，可用长14的map代替，但可能影响效率
     public static int cardArrLength = 40;
     public int[] cardArr = new int[cardArrLength]; //下标0不用，取值0表示没有，1-4表示个数，15-19 看上面常量定义，
-
+    //public int[] todo 计算笑番数，计算所有番数
+    public int getXiaoFanForHuangHuang(){
+        int count=0;
+        for(int i=0;i<cardArr.length;i++){
+            switch (cardArr[i]){
+                case V.DIAN_XIAO:{
+                    count+=1;
+                    break;
+                }
+                case V.HUI_TOU_XIAO:{
+                    count+=1;
+                    break;
+                }
+                case V.ZI_XIAO:{
+                    count+=2;
+                    break;
+                }
+            }
+        }
+        return count;
+    }
+    public int getFanCount(){
+        return getXiaoFanForHuangHuang()+disLiaZiCount*2+disHongZhongCount;
+    }
     //以下信息在生成出牌指令时修改
     public int getCardTimes = 0;//拿牌的次数，用于自笑和回头笑的合法验证
 
     //以下变量在服务端收到出牌信息时修改
-    public int disLiaZiNum = 0;//漂癞子数
+    public int disLiaZiCount = 0;//漂癞子数
     public int disHongZhongCount = 0;//漂红中数
     public int jifen = 0;
     public List<Integer> disCardArr = new ArrayList<Integer>(20);
@@ -67,7 +90,7 @@ public class PlayerState {
         //以下信息在生成出牌指令时修改
         getCardTimes = 0;//拿牌的次数，用于自笑和回头笑的合法验证
         //以下变量在服务端收到出牌信息时修改
-        disLiaZiNum = 0;//漂癞子数
+        disLiaZiCount = 0;//漂癞子数
         disHongZhongCount =0;
         jifen = 0;
         //以下信息在服务端收到其它玩家对出的牌的响应之后修改

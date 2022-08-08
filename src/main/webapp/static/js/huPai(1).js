@@ -361,7 +361,7 @@ var huPai3 = {
             }
         }
         if(otherCard!=null){ //拿一张牌
-            cardArr.push(otherCard) //放到数组尾部，不影响 laiZiIndex
+            cardCopy.push(otherCard) //放到数组尾部，不影响 laiZiIndex
         }
         var isHeiHu=false
         var isPiHu=false
@@ -407,6 +407,7 @@ var huPai3 = {
         return null;
     },
     //cardArr.length = n*3 +1
+    //移除赖子和某一张字后能黑摸，说明是刷牌
     isShuaPai:function(cardArr,laiZiIndex){
         var copy=cardArr.concat()
         copy.slice(laiZiIndex,1) //移除赖子
@@ -421,20 +422,29 @@ var huPai3 = {
         return false;
     },
     //cardArr.length = n*3 +1
+    //能胡十张以上的牌认为是见字胡
     isJianZiHu:function(cardArr,laiZiIndex){
         //把赖子替换成任意数
-        for(var i=1;i<=27;i++){
-            var cardCopy=cardArr.concat()
-            cardCopy.splice(laiZiIndex, 1, i);//替换癞子
-            for(var j=1;j<11;j++){ //能胡10张字，一定是见字胡
-                var cardCopy2=cardCopy.concat()
-                cardCopy2.push(j) //n*3+2
-                if(huPai3.noNaiTest(cardCopy2, cardCopy2.length)){
-                    return false
+        for(var j=1;j<15;j++) { //能胡15张字，一定是见字胡
+            if(j==roomInformation.laizi){
+                continue //不队赖子进行计算
+            }
+            var cardCopy2 = cardArr.concat()
+            cardCopy2.push(j) //n*3+2
+            var canHu =false
+            for(var i=1;i<=27;i++) {
+                var cardCopy = cardCopy2.concat()
+                cardCopy.splice(laiZiIndex, 1, i);//替换癞子
+                if(huPai3.noNaiTest(cardCopy, cardCopy.length)){
+                    canHu=true
+                    break
                 }
             }
-            return true
+            if(!canHu) { //有不能胡的字，说明不是见字胡
+                return false
+            }
         }
+        return true
     },
     //cardArr = 3*n+2 时，selfGetPaiNo 不为空,表示自己刚拿的牌
     //cardArr = 3*n+1 时，otherCard 不为空,表示别人打的字

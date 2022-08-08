@@ -5,7 +5,6 @@ import leishuai.bean.*;
 import leishuai.service.ProcessMsg;
 import leishuai.utils.HuPai;
 import leishuai.utils.HuPaiByGuide;
-import org.apache.tomcat.util.digester.RulesBase;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -202,12 +201,12 @@ public class ProcessC6 {
     public static void jiFenAfterXiaoBySelf(RoomState roomState, Player player, int Multiple) {
         int selfNo = player.getSeatNo();
         PlayerState[] playerStates = roomState.playerStates;
-        int selfDisLaiZi = playerStates[selfNo].disLiaZiNum;
+        int selfDisLaiZi = playerStates[selfNo].disLiaZiCount;
         for (int i = 0; i < player.getRoom().getSumPlayer(); i++) {
             if (i != selfNo) {
                 int disLaiZi=0;
                 if(Rule.IsGangFanBei){
-                    disLaiZi = playerStates[i].disLiaZiNum + selfDisLaiZi; //一共漂癞子数癞子
+                    disLaiZi = playerStates[i].disLiaZiCount + selfDisLaiZi; //一共漂癞子数癞子
                 }
                 int multipleI = Multiple * (int) Math.pow(2, disLaiZi); //2的disLaiZi次方
                 int jiFenReduce = multipleI * player.getRoom().getDiFen();

@@ -303,7 +303,7 @@ var s13_suggest = {
                 int HUI_TOU_XIAO = 18;  //回头笑
                 int ZI_XIAO = 19;  //自笑，包括大朝天
              */
-            disLiaZiNum: 0,//漂癞子数
+            disLaiziCount: 0,//漂癞子数
             jifen: 0,
             disCardArr: [],//出过的牌
             superFlag: false //是否处于特权态，取true时 闷笑的字可以和拿牌不一致

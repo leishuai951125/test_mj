@@ -35,7 +35,7 @@ function init() {
         myInformation.notAdminPeng = [];
         myInformation.canXiaoNo = -1;
         myInformation.canHu = null;
-        arrTmp[i].pai = [];
+        myInformation.pai = [];
     }
 
     for(var i=0;i<arrTmp.length;i++){
@@ -281,7 +281,7 @@ function getMaxFanWithOnePlayer(otherPlayer){
     return getPeopleFan(myInformation) + getPeopleFan(otherPlayer)
 }
 function getPeopleFan(player) {
-    return player ? player.xiaoFanShu + player.disHongZhongCount + player.disLaiziCount : 0
+    return player ? player.xiaoFanShu + player.disHongZhongCount + player.disLaiziCount * 2  : 0
 }
 
 function Dos7(data) {
@@ -651,7 +651,7 @@ function Dos11(data) {
     }else {
         xiaoPlayer=roomInformation.allPlayer[seatNo]
     }
-    if(data.type==zi_xiao){
+    if(data.type=="zi_xiao"){
         xiaoPlayer.xiaoFanShu+=2
     }else{
         xiaoPlayer.xiaoFanShu+=1
@@ -840,7 +840,8 @@ function Dos13(data) {
             myInformation.userName = data[i].username;
             myInformation.chiArr = data[i].chiArr
             myInformation.disHongZhongCount=data[i].disHongZhongCount
-            myInformation.disLiaZiNum=data[i].disLiaZiNum
+            myInformation.disLaiziCount=data[i].disLaiziCount
+            myInformation.xiaoFanShu=data[i].xiaoFanShu
 
             //将后台牌数组转换为前台对应格式
             for (var j = 1; j < data[i].cardArr.length; j++) {
@@ -932,7 +933,9 @@ function Dos13(data) {
             playerInfo.userName = data[i].username;
             playerInfo.chiArr = data[i].chiArr
             playerInfo.disHongZhongCount=data[i].disHongZhongCount
-            playerInfo.disLiaZiNum=data[i].disLiaZiNum
+            playerInfo.disLaiziCount=data[i].disLaiziCount
+            playerInfo.xiaoFanShu=data[i].xiaoFanShu
+
             playerInfo.pai = 13;
             var idString = playerInfo.idString;
             $(idString).css("background-image", "url(" + data[i].headImgUrl + ")");

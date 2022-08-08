@@ -13,12 +13,12 @@ public class Test {
     static String jsonString = "{\"beforeGetCard\":10,\"canDisCard\":true,\"disCardNo\":0,\"disCa" +
             "rdSeatNo\":0,\"fuckWho\":-1,\"getCardNoBeforeDis\":15,\"laiGen\":23,\"laiZi\":24,\"" +
             "laiZiAppeared\":false,\"playedTurn\":1,\"playerStates\":[{\"cardArr\":[0,1,0,0,0,0,0," +
-            "0,1,0,0,0,0,0,0,1,2,0,0,0,2,1,1,1,1,2,1,0],\"disLiaZiNum\":0,\"getCardTimes\":1,\"jife" +
+            "0,1,0,0,0,0,0,0,1,2,0,0,0,2,1,1,1,1,2,1,0],\"disLiaZiCount\":0,\"getCardTimes\":1,\"jife" +
             "n\":0,\"responseDisCard\":10},{\"cardArr\":[0,1,1,0,1,1,0,1,0,0,1,1,1,0,0,0,1,0,0,1,1,1" +
-            ",0,0,1,0,0,0],\"disLiaZiNum\":0,\"getCardTimes\":0,\"jifen\":0,\"responseDisCard\":10},{\"" +
-            "cardArr\":[0,1,1,2,0,0,0,0,0,1,0,0,1,1,0,1,0,0,1,0,0,2,0,1,0,0,1,0],\"disLiaZiNum\":0,\"" +
+            ",0,0,1,0,0,0],\"disLiaZiCount\":0,\"getCardTimes\":0,\"jifen\":0,\"responseDisCard\":10},{\"" +
+            "cardArr\":[0,1,1,2,0,0,0,0,0,1,0,0,1,1,0,1,0,0,1,0,0,2,0,1,0,0,1,0],\"disLiaZiCount\":0,\"" +
             "getCardTimes\":0,\"jifen\":0,\"responseDisCard\":10},{\"cardArr\":[0,0,1,1,0,0,0,2,1,0,2" +
-            ",0,0,1,0,0,0,0,0,1,1,0,1,0,0,1,0,1],\"disLiaZiNum\":0,\"getCardTimes\":0,\"jifen\":0,\"r" +
+            ",0,0,1,0,0,0,0,0,1,1,0,1,0,0,1,0,1],\"disLiaZiCount\":0,\"getCardTimes\":0,\"jifen\":0,\"r" +
             "esponseDisCard\":10}],\"responseNum\":0,\"roomId\":0,\"yuPai\":[13,19,17,23,25,6,9,14,27," +
             "6,23,4,17,5,27,6,9,12,26,22,26,18,15,16,14,12,19,24,2,15,17,11,14,13,27,3,6,5,18,11,17," +
             "4,4,8,9,24,8,7,18,10,14,22,1,11,5],\"zhuang\":-1}\n";

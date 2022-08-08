@@ -45,7 +45,7 @@ public class ProcessC4 {
             if(paiNo==roomState.laiZi){
                 roomState.laiZiAppeared = true;
                 jifenAfterDisLaiZi(player, roomState);//与下一句顺序不能交换
-                roomState.playerStates[player.getSeatNo()].disLiaZiNum++;
+                roomState.playerStates[player.getSeatNo()].disLiaZiCount++;
                 roomState.beforeGetCard = RoomState.V.DIS_LAI_ZI;
             }else{
                 roomState.playerStates[player.getSeatNo()].disHongZhongCount++;
