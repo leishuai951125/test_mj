@@ -45,7 +45,7 @@ function init() {
         arrTmp[i].xiao = [];
         //下面是新增的
         arrTmp[i].chiArr = []; //chiArr.Obj = {{chiType:1,paiArr:[]}
-        arrTmp[i].disLaiziCount=0
+        arrTmp[i].disLiaZiCount=0
         arrTmp[i].disHongZhongCount=0
         arrTmp[i].xiaoFanShu=0 //笑的番数
         if(i!=0){ //不是自己
@@ -281,7 +281,7 @@ function getMaxFanWithOnePlayer(otherPlayer){
     return getPeopleFan(myInformation) + getPeopleFan(otherPlayer)
 }
 function getPeopleFan(player) {
-    return player ? player.xiaoFanShu + player.disHongZhongCount + player.disLaiziCount * 2  : 0
+    return player ? player.xiaoFanShu + player.disHongZhongCount + player.disLiaZiCount * 2  : 0
 }
 
 function Dos7(data) {
@@ -367,7 +367,7 @@ function Dos8(data) {
     var seatNo = data.seatNo;
     if (data.paiNo == roomInformation.laizi) {
         roomInformation.laiZiApprience = true;
-        roomInformation.allPlayer[seatNo].disLaiziCount++;
+        roomInformation.allPlayer[seatNo].disLiaZiCount++;
     }
     if(data.paiNo==Rule.HongZhongPoint){ //是红中
         roomInformation.allPlayer[seatNo].disHongZhongCount++;
@@ -840,7 +840,7 @@ function Dos13(data) {
             myInformation.userName = data[i].username;
             myInformation.chiArr = data[i].chiArr
             myInformation.disHongZhongCount=data[i].disHongZhongCount
-            myInformation.disLaiziCount=data[i].disLaiziCount
+            myInformation.disLiaZiCount=data[i].disLiaZiCount
             myInformation.xiaoFanShu=data[i].xiaoFanShu
 
             //将后台牌数组转换为前台对应格式
@@ -933,7 +933,7 @@ function Dos13(data) {
             playerInfo.userName = data[i].username;
             playerInfo.chiArr = data[i].chiArr
             playerInfo.disHongZhongCount=data[i].disHongZhongCount
-            playerInfo.disLaiziCount=data[i].disLaiziCount
+            playerInfo.disLiaZiCount=data[i].disLiaZiCount
             playerInfo.xiaoFanShu=data[i].xiaoFanShu
 
             playerInfo.pai = 13;
