@@ -314,8 +314,8 @@ var huPai3 = {
         if (otherCard === laiZi || cardSum % 3 !== 2) { //出牌为癞子或者数量不对
             return false;
         }
-        //别人的红中不能胡
-        if (otherCard == Rule.HongZhongPoint) {
+        //别人的红中或者赖子不能胡
+        if (otherCard == Rule.HongZhongPoint || otherCard==laiZi) {
             return false;
         }
         //自己有红中也不能胡
@@ -329,18 +329,27 @@ var huPai3 = {
             room.maxLaiZiNum_ziMo = 1;
         }
         if (room.maxLaiZiNum_zhuoChong === undefined) {
-            room.maxLaiZiNum_zhuoChong = 0;
+            if(Rule.YouLaiCanZhuoChong){  //有赖可以捉人
+                room.maxLaiZiNum_zhuoChong = 1;
+            }else{
+                room.maxLaiZiNum_zhuoChong = 0;
+            }
         }
         var laiZiSum = huPai3.getLaiZiSum(cardArr, laiZi);
-        if (otherCard === null && laiZiSum <= room.maxLaiZiNum_ziMo) {//自摸判断
-            return true;
-        } else if (laiZiSum <= room.maxLaiZiNum_zhuoChong) { //捉冲
-            if (room.laiZiApprience !== undefined && room.laiZiApprience === false) {
+        if (otherCard === null){ //自摸
+            if(laiZiSum <= room.maxLaiZiNum_ziMo){//自摸看自己手上赖子数
+                return true;
+            }
+        }  else if (laiZiSum <= room.maxLaiZiNum_zhuoChong) { //捉冲
+            if(Rule.YouLaiCanZhuoChong){ //出现赖子可以捉冲
+                return true;
+            }else if (room.laiZiApprience !== undefined && room.laiZiApprience === false) {
                 return true;
             }
         }
         return false;
     },
+    //otherCard 一定不是赖子
     realChek:function(cardArr, otherCard, laiZi, room){
         var cardCopy = cardArr.concat();//复制数组
         var type = null;
@@ -351,23 +360,34 @@ var huPai3 = {
                 laiZiIndex = i;
             }
         }
-        if (otherCard === null) { //自摸
-            if (huPai3.noNaiTest(cardCopy, cardCopy.length)) { //黑摸检测
-                type = "hei_mo";
-            } else if (laiZiIndex !== -1) { //屁胡检验
-                for (var i = 1; i <= 27; i++) {
-                    cardCopy.splice(laiZiIndex, 1, i);//替换癞子
-                    if (huPai3.noNaiTest(cardCopy, cardCopy.length)) {
-                        type = "pi_hu";
-                        actAs.push(i);
-                        break;
-                    }
+        if(otherCard!=null){ //拿一张牌
+            cardArr.push(otherCard) //放到数组尾部，不影响 laiZiIndex
+        }
+        var isHeiHu=false
+        var isPiHu=false
+        if (huPai3.noNaiTest(cardCopy, cardCopy.length)) { //黑摸检测
+            isHeiHu=true
+        } else if (laiZiIndex !== -1) { //屁胡检验
+            for (var i = 1; i <= 27; i++) {
+                cardCopy.splice(laiZiIndex, 1, i);//替换癞子
+                if (huPai3.noNaiTest(cardCopy, cardCopy.length)) {
+                    isPiHu=true
+                    actAs.push(i);
+                    break;
                 }
             }
+        }
+        if (otherCard === null) { //自摸
+            if(isHeiHu){
+                type = "hei_mo";
+            }else if(isPiHu) {
+                type="pi_hu";
+            }
         } else { //捉冲
-            cardCopy.push(otherCard);
-            if (huPai3.noNaiTest(cardCopy, cardCopy.length)) {
+            if(isHeiHu){
                 type = "zhuo_chong";
+            }else if(isPiHu) {
+                type="zhuo_chong_pi_hu"; //新增的
             }
         }
         if (type !== null) {
