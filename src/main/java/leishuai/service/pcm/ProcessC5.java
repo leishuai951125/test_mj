@@ -25,10 +25,12 @@ public class ProcessC5 {
 
     public interface V {
         int NOT_HU = 0;//不能胡
-        int PI_HU = 2;//屁胡
-        int HEI_MO = 4;//黑摸
+        int Gandengyan_PI_HU = 2;//屁胡
+        int Gandengyan_HEI_MO = 4;//黑摸
         String PI_HU_STRING = "pi_hu";
         String HEI_MO_STRING = "hei_mo";
+        String ZHUO_CHONG ="zhuo_chong";
+        String ZHUO_CHONG_PIHU = "zhuo_chong_pi_hu";
     }
 
     static int checkSelfHu(JSONObject jsonObject, Player player) {//0不胡，2屁胡，4黑摸
@@ -38,11 +40,22 @@ public class ProcessC5 {
         if (cardArr[roomState.laiZi] > player.getRoom().getMaxLaiZiNum_ziMo()) { //癞子超出
             return V.NOT_HU;
         }
+        //晃晃的特化处理逻辑
+        if(Rule.GameMode==Rule.GameMode_HuangHuang){
+            if(V.HEI_MO_STRING.equals(type)){
+                return 2;
+            }else if(V.PI_HU_STRING.equals(type)){
+                return 1;
+            }else{
+                return 0;
+            }
+        }
+        //一赖到底的逻辑
         int bieShu = HuPaiByGuide.isHu(jsonObject, cardArr, roomState.laiZi);
-        if (V.HEI_MO_STRING.equals(type) && bieShu == V.HEI_MO) {
-            return V.HEI_MO;
-        } else if (V.PI_HU_STRING.equals(type) && bieShu == V.PI_HU) {
-            return V.PI_HU;
+        if (V.HEI_MO_STRING.equals(type) && bieShu == V.Gandengyan_HEI_MO) {
+            return V.Gandengyan_HEI_MO;
+        } else if (V.PI_HU_STRING.equals(type) && bieShu == V.Gandengyan_PI_HU) {
+            return V.Gandengyan_PI_HU;
         } else {
             return V.NOT_HU;
         }
@@ -51,7 +64,23 @@ public class ProcessC5 {
     static void jiFenAfterSelfHu(Player player, RoomState roomState, int huMultiple) {
         int selfNo = player.getSeatNo();
         PlayerState[] playerStates = roomState.playerStates;
+
+        if(Rule.GameMode==Rule.GameMode_HuangHuang){
+            for (int i = 0; i < player.getRoom().getSumPlayer(); i++) {
+                if (i != selfNo) {
+                    PlayerState self =  playerStates[i];
+                    PlayerState other =playerStates[i];
+                    //晃晃直接累加倍数
+                    int jiFenReduce = (self.getFanCount()+other.getFanCount() + huMultiple) * player.getRoom().getDiFen();
+                    playerStates[i].jifen -= jiFenReduce;
+                    playerStates[selfNo].jifen += jiFenReduce;
+                }
+            }
+            return;
+        }
+
         int selfDisLaiZi = playerStates[selfNo].disLiaZiCount;
+        //干瞪眼四赖翻倍
         if (selfDisLaiZi + playerStates[selfNo].cardArr[roomState.laiZi] == 4) { //胡的人共有四个癞子
             huMultiple = 2 * huMultiple;
         }
@@ -85,12 +114,19 @@ public class ProcessC5 {
     //获取自摸后的消息
     public static List<ProcessResult> getHuBySelfMsg(Player player, RoomState roomState, int huMultiple) {
         Suggest s10_sugget = getS10(roomState);
-//        String type= huMultiple == 2 ? V.PI_HU_STRING : V.HEI_MO_STRING;//倍数决定类型
         String type = null;
-        if (huMultiple == 2) {
-            type = V.PI_HU_STRING;
-        } else {
-            type = V.HEI_MO_STRING;
+        if(Rule.GameMode==Rule.GameMode_GanDengYan){
+            if (huMultiple == 2) {
+                type = V.PI_HU_STRING;
+            } else { //4
+                type = V.HEI_MO_STRING;
+            }
+        }else{
+            if (huMultiple == 2) {
+                type = V.HEI_MO_STRING;
+            } else { // 1
+                type = V.PI_HU_STRING;
+            }
         }
         Suggest s9_suggest = getS9_ziMo(player, roomState, type);
         List<ProcessResult> resultList = new ArrayList<ProcessResult>(4);
@@ -199,7 +235,7 @@ public class ProcessC5 {
             roomState.canDisCard = false;
 
             long start = System.nanoTime() / 100000;
-            int huMultiple = checkSelfHu(jsonObject, player);//胡的倍数，0表示不能胡，2屁胡，4黑摸
+            int huMultiple = checkSelfHu(jsonObject, player);//胡的倍数，0表示不能胡，非0 可以胡
             System.out.println(System.nanoTime() / 100000 - start);
             if (huMultiple == 0) {  //不能胡，则随机出牌
                 return ProcessC4.disCardOne(player, roomState, 0);
