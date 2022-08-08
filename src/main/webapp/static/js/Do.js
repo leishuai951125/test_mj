@@ -118,6 +118,10 @@ function canChi(chuDePai, chuPaiSeatNo) {
     var chuPaiHuaSe = parseInt((chuDePai - 1) / 9);
     var chuPaiDianShu = (chuDePai - 1) % 9
     for (var i = 0; i < myInformation.pai.length; i++) {
+        if(myInformation.pai[i]==roomInformation.laizi){
+            //赖子不能吃
+            continue
+        }
         var huaSe = parseInt((myInformation.pai[i] - 1) / 9)
         var dianShu = (myInformation.pai[i] - 1) % 9
         if (huaSe != chuPaiHuaSe) {
