@@ -39,10 +39,11 @@ public class ProcessC6 {
         int paiNo = jsonObject.getInteger("paiNo");
         for (int i = 0; i < sumPlayer; i++) {
             int[] temp = roomState.playerStates[i].cardArr;
-            //超过胡牌的癞子数限制，不能胡
+            //超过胡牌的癞子数限制，不能胡(超过限制黑摸也不能胡)
             if (temp[roomState.laiZi] > player.getRoom().getMaxLaiZiNum_zhuoChong()) {
                 continue;
             }
+            //下面都是黑的胡牌
             int[] paiArr = HuPaiByGuide.copyCardArr(temp);
             paiArr[paiNo]++;
             if (HuPai.testHu(paiArr)) { //testHu不会改动数组
@@ -81,10 +82,16 @@ public class ProcessC6 {
         }};
     }
 
-    //获取抢笑后的消息
+    //获取自动抢笑后的消息
     private static List<ProcessResult> getRobbedXiaoMsg(RoomState roomState, Player player, int[] beRobbed, int paiNo) {
         List<ProcessResult> resultList = new LinkedList<ProcessResult>();
-        int jiFenReduce = 3 * player.getRoom().getDiFen();
+        int jiFenReduce=0;
+        if(Rule.GameMode== Rule.GameMode_GanDengYan){
+            jiFenReduce = 3 * player.getRoom().getDiFen();
+            //todo 需要计算赖子数
+        }else{
+            jiFenReduce=10;//晃晃固定 10 番
+        }
         jiFenAfterRobbed(roomState, player, beRobbed, jiFenReduce); //计算抢笑后的积分
         Suggest s11_suggest = getS11(player.getSeatNo(), V.HUI_TOU_XIAO, paiNo);//获取有人笑的信息
         Suggest s10_suggest = ProcessC5.getS10(roomState); //积分

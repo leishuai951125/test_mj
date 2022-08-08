@@ -382,21 +382,26 @@ public class ProcessC7 {
     private static void jiFenAfterZhuoChong(Room room, int disCardSeatNo, int[] zhuoChongSeats) {
         RoomState roomState = room.getRoomState();
         Player player = room.getPlayers()[disCardSeatNo];//当前被捉的人，也是出牌的人
-        int beiShu = 0;
-        if(Rule.HasGangShangPao){ //有杠上炮需要计算打牌前的动作
-            if (roomState.beforeGetCard == RoomState.V.DIAN_XIAO) { //点笑被捉，3
-                beiShu = 3;
-            } else if (roomState.beforeGetCard == RoomState.V.HUI_TOU_XIAO) { //回头笑被捉，5
-                beiShu = 5;
-            } else if (roomState.beforeGetCard == RoomState.V.ZI_XIAO) {//自笑被捉，8
-                beiShu = 8;
-            } else { //普通被捉
-                beiShu = 2;
+
+        int jiFenReduce =0;
+        if(Rule.FanMode==Rule.FanMode_LeiJia){ //累加模式，晃晃的玩法
+            //todo 需要计算番数，胡牌类型，每个人的番数不一样
+        }else{ //累乘模式，干瞪眼里面的玩法
+            int beiShu = 1;
+            if(Rule.HasGangShangPao){ //有杠上炮需要计算打牌前的动作，以来到底里面的玩法，晃晃走不到这里
+                if (roomState.beforeGetCard == RoomState.V.DIAN_XIAO) { //点笑被捉，3
+                    beiShu = 3;
+                } else if (roomState.beforeGetCard == RoomState.V.HUI_TOU_XIAO) { //回头笑被捉，5
+                    beiShu = 5;
+                } else if (roomState.beforeGetCard == RoomState.V.ZI_XIAO) {//自笑被捉，8
+                    beiShu = 8;
+                } else { //普通被捉
+                    beiShu = 2;
+                }
             }
-        }else{ //晃晃走这个分支
-            // todo ls 看是黑的还是屁的，改成累加，而不是累乘
+            //todo 需要管打了几个赖子
+            jiFenReduce = beiShu * player.getRoom().getDiFen();
         }
-        int jiFenReduce = beiShu * player.getRoom().getDiFen();
         ProcessC6.jiFenAfterRobbed(roomState, player, zhuoChongSeats, jiFenReduce); //计算抢笑后的积分
     }
 
