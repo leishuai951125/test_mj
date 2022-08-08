@@ -68,8 +68,8 @@ public class ProcessC5 {
         if(Rule.GameMode==Rule.GameMode_HuangHuang){
             for (int i = 0; i < player.getRoom().getSumPlayer(); i++) {
                 if (i != selfNo) {
-                    PlayerState self =  playerStates[i];
-                    PlayerState other =playerStates[i];
+                    PlayerState self =  playerStates[selfNo];
+                    PlayerState other = playerStates[i];
                     //晃晃直接累加倍数
                     int jiFenReduce = (self.getFanCount()+other.getFanCount() + huMultiple) * player.getRoom().getDiFen();
                     playerStates[i].jifen -= jiFenReduce;

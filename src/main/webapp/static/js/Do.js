@@ -19,6 +19,7 @@ function init() {
         for(var i=0;i<arrTmp.length;i++){
             arrTmp[i].seatNo=null;
             arrTmp[i].userName=null;
+            arrTmp[i].jiFen = 0;
         }
     }
     {
@@ -39,7 +40,6 @@ function init() {
     }
 
     for(var i=0;i<arrTmp.length;i++){
-        arrTmp[i].jiFen = 0;
         arrTmp[i].chuPai = [];
         arrTmp[i].peng = [];
         arrTmp[i].xiao = [];
