@@ -339,7 +339,10 @@ public class ProcessC7 {
         int selfNo = fuckerPlayer.getSeatNo();
         PlayerState[] playerStates = roomState.playerStates;
         int selfDisLaiZi = playerStates[selfNo].disLiaZiNum;
-        int disLaiZi = playerStates[beFuck].disLiaZiNum + selfDisLaiZi; //一共漂癞子数癞子
+        int disLaiZi = 0;//一共漂癞子数癞子
+        if(Rule.IsGangFanBei){ //杠翻倍
+            disLaiZi=playerStates[beFuck].disLiaZiNum + selfDisLaiZi;
+        }
         int multipleI = (int) Math.pow(2, disLaiZi); //2的disLaiZi次方
         int jiFenReduce = multipleI * fuckerPlayer.getRoom().getDiFen();
         playerStates[beFuck].jifen -= jiFenReduce;

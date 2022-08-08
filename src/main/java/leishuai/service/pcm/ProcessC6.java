@@ -193,7 +193,10 @@ public class ProcessC6 {
         int selfDisLaiZi = playerStates[selfNo].disLiaZiNum;
         for (int i = 0; i < player.getRoom().getSumPlayer(); i++) {
             if (i != selfNo) {
-                int disLaiZi = playerStates[i].disLiaZiNum + selfDisLaiZi; //一共漂癞子数癞子
+                int disLaiZi=0;
+                if(Rule.IsGangFanBei){
+                    disLaiZi = playerStates[i].disLiaZiNum + selfDisLaiZi; //一共漂癞子数癞子
+                }
                 int multipleI = Multiple * (int) Math.pow(2, disLaiZi); //2的disLaiZi次方
                 int jiFenReduce = multipleI * player.getRoom().getDiFen();
                 playerStates[i].jifen -= jiFenReduce;
