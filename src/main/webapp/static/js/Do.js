@@ -288,8 +288,9 @@ function Dos7(data) {
     showDuiJuShu();
 
     if (data.lastFourCards != undefined) { //最后四张
-        moPai(data.lastFourCards[myInformation.seatNo]);
-        myInformation.canHu = huPai3.test2(myInformation.pai, null, roomInformation.laizi, roomInformation);
+        var paiNo=data.lastFourCards[myInformation.seatNo]
+        moPai(paiNo);
+        myInformation.canHu = huPai3.test2(myInformation.pai, null, roomInformation.laizi, roomInformation,paiNo);
         if (myInformation.canHu != null) {
             var c8_msg = {
                 msgId: "c8",
@@ -321,7 +322,11 @@ function Dos7(data) {
             //进牌区显示该牌
             moPai(data.paiNo);
             myInformation.laiPai = data.paiNo;
-            myInformation.canHu = huPai3.test2(myInformation.pai, null, roomInformation.laizi, roomInformation);
+            if(data.paiNo==-1){
+                myInformation.canHu=false
+            }else{
+                myInformation.canHu = huPai3.test2(myInformation.pai, null, roomInformation.laizi, roomInformation,data.paiNo);
+            }
             // 清空碰的黑名单
             myInformation.notAdminPeng.length = 0;
             //回头笑

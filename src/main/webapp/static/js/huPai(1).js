@@ -341,10 +341,7 @@ var huPai3 = {
         }
         return false;
     },
-    test2: function (cardArr, otherCard, laiZi, room) {
-        if (this.preCheck(cardArr, otherCard, laiZi, room) === false) {
-            return null;
-        }
+    realChek:function(cardArr, otherCard, laiZi, room){
         var cardCopy = cardArr.concat();//复制数组
         var type = null;
         var actAs = [];
@@ -388,6 +385,62 @@ var huPai3 = {
             }
         }
         return null;
+    },
+    //cardArr.length = n*3 +1
+    isShuaPai:function(cardArr,laiZiIndex){
+        var copy=cardArr.concat()
+        copy.slice(laiZiIndex,1) //移除赖子
+        for(var i=0;i<copy.length;i++){
+            copy2=copy.concat()
+            copy2.slice(i,1) //依次移除所有字
+            if(huPai3.noNaiTest(copy2, copy2.length)){
+                // 移除某个字后能黑摸，说明时刷牌
+                return true;
+            }
+        }
+        return false;
+    },
+    //cardArr.length = n*3 +1
+    isJianZiHu:function(cardArr,laiZiIndex){
+        //把赖子替换成任意数
+        for(var i=1;i<=27;i++){
+            var cardCopy=cardArr.concat()
+            cardCopy.splice(laiZiIndex, 1, i);//替换癞子
+            for(var j=1;j<11;j++){ //能胡10张字，一定是见字胡
+                var cardCopy2=cardCopy.concat()
+                cardCopy2.push(j) //n*3+2
+                if(huPai3.noNaiTest(cardCopy2, cardCopy2.length)){
+                    return false
+                }
+            }
+            return true
+        }
+    },
+    //cardArr = 3*n+2 时，selfGetPaiNo 不为空,表示自己刚拿的牌
+    //cardArr = 3*n+1 时，otherCard 不为空,表示别人打的字
+    test2: function (cardArr, otherCard, laiZi, room,selfGetPaiNo) {
+        if (this.preCheck(cardArr, otherCard, laiZi, room) === false) {
+            return null;
+        }
+        var laiZiIndex=cardArr.indexOf(roomInformation.laizi)
+        if(laiZiIndex!=-1){ //有赖子
+            if(otherCard!=null){ //捉冲，此时 cardArrr n*3+1
+                if(this.isShuaPai(cardArr,laiZiIndex)){ //刷牌
+                    return null
+                }
+                if(this.isJianZiHu(cardArr,laiZiIndex)){ //见字胡
+                    return null
+                }
+            }else{ //自摸
+                var copy=cardArr.concat()
+                copy.splice(copy.indexOf(selfGetPaiNo),1) //移除自己刚拿到的牌
+                var laiZiIndex =copy.indexOf(roomInformation.laizi) //赖子位置
+                if(this.isJianZiHu(copy,laiZiIndex)){ //见字胡
+                    return null
+                }
+            }
+        }
+        return this.realChek(cardArr, otherCard, laiZi, room)
     }
 }
 
