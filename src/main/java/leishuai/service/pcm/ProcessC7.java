@@ -467,7 +467,12 @@ public class ProcessC7 {
             return PlayerState.V.BU_YAO;
         }
         //如果癞子已经出现，或者自己的癞子数超过捉冲的癞子数量限制
-        if (roomState.laiZiAppeared || cardArr[roomState.laiZi] > player.getRoom().getMaxLaiZiNum_zhuoChong()) {
+        if(Rule.GameMode==Rule.GameMode_GanDengYan && roomState.laiZiAppeared){
+            //干瞪眼见到赖子就不能胡
+            return PlayerState.V.BU_YAO;
+        }
+        if (cardArr[roomState.laiZi] > player.getRoom().getMaxLaiZiNum_zhuoChong()) {
+            //手上赖子多也不允许胡
             return PlayerState.V.BU_YAO;
         }
         int paiArr[] = HuPaiByGuide.copyCardArr(cardArr);
