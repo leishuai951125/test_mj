@@ -144,12 +144,12 @@ public class ProcessC7 {
         changeStatusWhenChi(room, chiSeatNo, chiType, roomState.disCardNo);//修改出牌人
         List<ProcessResult> resultList = new LinkedList<ProcessResult>();
         Suggest s10_suggest = ProcessC5.getS10(roomState); //积分
-        Suggest s12_suggest = getS13(chiSeatNo, roomState.disCardNo, chiType);//获取吃的信息
+        Suggest s14_suggest = getS14(chiSeatNo, roomState.disCardNo, chiType);//获取吃的信息
         Suggest s7_suggest[] = ProcessC3.getS7(room, false);
         for (int i = 0; i < room.getSumPlayer(); i++) {
             List<Suggest> suggestList = new LinkedList<Suggest>();
             suggestList.add(s10_suggest);
-            suggestList.add(s12_suggest);
+            suggestList.add(s14_suggest);
             suggestList.add(s7_suggest[i]);
             ProcessResult result = new ProcessResult();
             result.setSeatNo(i);
@@ -188,16 +188,16 @@ public class ProcessC7 {
         return paiArr;
     }
 
-    private static Suggest getS13(int pengSeat, int disCardNo, int chiType) {
-        Suggest s12_suggest = new Suggest();
-        s12_suggest.setMsgId("s12");
+    private static Suggest getS14(int pengSeat, int disCardNo, int chiType) {
+        Suggest s14_suggest = new Suggest();
+        s14_suggest.setMsgId("s14");
         Map body = new HashMap();
         body.put("paiNo", disCardNo);
         body.put("seatNo", pengSeat);
         body.put("chiType", chiType - 20); //前后端相差20
         body.put("paiArr", getPaiArrByChiType(disCardNo, chiType));
-        s12_suggest.setMsgBody(body);
-        return s12_suggest;
+        s14_suggest.setMsgBody(body);
+        return s14_suggest;
     }
 
     //更新出牌人,和碰信息

@@ -840,6 +840,7 @@ function woPeng() {
         for (var b = 0; b < 3; b++) {
             var paiNo = myInformation.chiArr[i].paiArr[b]
             var image = newImg("img/" + zhuanhuan[paiNo] + ".png")
+            var pai = document.createElement("div");
             // 设置背景样式
             pai.style.position = "absolute";
             pai.style.top = "100%";

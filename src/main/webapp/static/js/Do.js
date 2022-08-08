@@ -52,7 +52,7 @@ function init() {
     leftInformation.chuPai = [];
     leftInformation.pai = 13;
     leftInformation.peng = [];
-    myInformation.chiArr = [];
+    leftInformation.chiArr = [];
     leftInformation.xiao = [];
     // roomInformation.diFen=5;
     // roomInformation.playedTurn=0;
@@ -60,13 +60,13 @@ function init() {
     rightInformation.chuPai = [];
     rightInformation.pai = 13;
     rightInformation.peng = [];
-    myInformation.chiArr = [];
+    rightInformation.chiArr = [];
     rightInformation.xiao = [];
 
     acrossInformation.chuPai = [];
     acrossInformation.pai = 13;
     acrossInformation.xiao = [];
-    myInformation.chiArr = [];
+    acrossInformation.chiArr = [];
     acrossInformation.peng = [];
 }
 
@@ -879,7 +879,7 @@ function Dos13(data) {
             playerInfo.headImgUrl = data[i].headImgUrl;
             playerInfo.accountId = data[i].accountId;
             playerInfo.userName = data[i].username;
-            myInformation.chiArr = data[i].chiArr
+            playerInfo.chiArr = data[i].chiArr
             playerInfo.pai = 13;
             var idString = playerInfo.idString;
             $(idString).css("background-image", "url(" + data[i].headImgUrl + ")");

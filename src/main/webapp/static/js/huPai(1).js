@@ -319,7 +319,7 @@ var huPai3 = {
             return false;
         }
         //自己有红中也不能胡
-        for (var i = 0; i < cardArr.length; cardArr++) {
+        for (var i = 0; i < cardArr.length; i++) {
             if (cardArr[i] == Rule.HongZhongPoint) {
                 return false;
             }

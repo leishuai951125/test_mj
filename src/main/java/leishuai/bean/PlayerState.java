@@ -31,8 +31,8 @@ public class PlayerState {
     }
 
     public static class Chi {
-        int chiType; //21，22，23
-        int[] paiArr;//length 3
+        public int chiType; //21，22，23
+        public int[] paiArr;//length 3
 
         public Chi(int chiType, int[] paiArr) {
             this.chiType = chiType;
@@ -63,6 +63,7 @@ public class PlayerState {
         for (int i = 0; i < cardArrLength; i++) {
             cardArr[i] = 0;
         }
+        allChi = new ArrayList<Chi>();
         //以下信息在生成出牌指令时修改
         getCardTimes = 0;//拿牌的次数，用于自笑和回头笑的合法验证
         //以下变量在服务端收到出牌信息时修改
