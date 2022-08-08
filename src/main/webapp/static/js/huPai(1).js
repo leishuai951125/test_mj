@@ -379,13 +379,13 @@ var huPai3 = {
         }
         if (otherCard === null) { //自摸
             if(isHeiHu){
-                type = "hei_mo";
+                type = Hei_Mo;
             }else if(isPiHu) {
                 type="pi_hu";
             }
         } else { //捉冲
             if(isHeiHu){
-                type = "zhuo_chong";
+                type = Zhuo_Chong;
             }else if(isPiHu) {
                 type="zhuo_chong_pi_hu"; //新增的
             }
@@ -463,6 +463,9 @@ var huPai3 = {
         return this.realChek(cardArr, otherCard, laiZi, room)
     }
 }
+
+var Hei_Mo="hei_mo"
+var Zhuo_Chong="zhuo_chong"
 
 var LSutil = {
     arrToString: function (arr) {

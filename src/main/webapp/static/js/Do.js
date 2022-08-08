@@ -47,6 +47,7 @@ function init() {
         arrTmp[i].chiArr = []; //chiArr.Obj = {{chiType:1,paiArr:[]}
         arrTmp[i].disLaiziCount=0
         arrTmp[i].disHongZhongCount=0
+        arrTmp[i].xiaoFanShu=0 //笑的番数
         if(i!=0){ //不是自己
             arrTmp[i].pai=13
         }
@@ -193,6 +194,8 @@ function Dos4(data) {
     var sumPlayer = roomInformation.sumPlayer = data[0].sumPlayer;
     var selfSeatNo = myInformation.seatNo = data[0].selfSeatNo;
     showRoomId(roomInformation.roomId);
+
+    roomInformation.allPlayer[selfSeatNo]=myInformation
     setOtherPlayer(sumPlayer, selfSeatNo);
 
     for (var i = 1; i < data.length; i++) {
@@ -263,6 +266,24 @@ function Dos6(data) {
     }
 }
 
+function getMaxFanWithAllPlayer(){
+    var selfFan=getPeopleFan(myInformation)
+    var maxOtherFan=0
+    for(var i=0;i<4;i++){
+        var fan=getPeopleFan(roomInformation.allPlayer[i])
+        if(fan>maxOtherFan){
+            maxOtherFan=fan
+        }
+    }
+    return selfFan+maxOtherFan
+}
+function getMaxFanWithOnePlayer(otherPlayer){
+    return getPeopleFan(myInformation) + getPeopleFan(otherPlayer)
+}
+function getPeopleFan(player) {
+    return player ? player.xiaoFanShu + player.disHongZhongCount + player.disLaiziCount : 0
+}
+
 function Dos7(data) {
     roomInformation.yuPaiSum = data.yuPaiSum;
     showDuiJuShu();
@@ -272,21 +293,24 @@ function Dos7(data) {
         moPai(paiNo);
         myInformation.canHu = huPai3.test2(myInformation.pai, null, roomInformation.laizi, roomInformation,paiNo);
         if (myInformation.canHu != null) {
-            var c8_msg = {
-                msgId: "c8",
-                type: myInformation.canHu.type,
-                matchMethod: myInformation.canHu.matchMethod,
-                actAs: myInformation.canHu.actAs
+            var fanType=myInformation.canHu.type
+            var huFan= fanType==Hei_Mo ||fanType==Zhuo_Chong ? 2:1
+            if(huFan+getMaxFanWithAllPlayer()>=Rule.MinHuFan){ //三番起胡
+                var c8_msg = {
+                    msgId: "c8",
+                    type: myInformation.canHu.type,
+                    matchMethod: myInformation.canHu.matchMethod,
+                    actAs: myInformation.canHu.actAs
+                }
+                ws.send(JSON.stringify(c8_msg));
+                return
             }
-            ws.send(JSON.stringify(c8_msg));
-        } else {
-            var c8_msg = {
-                msgId: "c8",
-                type: "not_hu",
-            }
-            ws.send(JSON.stringify(c8_msg));
         }
-        return;
+        var c8_msg = {
+            msgId: "c8",
+            type: "not_hu",
+        }
+        ws.send(JSON.stringify(c8_msg));
     }
 
     //不是最后四张
@@ -303,9 +327,16 @@ function Dos7(data) {
             moPai(data.paiNo);
             myInformation.laiPai = data.paiNo;
             if(data.paiNo==-1){
-                myInformation.canHu=false
+                myInformation.canHu=null
             }else{
                 myInformation.canHu = huPai3.test2(myInformation.pai, null, roomInformation.laizi, roomInformation,data.paiNo);
+                if(myInformation.canHu!=null){
+                    var fanType=myInformation.canHu.type
+                    var huFan= fanType==Hei_Mo ||fanType==Zhuo_Chong ? 2:1
+                    if(huFan+getMaxFanWithAllPlayer() < Rule.MinHuFan){  //不够三番,不能胡
+                        myInformation.canHu=null
+                    }
+                }
             }
             // 清空碰的黑名单
             myInformation.notAdminPeng.length = 0;
@@ -328,8 +359,6 @@ function Dos7(data) {
         }
         $("#chupai").css("display", "block");
     }
-
-
 }
 
 // 玩家出牌处理
@@ -361,6 +390,15 @@ function Dos8(data) {
 
     //对其他玩家出牌处理 0要不起 1小朝天 2碰 3点笑
     myInformation.canHu = huPai3.test2(myInformation.pai, data.paiNo, roomInformation.laizi, roomInformation);
+    if(myInformation.canHu!=null){
+        var fanType=myInformation.canHu.type
+        var huFan= fanType==Hei_Mo ||fanType==Zhuo_Chong ? 2:1
+        var disPlayerFan=getMaxFanWithOnePlayer(roomInformation.allPlayer[seatNo])
+        if(huFan + disPlayerFan < Rule.MinHuFan){  //不够三番,不能胡
+            myInformation.canHu=null
+        }
+    }
+
     var canPengXiaoV = canPengXiao(disCard);
     // 1 吃最左 2 吃中间 3 吃最右
     var canChiArr = canChi(disCard, seatNo);
@@ -605,6 +643,21 @@ function Dos10(data) {
 //显示笑
 function Dos11(data) {
     var seatNo = data.seatNo;
+
+    //计算笑的番数----------
+    var xiaoPlayer
+    if(seatNo==myInformation.seatNo){
+        xiaoPlayer=myInformation
+    }else {
+        xiaoPlayer=roomInformation.allPlayer[seatNo]
+    }
+    if(data.type==zi_xiao){
+        xiaoPlayer.xiaoFanShu+=2
+    }else{
+        xiaoPlayer.xiaoFanShu+=1
+    }
+    //计算笑的番数-------------
+
     switch (data.type) {
         case "zi_xiao": {
             if (seatNo != myInformation.seatNo) { //别人
@@ -774,6 +827,7 @@ function Dos13(data) {
     roomInformation.yuPaiSum = data[0].yuPaiSum;
     var sumPlayer = roomInformation.sumPlayer = data[0].sumPlayer;
     var selfSeatNo = myInformation.seatNo = data[0].selfSeatNo;
+    roomInformation.allPlayer[selfSeatNo]=myInformation
     setOtherPlayer(sumPlayer, selfSeatNo);
     showLaiGen();
     var jiFenArr = [];
