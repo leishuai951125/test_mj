@@ -61,6 +61,7 @@ public class ProcessRecover {
                 put("cardArr", getPengAndXiao(playerState.cardArr));
             }
             put("disLiaZiNum", playerState.disLiaZiNum);
+            put("disHongZhongCount", playerState.disHongZhongCount);
             put("jifen", playerState.jifen);
             put("disCardArr", playerState.disCardArr);
             put("superFlag", playerState.superFlag);

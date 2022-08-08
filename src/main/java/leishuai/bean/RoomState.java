@@ -19,6 +19,7 @@ public class RoomState {
         int HUI_TOU_XIAO = 18;  //回头笑
         int ZI_XIAO = 19;  //自笑，包括大朝天
         int DIS_LAI_ZI = 20;//漂癞子，用于标识一种出牌前操作
+        int DIS_HONG_ZHONG= 21;//漂癞子，用于标识一种出牌前操作
         int NORMAL = 10;  //普通,用于标识一种出牌前操作
 
         int NO_CARD = -1;//不拿牌出牌

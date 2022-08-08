@@ -38,16 +38,23 @@ public class ProcessC4 {
         roomState.disCardNo = paiNo;//当前出牌人出的是paiNo
         roomState.playerStates[player.getSeatNo()].cardArr[paiNo]--;//减掉一张牌
         roomState.playerStates[player.getSeatNo()].disCardArr.add(paiNo); //增加一张出牌
-        if (paiNo == roomState.laiZi) { //出的是癞子，则癞子数加一
+        if (paiNo == roomState.laiZi || paiNo==Rule.HongZhongPoint) { //出的是癞子，则癞子数加一
             //计算不被捉时的积分变化，即出牌前操作造成的积分变化，不含大小朝天，
             ProcessC7.jiFenBeforeNotRobbed(player.getRoom(), player.getSeatNo());
 
-            roomState.laiZiAppeared = true;
-            jifenAfterDisLaiZi(player, roomState);//与下一句顺序不能交换
-            roomState.playerStates[player.getSeatNo()].disLiaZiNum++;
+            if(paiNo==roomState.laiZi){
+                roomState.laiZiAppeared = true;
+                jifenAfterDisLaiZi(player, roomState);//与下一句顺序不能交换
+                roomState.playerStates[player.getSeatNo()].disLiaZiNum++;
+                roomState.beforeGetCard = RoomState.V.DIS_LAI_ZI;
+            }else{
+                roomState.playerStates[player.getSeatNo()].disHongZhongCount++;
+                roomState.beforeGetCard = RoomState.V.DIS_HONG_ZHONG;
+            }
+
             //重新指定为出牌人
             roomState.disCardSeatNo = player.getSeatNo();
-            roomState.beforeGetCard = RoomState.V.DIS_LAI_ZI;
+
         } else { //不是癞子，将其它三人设置成可响应出牌状态,或者说未响应状态
             for (int i = 0; i < player.getRoom().getSumPlayer(); i++) {
                 if (i != player.getSeatNo()) {
@@ -60,7 +67,9 @@ public class ProcessC4 {
 
     //计算漂癞子后的输赢
     private static void jifenAfterDisLaiZi(Player disCardPlayer, RoomState roomState) {
-        ProcessC6.jiFenAfterXiaoBySelf(roomState, disCardPlayer, 1);//计算大朝天的输赢，翻倍
+        if(Rule.DisLaiZiYouJiang){
+            ProcessC6.jiFenAfterXiaoBySelf(roomState, disCardPlayer, 1);
+        }
     }
 
     //生成出牌的信息
@@ -68,9 +77,6 @@ public class ProcessC4 {
         Map s8_body = new HashMap();
         s8_body.put("seatNo", player.getSeatNo());
         s8_body.put("paiNo", paiNo);
-        if (paiNo == roomState.laiZi) {
-            s8_body.put("type", "lai_zi");
-        }
         Suggest s8_suggest = new Suggest() {{
             setMsgId("s8");
             setMsgBody(s8_body);
@@ -82,7 +88,7 @@ public class ProcessC4 {
         Suggest s8_suggest = getS8(player, roomState, paiNo);
         Suggest s10_suggest = ProcessC5.getS10(roomState);
         Suggest s7_suggest[] = null;
-        if (paiNo == roomState.laiZi) {
+        if (paiNo == roomState.laiZi || paiNo==Rule.HongZhongPoint) {
             s7_suggest = ProcessC3.getS7(player.getRoom(), true);
         }
         List<ProcessResult> resultList = new ArrayList<ProcessResult>(player.getRoom().getSumPlayer());
@@ -90,7 +96,7 @@ public class ProcessC4 {
             List<Suggest> suggestList = new LinkedList<Suggest>();
             suggestList.add(s8_suggest);
             suggestList.add(s10_suggest);
-            if (paiNo == roomState.laiZi) {
+            if (paiNo == roomState.laiZi || paiNo==Rule.HongZhongPoint) {
                 suggestList.add(s7_suggest[i]);
             }
             ProcessResult result = new ProcessResult();

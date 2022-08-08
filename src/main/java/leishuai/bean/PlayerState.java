@@ -2,7 +2,6 @@ package leishuai.bean;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -51,6 +50,7 @@ public class PlayerState {
 
     //以下变量在服务端收到出牌信息时修改
     public int disLiaZiNum = 0;//漂癞子数
+    public int disHongZhongCount = 0;//漂红中数
     public int jifen = 0;
     public List<Integer> disCardArr = new ArrayList<Integer>(20);
     public boolean superFlag = false; //特权
@@ -68,6 +68,7 @@ public class PlayerState {
         getCardTimes = 0;//拿牌的次数，用于自笑和回头笑的合法验证
         //以下变量在服务端收到出牌信息时修改
         disLiaZiNum = 0;//漂癞子数
+        disHongZhongCount =0;
         jifen = 0;
         //以下信息在服务端收到其它玩家对出的牌的响应之后修改
         //包括jifen，cardArr（碰笑时）
