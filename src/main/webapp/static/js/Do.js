@@ -9,65 +9,48 @@ acrossInformation.idString = "#acrossplayer";
 var roomInformation = {sumTurn: "", playedTurn: "", diFen: "", roomId: "", laizi: "", laiGen: ""};
 //将牌通过数组进行转换，只用于显示。
 var zhuanhuan = [-1, "suo1", "suo2", "suo3", "suo4", "suo5", "suo6", "suo7", "suo8", "suo9", "wan1", "wan2", "wan3", "wan4", "wan5", "wan6", "wan7", "wan8", "wan9", "tong1", "tong2", "tong3", "tong4", "tong5", "tong6", "tong7", "tong8", "tong9", "自己手牌"];
-rightInformation.jiFen = 0;
-acrossInformation.jiFen = 0;
-leftInformation.jiFen = 0;
-myInformation.jiFen = 0;
 roomInformation.allPlayer = new Array(4);
 init();
 
 function init() {
-    if (roomInformation.sumTurn == 1) {
-        myInformation.seatNo = null;
-        myInformation.userName = null;
-        leftInformation.seatNo = null;
-        leftInformation.userName = null;
-        rightInformation.seatNo = null;
-        rightInformation.userName = null;
-        acrossInformation.seatNo = null;
-        acrossInformation.userName = null;
-    }
-    myInformation.chuPai = [];
-    myInformation.pai = [];
-    myInformation.xuanPai = -1;
-    //赖子是否出现，初始化为false。
-    roomInformation.laiZiApprience = false;
-    myInformation.peng = [];
-    myInformation.chiArr = [];
-    /*
-    chiArr.Obj = {
-       {
-        chiType:1
-        paiArr:[]
-    }
-     */
-    myInformation.xiao = [];
-    myInformation.laiPai = "";
-    myInformation.notAdminXiao = [];
-    myInformation.notAdminPeng = [];
-    myInformation.canXiaoNo = -1;
-    myInformation.canPengNo = "";
-    myInformation.canHu = null;
-    // myInformation.jiFen=0;
-    leftInformation.chuPai = [];
-    leftInformation.pai = 13;
-    leftInformation.peng = [];
-    leftInformation.chiArr = [];
-    leftInformation.xiao = [];
-    // roomInformation.diFen=5;
-    // roomInformation.playedTurn=0;
-    roomInformation.yuPaiSum = 0;
-    rightInformation.chuPai = [];
-    rightInformation.pai = 13;
-    rightInformation.peng = [];
-    rightInformation.chiArr = [];
-    rightInformation.xiao = [];
+    var arrTmp=[myInformation,leftInformation,rightInformation,acrossInformation]
 
-    acrossInformation.chuPai = [];
-    acrossInformation.pai = 13;
-    acrossInformation.xiao = [];
-    acrossInformation.chiArr = [];
-    acrossInformation.peng = [];
+    if (roomInformation.sumTurn == 1) {
+        for(var i=0;i<arrTmp.length;i++){
+            arrTmp[i].seatNo=null;
+            arrTmp[i].userName=null;
+        }
+    }
+    {
+        roomInformation.yuPaiSum = 0;
+        //赖子是否出现，初始化为false。
+        roomInformation.laiZiApprience = false;
+    }
+
+    {
+        myInformation.xuanPai = -1;
+        myInformation.laiPai = "";
+        myInformation.canPengNo = "";
+        myInformation.notAdminXiao = [];
+        myInformation.notAdminPeng = [];
+        myInformation.canXiaoNo = -1;
+        myInformation.canHu = null;
+        arrTmp[i].pai = [];
+    }
+
+    for(var i=0;i<arrTmp.length;i++){
+        arrTmp[i].jiFen = 0;
+        arrTmp[i].chuPai = [];
+        arrTmp[i].peng = [];
+        arrTmp[i].xiao = [];
+        //下面是新增的
+        arrTmp[i].chiArr = []; //chiArr.Obj = {{chiType:1,paiArr:[]}
+        arrTmp[i].disLaiziCount=0
+        arrTmp[i].disHongZhongCount=0
+        if(i!=0){ //不是自己
+            arrTmp[i].pai=13
+        }
+    }
 }
 
 //  处理其他玩家出牌 0要不起 1朝天 2碰 3点笑
@@ -255,29 +238,26 @@ function Dos6(data) {
         myInformation.xiao.length = 0;
         myInformation.chuPai.length = 0;
         myInformation.peng.length = 0;
-        leftInformation.peng.length = 0;
-        leftInformation.xiao.length = 0;
-        leftInformation.chuPai.length = 0;
-        rightInformation.xiao.length = 0;
-        rightInformation.peng.length = 0;
-        rightInformation.chuPai.length = 0;
-        acrossInformation.peng.length = 0;
-        acrossInformation.xiao.length = 0;
-        acrossInformation.chuPai.length = 0
-        roomInformation.laiZiApprience = false;
+        myInformation.pai = data.allCards;
     }
-    myInformation.pai = data.allCards;
-    roomInformation.laizi = data.laiZi;
-    roomInformation.laiGen = data.laiGen;
-    roomInformation.playedTurn = data.playedTurn;
-    leftInformation.pai = 13;
-    acrossInformation.pai = 13;
-    rightInformation.pai = 13;
-    showLaiGen();
+    {
+        roomInformation.laiZiApprience = false;
+        roomInformation.laizi = data.laiZi;
+        roomInformation.laiGen = data.laiGen;
+        roomInformation.playedTurn = data.playedTurn;
+        showLaiGen();
+    }
+
     for (var i = 0; i < roomInformation.sumPlayer; i++) {
-        if (i == myInformation.seatNo) { //展示自己的牌
+        if (i == myInformation.seatNo) {
+            //展示自己的牌
             myCard();
-        } else { //展示别人的牌
+        } else {
+            roomInformation.allPlayer[i].peng.length=0
+            roomInformation.allPlayer[i].xiao.length=0
+            roomInformation.allPlayer[i].chuPai.length=0
+            roomInformation.allPlayer[i].pai=13
+            //展示别人的牌
             roomInformation.allPlayer[i].showPai();
         }
     }
@@ -355,9 +335,15 @@ function Dos7(data) {
 // 玩家出牌处理
 function Dos8(data) {
     var disCard = data.paiNo; //出的牌编号
+    var seatNo = data.seatNo;
     if (data.paiNo == roomInformation.laizi) {
         roomInformation.laiZiApprience = true;
+        roomInformation.allPlayer[seatNo].disLaiziCount++;
     }
+    if(data.paiNo==Rule.HongZhongPoint){ //是红中
+        roomInformation.allPlayer[seatNo].disHongZhongCount++;
+    }
+
     roomInformation.disCardSeatNo = data.seatNo
     roomInformation.disCardNo = data.paiNo
 
@@ -370,7 +356,6 @@ function Dos8(data) {
         return;
     }
 
-    var seatNo = data.seatNo;
     roomInformation.allPlayer[seatNo].chuPai.push(disCard);
     roomInformation.allPlayer[seatNo].daZi(disCard);
 
