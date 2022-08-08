@@ -5,6 +5,7 @@ import leishuai.bean.*;
 import leishuai.service.ProcessMsg;
 import leishuai.utils.HuPai;
 import leishuai.utils.HuPaiByGuide;
+import org.apache.tomcat.util.digester.RulesBase;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -28,7 +29,7 @@ public class ProcessC6 {
 
     //判断是否被抢，如果被抢求出抢回头笑的人座位号
     private static int[] beRobbed(JSONObject jsonObject, Player player, RoomState roomState) {
-        if (roomState.laiZiAppeared) { //癞子出现，所有人都不能胡
+        if (Rule.GameMode==Rule.GameMode_GanDengYan && roomState.laiZiAppeared) { //癞子出现，所有人都不能胡
             return null;
         }
         int sumPlayer = player.getRoom().getSumPlayer();
@@ -150,12 +151,18 @@ public class ProcessC6 {
         if (V.HUI_TOU_XIAO.equals(type)) {
             roomState.playerStates[player.getSeatNo()].cardArr[paiNo] = PlayerState.V.HUI_TOU_XIAO;
             roomState.beforeGetCard = RoomState.V.HUI_TOU_XIAO;
+            if(!Rule.HasGangShangPao){ //没有杠上炮，立即计算积分
+                jiFenAfterXiaoBySelf(roomState, player, 1);//计算输赢
+            }
         } else {
             if (paiNo == roomState.laiGen) //朝天类不存在热冲，所以可以修改输赢信息，然后当普通出牌处理
             {
                 roomState.beforeGetCard = RoomState.V.NORMAL;
                 jiFenAfterXiaoBySelf(roomState, player, 2);//计算大朝天的输赢，翻倍
             } else { //普通的自笑
+                if(!Rule.HasGangShangPao){ //没有杠上炮，立即计算积分
+                    jiFenAfterXiaoBySelf(roomState, player, 2);//计算输赢
+                }
                 roomState.beforeGetCard = RoomState.V.ZI_XIAO;
             }
             roomState.playerStates[player.getSeatNo()].cardArr[paiNo] = PlayerState.V.ZI_XIAO;
@@ -173,9 +180,7 @@ public class ProcessC6 {
         Suggest s10_suggest = ProcessC5.getS10(roomState);
         for (int i = 0; i < player.getRoom().getSumPlayer(); i++) {
             List<Suggest> suggestList = new LinkedList<Suggest>();
-            if (paiNo == roomState.laiGen) {  //是朝天则还有添加积分信息
-                suggestList.add(s10_suggest);
-            }
+            suggestList.add(s10_suggest); //无脑更新积分
             suggestList.add(s11_suggest);
             suggestList.add(s7_suggest[i]);
             ProcessResult result = new ProcessResult();
@@ -225,6 +230,7 @@ public class ProcessC6 {
             }
 
             //计算不被捉时的积分变化，即出牌前操作造成的积分变化，不含大小朝天，
+            //这是上一轮的自笑或者其他行为
             ProcessC7.jiFenBeforeNotRobbed(player.getRoom(), player.getSeatNo());
 
             String type = jsonObject.getString("type");

@@ -318,7 +318,11 @@ public class ProcessC7 {
     }
 
     //计算不被捉时的积分变化，包括出牌前操作（点笑、回头笑、自笑，不含大小朝天）
+    //disCardSeatNo 是当前出牌人，也是杠或者笑的执行者
     static void jiFenBeforeNotRobbed(Room room, int disCardSeatNo) {
+        if(!Rule.HasGangShangPao){ //没有杠上炮就不用计算，因为在杠的时候已经记录了
+            return;
+        }
         Player disCardPlayer = room.getPlayers()[disCardSeatNo];//当前出牌人
         RoomState roomState = room.getRoomState();
         //计算当前出牌人的出牌前操作造成的积分修改
@@ -375,14 +379,18 @@ public class ProcessC7 {
         RoomState roomState = room.getRoomState();
         Player player = room.getPlayers()[disCardSeatNo];//当前被捉的人，也是出牌的人
         int beiShu = 0;
-        if (roomState.beforeGetCard == RoomState.V.DIAN_XIAO) { //点笑被捉，3
-            beiShu = 3;
-        } else if (roomState.beforeGetCard == RoomState.V.HUI_TOU_XIAO) { //回头笑被捉，5
-            beiShu = 5;
-        } else if (roomState.beforeGetCard == RoomState.V.ZI_XIAO) {//自笑被捉，8
-            beiShu = 8;
-        } else { //普通被捉
-            beiShu = 2;
+        if(Rule.HasGangShangPao){
+            if (roomState.beforeGetCard == RoomState.V.DIAN_XIAO) { //点笑被捉，3
+                beiShu = 3;
+            } else if (roomState.beforeGetCard == RoomState.V.HUI_TOU_XIAO) { //回头笑被捉，5
+                beiShu = 5;
+            } else if (roomState.beforeGetCard == RoomState.V.ZI_XIAO) {//自笑被捉，8
+                beiShu = 8;
+            } else { //普通被捉
+                beiShu = 2;
+            }
+        }else{
+            // todo ls 看是黑的还是屁的，改成累加，而不是累乘
         }
         int jiFenReduce = beiShu * player.getRoom().getDiFen();
         ProcessC6.jiFenAfterRobbed(roomState, player, zhuoChongSeats, jiFenReduce); //计算抢笑后的积分

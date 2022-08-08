@@ -17,7 +17,7 @@ public class Room {  //游戏开始前具有的属性
     int creatorId; //创建者的account账户id
     int diFen = 5;//底分 1，2，5
     int maxLaiZiNum_ziMo = 1;//胡牌时允许的最大癞子数,1 赖
-    int maxLaiZiNum_zhuoChong = 0;//胡牌时允许的最大癞子数,1 赖
+    int maxLaiZiNum_zhuoChong = Rule.MaxLaiZiNum_zhuoChong;//捉冲时允许的最大癞子数,1 赖
     int canBeUsedTimes = V.PUBLIC_ROOM;//能被使用的次数，默认值为V.PUBLIC_ROOM -1 表示公共房，不限次数
     int havePalyerNum = 0;//已有玩家人数，分配房间时用,为 0 表示未使用
     int sumPlayer = 4;//房间可容纳人数
