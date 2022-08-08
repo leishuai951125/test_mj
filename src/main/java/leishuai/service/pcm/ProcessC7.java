@@ -270,11 +270,15 @@ public class ProcessC7 {
 
         if (roomState.disCardNo == roomState.laiGen)//小朝天，计算输赢，fuckwho记录为none
         {
-            Player fuckerPlayer = room.getPlayers()[dianXiaoSeat];//点笑的玩家，不是被带你小的人
+            Player fuckerPlayer = room.getPlayers()[dianXiaoSeat];//点笑的玩家，不是被点笑的人
             jiFenAfterXiaoByOther(roomState, fuckerPlayer, beFuck);
             roomState.beforeGetCard = RoomState.V.PENG; //小朝天可以当碰处理
             roomState.fuckWho = RoomState.V.NONE_BEFUCK; //没人被艹
         } else { //普通笑，记录笑得信息
+            if(!Rule.HasGangShangPao){ //没有杠上炮，直接计算积分
+                Player fuckerPlayer = room.getPlayers()[dianXiaoSeat];//点笑的玩家，不是被点笑的人
+                jiFenAfterXiaoByOther(roomState, fuckerPlayer, beFuck);
+            }
             roomState.fuckWho = beFuck;
         }
     }
@@ -379,7 +383,7 @@ public class ProcessC7 {
         RoomState roomState = room.getRoomState();
         Player player = room.getPlayers()[disCardSeatNo];//当前被捉的人，也是出牌的人
         int beiShu = 0;
-        if(Rule.HasGangShangPao){
+        if(Rule.HasGangShangPao){ //有杠上炮需要计算打牌前的动作
             if (roomState.beforeGetCard == RoomState.V.DIAN_XIAO) { //点笑被捉，3
                 beiShu = 3;
             } else if (roomState.beforeGetCard == RoomState.V.HUI_TOU_XIAO) { //回头笑被捉，5
@@ -389,7 +393,7 @@ public class ProcessC7 {
             } else { //普通被捉
                 beiShu = 2;
             }
-        }else{
+        }else{ //晃晃走这个分支
             // todo ls 看是黑的还是屁的，改成累加，而不是累乘
         }
         int jiFenReduce = beiShu * player.getRoom().getDiFen();
