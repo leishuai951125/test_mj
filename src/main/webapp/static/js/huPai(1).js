@@ -409,6 +409,9 @@ var huPai3 = {
     //cardArr.length = n*3 +1
     //移除赖子和某一张字后能黑摸，说明是刷牌
     isShuaPai:function(cardArr,laiZiIndex){
+        if(laiZiIndex<0){//没有赖子，不是刷牌
+            return false
+        }
         var copy=cardArr.concat()
         copy.slice(laiZiIndex,1) //移除赖子
         for(var i=0;i<copy.length;i++){
@@ -424,6 +427,9 @@ var huPai3 = {
     //cardArr.length = n*3 +1
     //能胡十张以上的牌认为是见字胡
     isJianZiHu:function(cardArr,laiZiIndex){
+        if(laiZiIndex<0){//没有赖子，不是见子胡
+            return false
+        }
         //把赖子替换成任意数
         for(var j=1;j<15;j++) { //能胡15张字，一定是见字胡
             if(j==roomInformation.laizi){
