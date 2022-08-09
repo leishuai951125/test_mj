@@ -413,10 +413,10 @@ var huPai3 = {
             return false
         }
         var copy=cardArr.concat()
-        copy.slice(laiZiIndex,1) //移除赖子
+        copy.splice(laiZiIndex,1) //移除赖子
         for(var i=0;i<copy.length;i++){
-            copy2=copy.concat()
-            copy2.slice(i,1) //依次移除所有字
+            var copy2=copy.concat()
+            copy2.splice(i,1) //依次移除所有字
             if(huPai3.noNaiTest(copy2, copy2.length)){
                 // 移除某个字后能黑摸，说明时刷牌
                 return true;
