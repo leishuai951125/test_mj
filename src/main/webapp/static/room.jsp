@@ -16,7 +16,8 @@
         token: '',
         roomId: '<%= request.getParameter("roomId")%>'
     };
-    var wsUrl = "ws://" + location.host + '/majiang/lsmj/websocket/{' + JSON.stringify(params) + "}";
+    var prefix=location.protocol.replaceAll("http","ws")+"//"
+    var wsUrl = prefix + location.host + '/majiang/lsmj/websocket/{' + JSON.stringify(params) + "}";
     var accountId = params.accountId;
 </script>
 <div id="yemian">
