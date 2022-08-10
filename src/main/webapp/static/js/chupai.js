@@ -385,7 +385,7 @@ function rightPai() {
             pai.style.width = "98%";
             pai.style.height = "15%";
             pai.style.position = "absolute";
-            pai.style.left = "20%";
+            pai.style.left = "-15%";
 
             pai.style.top = ((rightInformation.pai * 8) + (b * 9.5)) + (28 * i) + 6 + "%";
 
@@ -406,7 +406,7 @@ function rightPai() {
             pai.style.width = "98%";
             pai.style.height = "15%";
             pai.style.position = "absolute";
-            pai.style.left = "20%";
+            pai.style.left = "-15%";
 
             pai.style.top = ((rightInformation.pai * 8) + (b * 9.5)) + rightInformation.peng.length * 28 + (28 * j) + 6 + "%";
 
@@ -423,7 +423,7 @@ function rightPai() {
         pai.style.width = "96%";
         pai.style.height = "14%";
         pai.style.position = "absolute";
-        pai.style.left = "22%";
+        pai.style.left = "-13%";
         pai.style.top = ((rightInformation.pai * 8) + rightInformation.peng.length * 28 + (28 * j) + 13) + "%";
 
         pai.style.background = "url(img/侧家出牌.png)";
@@ -435,20 +435,20 @@ function rightPai() {
     //右边边吃
     for (var i = 0; i < rightInformation.chiArr.length; i++) {
         for (var b = 0; b < 3; b++) {
-            var paiNo = rightInformation.chiArr[i].paiArr[b]
+            var paiNo = rightInformation.chiArr[i].paiArr[2-b]
             var image = newImg("img/" + zhuanhuan[paiNo] + ".png")
             var pai = document.createElement("div");
             // 设置背景样式
             pai.style.width = "98%";
             pai.style.height = "15%";
             pai.style.position = "absolute";
-            pai.style.left = "20%";
+            pai.style.left = "-15%";
             pai.style.top = ((rightInformation.pai * 8) + (rightInformation.peng.length + rightInformation.xiao.length) * 28 + (b * 9.5)) + (28 * i) + 6 + "%";
             pai.style.background = "url(img/侧家出牌.png)";
             pai.style.backgroundRepeat = "no-repeat";
             pai.style.backgroundSize = "100% 100%";
             pai.append(image);
-            $("#left-pai").append(pai);
+            $("#right-pai").append(pai);
         }
     }
 }
@@ -537,7 +537,7 @@ function acrossPai() {
     //对面吃
     for (var i = 0; i < acrossInformation.chiArr.length; i++) {
         for (var b = 0; b < 3; b++) {
-            var paiNo = acrossInformation.chiArr[i].paiArr[b]
+            var paiNo = acrossInformation.chiArr[i].paiArr[2-b]
             var image = newImg("img/" + zhuanhuan[paiNo] + ".png")
             var pai = document.createElement("div");
             // 设置背景样式

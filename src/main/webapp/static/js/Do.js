@@ -57,7 +57,7 @@ function init() {
 
 //  处理其他玩家出牌 0要不起 1朝天 2碰 3点笑
 function canPengXiao(chuDePai) {
-    if (chuDePai == roomInformation.laizi) {
+    if (chuDePai == roomInformation.laizi || chuDePai == Rule.HongZhongPoint) {
         return 0;
     }
     var times = 0;
@@ -949,7 +949,8 @@ function Dos13(data) {
             playerInfo.disLiaZiCount=data[i].disLiaZiCount
             playerInfo.xiaoFanShu=data[i].xiaoFanShu
 
-            playerInfo.pai = 13;
+            playerInfo.pai = 13-playerInfo.chiArr.length*3;
+
             var idString = playerInfo.idString;
             $(idString).css("background-image", "url(" + data[i].headImgUrl + ")");
             //将后台牌数组转换为前台对应格式
