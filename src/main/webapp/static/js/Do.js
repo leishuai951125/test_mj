@@ -664,8 +664,8 @@ function Dos11(data) {
             if (seatNo != myInformation.seatNo) { //别人
                 var playerInfo = roomInformation.allPlayer[seatNo];
                 if(Rule.AnGangHide){
-                    myInformation.xiao.unshift(j) //插入到数组头部
-                    myInformation.hideAnGangSet.add(j)
+                    playerInfo.xiao.unshift(data.paiNo) //插入到数组头部
+                    playerInfo.hideAnGangSet.add(data.paiNo)
                 }else{
                     if (data.paiNo == roomInformation.laiGen) {
                         playerInfo.peng.push(data.paiNo);
@@ -677,8 +677,8 @@ function Dos11(data) {
                 playerInfo.showPai();
             } else {  //自己
                 if(Rule.AnGangHide){
-                    myInformation.xiao.unshift(j) //插入到数组头部
-                    myInformation.hideAnGangSet.add(j)
+                    myInformation.xiao.unshift(data.paiNo) //插入到数组头部
+                    myInformation.hideAnGangSet.add(data.paiNo)
                 }else{
                     if (data.paiNo == roomInformation.laiGen) {
                         myInformation.peng.push(data.paiNo);
