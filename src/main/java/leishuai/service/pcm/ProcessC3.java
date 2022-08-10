@@ -88,13 +88,13 @@ public class ProcessC3 {
         RoomState roomState = room.getRoomState();
         PlayerState[] playerStates = roomState.playerStates;
         int sumPlayer = room.getSumPlayer();
-        int sumCard = 108;
+        int sumCard = 27*4;
 
         if (sumPlayer != 4) {
             if(Rule.GameMode==Rule.GameMode_HuangHuang){
-                sumCard = 72; //todo 改动
+                sumCard = 27*4; //todo 改动
             }else{
-                sumCard = 72;
+                sumCard = 18*4;
             }
         }
 
