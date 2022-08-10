@@ -48,6 +48,7 @@ function init() {
         arrTmp[i].disLiaZiCount=0
         arrTmp[i].disHongZhongCount=0
         arrTmp[i].xiaoFanShu=0 //笑的番数
+        arrTmp[i].hideAnGangSet=new Set() //笑的番数
         if(i!=0){ //不是自己
             arrTmp[i].pai=13
         }
@@ -662,30 +663,37 @@ function Dos11(data) {
         case "zi_xiao": {
             if (seatNo != myInformation.seatNo) { //别人
                 var playerInfo = roomInformation.allPlayer[seatNo];
-                if (data.paiNo == roomInformation.laiGen) {
-                    playerInfo.peng.push(data.paiNo);
-                } else {
-                    playerInfo.xiao.push(data.paiNo);
+                if(Rule.AnGangHide){
+                    myInformation.xiao.unshift(j) //插入到数组头部
+                    myInformation.hideAnGangSet.add(j)
+                }else{
+                    if (data.paiNo == roomInformation.laiGen) {
+                        playerInfo.peng.push(data.paiNo);
+                    } else {
+                        playerInfo.xiao.push(data.paiNo);
+                    }
                 }
                 playerInfo.pai = playerInfo.pai - 3;
                 playerInfo.showPai();
             } else {  //自己
-                if (data.paiNo == roomInformation.laiGen) {
-                    myInformation.peng.push(data.paiNo);
-                    myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo), 1);
-                    myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo), 1);
-                    myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo), 1);
-                    myCard();
-                    woPeng();
-                } else {
-                    myInformation.xiao.push(data.paiNo);
-                    myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo), 1);
-                    myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo), 1);
-                    myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo), 1);
-                    myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo), 1);
-                    myCard();
-                    woPeng();
+                if(Rule.AnGangHide){
+                    myInformation.xiao.unshift(j) //插入到数组头部
+                    myInformation.hideAnGangSet.add(j)
+                }else{
+                    if (data.paiNo == roomInformation.laiGen) {
+                        myInformation.peng.push(data.paiNo);
+                    } else {
+                        myInformation.xiao.push(data.paiNo);
+                    }
                 }
+                if(data.paiNo != roomInformation.laiGen){
+                    myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo), 1);
+                }
+                myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo), 1);
+                myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo), 1);
+                myInformation.pai.splice(myInformation.pai.indexOf(data.paiNo), 1);
+                myCard();
+                woPeng();
             }
             break;
         }
@@ -894,10 +902,15 @@ function Dos13(data) {
                     }
                     //自笑
                     case 19: {
-                        if (j == roomInformation.laiGen) {
-                            myInformation.peng.push(j);
-                        } else {
-                            myInformation.xiao.push(j);
+                        if(Rule.AnGangHide){
+                            myInformation.xiao.unshift(j) //插入到数组头部
+                            myInformation.hideAnGangSet.add(j)
+                        }else{
+                            if (j == roomInformation.laiGen) {
+                                myInformation.peng.push(j);
+                            } else {
+                                myInformation.xiao.push(j);
+                            }
                         }
                         break;
                     }
@@ -961,10 +974,15 @@ function Dos13(data) {
                     case 17:
                     //自笑
                     case 19: {
-                        if (j == roomInformation.laiGen) {
-                            playerInfo.peng.push(j);
-                        } else {
-                            playerInfo.xiao.push(j);
+                        if(Rule.AnGangHide){
+                            playerInfo.xiao.unshift(j) //插入到数组头部
+                            playerInfo.hideAnGangSet.add(j)
+                        }else{
+                            if (j == roomInformation.laiGen) {
+                                playerInfo.peng.push(j);
+                            } else {
+                                playerInfo.xiao.push(j);
+                            }
                         }
                         playerInfo.pai = playerInfo.pai - 3;
                         break;
