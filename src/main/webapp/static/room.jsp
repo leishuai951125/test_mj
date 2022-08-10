@@ -32,7 +32,7 @@
 
         <button id="hupai">胡</button>
         <button id="pengpai">碰</button>
-        <button id="xiaopai">笑</button>
+        <button id="xiaopai">杠</button>
         <button id="chupai">出牌</button>
         <button id="buyao">不要</button>
     </div>
