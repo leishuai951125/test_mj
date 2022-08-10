@@ -481,7 +481,7 @@ function acrossPai() {
         image.style.left = 5.55 * i + 25 + "%";
         $("#across-pai").append(image);
     }
-    var newImg = function (imgUrl) {
+    var newImg = function (imgUrl,notTransform) {
         //设置图片样式
         var image = new Image();
         image.src = imgUrl
@@ -490,7 +490,9 @@ function acrossPai() {
         image.style.top = "0%";
         image.style.position = "absolute";
         image.style.left = "3%";
-        image.style.transform = "rotate(180deg)";
+        if(!notTransform){
+            image.style.transform = "rotate(180deg)";
+        }
         return image
     }
     //对面碰
@@ -528,13 +530,14 @@ function acrossPai() {
             pai.style.backgroundSize = "100% 100%";
 
             var paiNo=acrossInformation.xiao[j]
+            var image
             if(Rule.AnGangHide && acrossInformation.hideAnGangSet.has(paiNo)){
-                pai.style.background = "url(img/自己杠牌.png)";
+                image= newImg("img/自己杠牌.png",true)
             }else{
                 pai.style.background = "url(img/自己出牌对家出牌对家碰牌.png)";
-                var image = newImg("img/" + zhuanhuan[paiNo] + ".png")
-                pai.append(image);
+                image = newImg("img/" + zhuanhuan[paiNo] + ".png")
             }
+            pai.append(image);
             $("#across-pai").append(pai);
         }
 
@@ -549,13 +552,15 @@ function acrossPai() {
         pai.style.backgroundRepeat = "no-repeat";
         pai.style.backgroundSize = "100% 100%";
         var paiNo=acrossInformation.xiao[j]
+        pai.style.backgroundColor = "transparent";
+        var image
         if(Rule.AnGangHide && acrossInformation.hideAnGangSet.has(paiNo)){
-            pai.style.background = "url(img/自己杠牌.png)";
+            image= newImg("img/自己杠牌.png",true)
         }else{
             pai.style.background = "url(img/自己出牌对家出牌对家碰牌.png)";
-            var image = newImg("img/" + zhuanhuan[paiNo] + ".png")
-            pai.append(image);
+            image = newImg("img/" + zhuanhuan[paiNo] + ".png")
         }
+        pai.append(image);
         $("#across-pai").append(pai);
     }
 
