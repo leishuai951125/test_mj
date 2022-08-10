@@ -62,9 +62,9 @@ public class ProcessC3 {
         int count = Rule.DaiHongzhong ? sumCard + 4 : sumCard;
         int allCards[] = new int[count];
         //发 sumCard 张牌
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < maxPoint; j++) {
-                int index = i * maxPoint + j;
+        for (int j = 0; j < maxPoint; j++) {
+            for (int i = 0; i < 4; i++) {
+                int index = j * 4 + i;
                 allCards[index] = j + 1;//j+1 是点数
             }
         }
@@ -74,9 +74,11 @@ public class ProcessC3 {
                 allCards[sumCard + i] = Rule.HongZhongPoint; //红中固定 28 点
             }
         }
+
+        int notRandCount=0; //不打乱的数量，测试时不为 0
         //打乱
-        for (int i = 0; i < count; i++) {
-            int random = (int) (Math.random() * count);
+        for (int i = notRandCount; i < count; i++) { //测试代码
+            int random = (int) (Math.random() * (count-notRandCount))+notRandCount;
             int temp = allCards[i];
             allCards[i] = allCards[random];
             allCards[random] = temp;
