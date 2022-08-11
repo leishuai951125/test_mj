@@ -252,9 +252,8 @@ function doubleClick(id) {
         }
         roomInformation.isMyTurn = false;
         ws.send(JSON.stringify(c4_msg));
-
+        hideButton();
     }
-    hideButton();
 }
 
 // 左边玩家手牌
