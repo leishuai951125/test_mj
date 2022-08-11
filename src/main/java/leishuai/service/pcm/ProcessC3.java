@@ -62,19 +62,19 @@ public class ProcessC3 {
         int count = Rule.DaiHongzhong ? sumCard + 4 : sumCard;
         int allCards[] = new int[count];
         //发 sumCard 张牌
-//        for (int j = 0; j < maxPoint; j++) {
-//            for (int i = 0; i < 4; i++) {
-//                int index = j * 4 + i;
-//                allCards[index] = j + 1;//j+1 是点数
-//            }
-//        }
-        //这种方法更散
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < maxPoint; j++) {
-                int index = i * maxPoint + j;
+        for (int j = 0; j < maxPoint; j++) {
+            for (int i = 0; i < 4; i++) {
+                int index = j * 4 + i;
                 allCards[index] = j + 1;//j+1 是点数
             }
         }
+        //这种方法更散
+//        for (int i = 0; i < 4; i++) {
+//            for (int j = 0; j < maxPoint; j++) {
+//                int index = i * maxPoint + j;
+//                allCards[index] = j + 1;//j+1 是点数
+//            }
+//        }
         //发红中
         if (Rule.DaiHongzhong) {
             for (int i = 0; i < 4; i++) {
@@ -82,7 +82,7 @@ public class ProcessC3 {
             }
         }
 
-        int notRandCount=0; //不打乱的数量，测试时不为 0
+        int notRandCount=7; //不打乱的数量，测试时不为 0
         //打乱
         for (int i = notRandCount; i < count; i++) { //测试代码
             int random = (int) (Math.random() * (count-notRandCount))+notRandCount;
@@ -121,6 +121,7 @@ public class ProcessC3 {
                 int temp = allCards[i];
                 allCards[i] = allCards[allCards.length - 1];
                 allCards[allCards.length - 1] = temp;
+                break;
             }
         }
 
