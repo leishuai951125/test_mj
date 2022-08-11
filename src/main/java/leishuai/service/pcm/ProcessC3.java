@@ -62,9 +62,16 @@ public class ProcessC3 {
         int count = Rule.DaiHongzhong ? sumCard + 4 : sumCard;
         int allCards[] = new int[count];
         //发 sumCard 张牌
-        for (int j = 0; j < maxPoint; j++) {
-            for (int i = 0; i < 4; i++) {
-                int index = j * 4 + i;
+//        for (int j = 0; j < maxPoint; j++) {
+//            for (int i = 0; i < 4; i++) {
+//                int index = j * 4 + i;
+//                allCards[index] = j + 1;//j+1 是点数
+//            }
+//        }
+        //这种方法更散
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < maxPoint; j++) {
+                int index = i * maxPoint + j;
                 allCards[index] = j + 1;//j+1 是点数
             }
         }
