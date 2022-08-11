@@ -306,8 +306,6 @@ function leftPai() {
             pai.style.position = "absolute";
             pai.style.left = "30%";
             pai.style.top = ((leftInformation.pai * 8) + (b * 9.5)) + leftInformation.peng.length * 28 + (28 * j) + 6 + "%";
-            pai.style.backgroundRepeat = "no-repeat";
-            pai.style.backgroundSize = "100% 100%";
             var paiNo=leftInformation.xiao[j]
             if(Rule.AnGangHide && leftInformation.hideAnGangSet.has(paiNo)){
                 pai.style.background = "url(img/侧家杠牌.png)";
@@ -316,6 +314,8 @@ function leftPai() {
                 var image = newImg("img/" + zhuanhuan[paiNo] + ".png")
                 pai.append(image);
             }
+            pai.style.backgroundRepeat = "no-repeat";
+            pai.style.backgroundSize = "100% 100%";
             $("#left-pai").append(pai);
         }
         //顶上多一个字
@@ -326,9 +326,6 @@ function leftPai() {
         pai.style.position = "absolute";
         pai.style.left = "30%";
         pai.style.top = ((leftInformation.pai * 8) + leftInformation.peng.length * 28 + (28 * j) + 13.5) + "%";
-
-        pai.style.backgroundRepeat = "no-repeat";
-        pai.style.backgroundSize = "100% 100%";
         var paiNo=leftInformation.xiao[j]
         if(Rule.AnGangHide && leftInformation.hideAnGangSet.has(paiNo)){
             pai.style.background = "url(img/侧家杠牌.png)";
@@ -337,6 +334,8 @@ function leftPai() {
             var image = newImg("img/" + zhuanhuan[paiNo] + ".png")
             pai.append(image);
         }
+        pai.style.backgroundRepeat = "no-repeat";
+        pai.style.backgroundSize = "100% 100%";
         $("#left-pai").append(pai);
     }
     //左边吃
@@ -366,8 +365,8 @@ function rightPai() {
     for (var i = 0; i < rightInformation.pai; i++) {
         var image = new Image();
         image.src = "img/侧家手牌.png";
-        // image.style.width="30%";     
-        // image.style.height="8%"; 
+        // image.style.width="30%";
+        // image.style.height="8%";
         image.style.top = 8 * i + "%";
         image.style.left = 0;
         $("#right-pai").append(image);
@@ -412,11 +411,7 @@ function rightPai() {
             pai.style.height = "15%";
             pai.style.position = "absolute";
             pai.style.left = "-15%";
-
             pai.style.top = ((rightInformation.pai * 8) + (b * 9.5)) + rightInformation.peng.length * 28 + (28 * j) + 6 + "%";
-
-            pai.style.backgroundRepeat = "no-repeat";
-            pai.style.backgroundSize = "100% 100%";
             var paiNo = rightInformation.xiao[j]
             if(Rule.AnGangHide && rightInformation.hideAnGangSet.has(paiNo)){
                 pai.style.background = "url(img/侧家杠牌.png)";
@@ -425,6 +420,8 @@ function rightPai() {
                 var image = newImg("img/" + zhuanhuan[paiNo] + ".png")
                 pai.append(image);
             }
+            pai.style.backgroundRepeat = "no-repeat";
+            pai.style.backgroundSize = "100% 100%";
             $("#right-pai").append(pai);
         }
 
@@ -435,9 +432,6 @@ function rightPai() {
         pai.style.position = "absolute";
         pai.style.left = "-13%";
         pai.style.top = ((rightInformation.pai * 8) + rightInformation.peng.length * 28 + (28 * j) + 13) + "%";
-
-        pai.style.backgroundRepeat = "no-repeat";
-        pai.style.backgroundSize = "100% 100%";
         var paiNo = rightInformation.xiao[j]
         if(Rule.AnGangHide && rightInformation.hideAnGangSet.has(paiNo)){
             pai.style.background = "url(img/侧家杠牌.png)";
@@ -446,6 +440,8 @@ function rightPai() {
             var image = newImg("img/" + zhuanhuan[paiNo] + ".png")
             pai.append(image);
         }
+        pai.style.backgroundRepeat = "no-repeat";
+        pai.style.backgroundSize = "100% 100%";
         $("#right-pai").append(pai);
     }
     //右边边吃
@@ -526,18 +522,16 @@ function acrossPai() {
             pai.style.position = "absolute";
             pai.style.top = "18%";
             pai.style.left = acrossInformation.peng.length * 13.5 + (5.55 * acrossInformation.pai) + 25 + (b * 4.5) + (13.5 * j) + "%";
-            pai.style.backgroundRepeat = "no-repeat";
-            pai.style.backgroundSize = "100% 100%";
-
             var paiNo=acrossInformation.xiao[j]
-            var image
             if(Rule.AnGangHide && acrossInformation.hideAnGangSet.has(paiNo)){
                 image= newImg("img/自己杠牌.png",true)
             }else{
                 pai.style.background = "url(img/自己出牌对家出牌对家碰牌.png)";
-                image = newImg("img/" + zhuanhuan[paiNo] + ".png")
+                var image = newImg("img/" + zhuanhuan[paiNo] + ".png")
+                pai.append(image);
             }
-            pai.append(image);
+            pai.style.backgroundRepeat = "no-repeat";
+            pai.style.backgroundSize = "100% 100%";
             $("#across-pai").append(pai);
         }
 
@@ -548,19 +542,16 @@ function acrossPai() {
         pai.style.position = "absolute";
         pai.style.top = "0%";
         pai.style.left = acrossInformation.peng.length * 13.5 + (5.55 * acrossInformation.pai) + 29.5 + (13.5 * j) + "%";
-
-        pai.style.backgroundRepeat = "no-repeat";
-        pai.style.backgroundSize = "100% 100%";
         var paiNo=acrossInformation.xiao[j]
-        pai.style.backgroundColor = "transparent";
-        var image
         if(Rule.AnGangHide && acrossInformation.hideAnGangSet.has(paiNo)){
             image= newImg("img/自己杠牌.png",true)
         }else{
             pai.style.background = "url(img/自己出牌对家出牌对家碰牌.png)";
-            image = newImg("img/" + zhuanhuan[paiNo] + ".png")
+            var image = newImg("img/" + zhuanhuan[paiNo] + ".png")
+            pai.append(image);
         }
-        pai.append(image);
+        pai.style.backgroundRepeat = "no-repeat";
+        pai.style.backgroundSize = "100% 100%";
         $("#across-pai").append(pai);
     }
 
@@ -807,8 +798,6 @@ function woPeng() {
         image.style.top = "-5%";
         image.style.position = "absolute";
         image.style.left = "7%";
-        // image.style.backgroundImage='url(img/自己出牌对家出牌对家碰牌.png)';
-        /* clip:rect(0px,0px,0px,0px); */
         return image
     }
     for (var i = 0; i < myInformation.xiao.length; i++) {
@@ -820,8 +809,6 @@ function woPeng() {
             pai.style.left = ((i * 35) + (b * 11)) + "%";
             pai.style.width = "11.5%";
             pai.style.height = "53%";
-            pai.style.backgroundRepeat = "no-repeat";
-            pai.style.backgroundSize = "100% 100%";
             var paiNo=myInformation.xiao[i]
             if(Rule.AnGangHide && myInformation.hideAnGangSet.has(paiNo)){
                 pai.style.background = "url(img/自己杠牌.png)";
@@ -830,26 +817,30 @@ function woPeng() {
                 var image = newImg("img/" + zhuanhuan[paiNo] + ".png")
                 pai.append(image);
             }
+            pai.style.backgroundRepeat = "no-repeat";
+            pai.style.backgroundSize = "100% 100%";
             $("#myPengXiao").append(pai);
         }
-        var pai = document.createElement("div");
-        // 设置背景样式
-        pai.style.position = "absolute";
-        pai.style.top = "89.5%";
-        pai.style.left = (i * 35) + 11 + "%";
-        pai.style.width = "11.5%";
-        pai.style.height = "51.5%";
-        pai.style.backgroundRepeat = "no-repeat";
-        pai.style.backgroundSize = "100% 100%";
-        var paiNo=myInformation.xiao[i]
-        if(Rule.AnGangHide && myInformation.hideAnGangSet.has(paiNo)){
-            pai.style.background = "url(img/自己杠牌.png)";
-        }else{
-            pai.style.background = "url(img/自己出牌对家出牌对家碰牌.png)";
-            var image = newImg("img/" + zhuanhuan[paiNo] + ".png")
-            pai.append(image);
+        {
+            var pai = document.createElement("div");
+            // 设置背景样式
+            pai.style.position = "absolute";
+            pai.style.top = "89.5%";
+            pai.style.left = (i * 35) + 11 + "%";
+            pai.style.width = "11.5%";
+            pai.style.height = "51.5%";
+            var paiNo=myInformation.xiao[i]
+            if(Rule.AnGangHide && myInformation.hideAnGangSet.has(paiNo)){
+                pai.style.background = "url(img/自己杠牌.png)";
+            }else{
+                pai.style.background = "url(img/自己出牌对家出牌对家碰牌.png)";
+                var image = newImg("img/" + zhuanhuan[paiNo] + ".png")
+                pai.append(image);
+            }
+            pai.style.backgroundRepeat = "no-repeat";
+            pai.style.backgroundSize = "100% 100%";
+            $("#myPengXiao").append(pai);
         }
-        $("#myPengXiao").append(pai);
     }
     for (var i = 0; i < myInformation.peng.length; i++) {
         for (var b = 0; b < 3; b++) {
