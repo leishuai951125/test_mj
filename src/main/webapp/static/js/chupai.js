@@ -1,3 +1,14 @@
+var dissolveRoomCheckCount=0
+console.log($("#showlaizi"))
+$("#showlaizi").dblclick(function () {
+    dissolveRoomCheckCount++
+    if(dissolveRoomCheckCount>=2){
+        var dissolveRoomMsg = {msgId: "dissolveRoom"};
+        ws.send(JSON.stringify(dissolveRoomMsg));
+        alert("房间解散成功")
+    }
+})
+
 $("#buyao").click(function () {
 
     hideButton();

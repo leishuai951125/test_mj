@@ -6,12 +6,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
-/**
- * @Description TODO
- * @Author leishuai
- * @Date 2019/1/26 18:22
- * @Version 1.0
- */
 @Component
 public class ProcessRecover {
     {
