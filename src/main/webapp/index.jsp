@@ -66,7 +66,7 @@
 <form action="user/login" method="post" name="form2">
     <div>
         <span class="tishi">账号:</span>
-        <input value="15671582806" type="text" name="accountId">
+        <input value="1567158280" type="text" name="accountId">
     </div>
     <div>
         <span class="tishi">密码:</span>
