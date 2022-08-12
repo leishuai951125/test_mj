@@ -147,7 +147,7 @@
     </dependencies>
 
     <build>
-        <finalName>TestGit</finalName>
+        <finalName>majiang</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
