@@ -226,7 +226,7 @@ function myCard() {
             image.style.width = "12%";
             image.style.height = "140%";
             image.style.right = (11.6 * i + 23.2) + "%";
-            image.style.backgroundImage = 'url(img/自己手牌.png)';
+            image.style.backgroundImage = 'url(img/zi_ji_shou_pai.png)';
 
             $("#chupaiqu").append(image);
         }
@@ -299,7 +299,7 @@ function leftPai() {
             pai.style.position = "absolute";
             pai.style.left = "30%";
             pai.style.top = ((leftInformation.pai * 8) + (b * 9.5)) + (28 * i) + 6 + "%";
-            pai.style.background = "url(img/侧家出牌.png)";
+            pai.style.background = "url(img/ce_jiia_chu_pai.png)";
             pai.style.backgroundRepeat = "no-repeat";
             pai.style.backgroundSize = "100% 100%";
             pai.append(image);
@@ -318,9 +318,9 @@ function leftPai() {
             pai.style.top = ((leftInformation.pai * 8) + (b * 9.5)) + leftInformation.peng.length * 28 + (28 * j) + 6 + "%";
             var paiNo=leftInformation.xiao[j]
             if(Rule.AnGangHide && leftInformation.hideAnGangSet.has(paiNo)){
-                pai.style.background = "url(img/侧家杠牌.png)";
+                pai.style.background = "url(img/ce_jia_gang_pai.png)";
             }else{
-                pai.style.background = "url(img/侧家出牌.png)";
+                pai.style.background = "url(img/ce_jiia_chu_pai.png)";
                 var image = newImg("img/" + zhuanhuan[paiNo] + ".png")
                 pai.append(image);
             }
@@ -338,9 +338,9 @@ function leftPai() {
         pai.style.top = ((leftInformation.pai * 8) + leftInformation.peng.length * 28 + (28 * j) + 13.5) + "%";
         var paiNo=leftInformation.xiao[j]
         if(Rule.AnGangHide && leftInformation.hideAnGangSet.has(paiNo)){
-            pai.style.background = "url(img/侧家杠牌.png)";
+            pai.style.background = "url(img/ce_jia_gang_pai.png)";
         }else{
-            pai.style.background = "url(img/侧家出牌.png)";
+            pai.style.background = "url(img/ce_jiia_chu_pai.png)";
             var image = newImg("img/" + zhuanhuan[paiNo] + ".png")
             pai.append(image);
         }
@@ -360,7 +360,7 @@ function leftPai() {
             pai.style.position = "absolute";
             pai.style.left = "30%";
             pai.style.top = ((leftInformation.pai * 8) + (leftInformation.peng.length + leftInformation.xiao.length) * 28 + (b * 9.5)) + (28 * i) + 6 + "%";
-            pai.style.background = "url(img/侧家出牌.png)";
+            pai.style.background = "url(img/ce_jiia_chu_pai.png)";
             pai.style.backgroundRepeat = "no-repeat";
             pai.style.backgroundSize = "100% 100%";
             pai.append(image);
@@ -374,7 +374,7 @@ function rightPai() {
     // 右边玩家手牌
     for (var i = 0; i < rightInformation.pai; i++) {
         var image = new Image();
-        image.src = "img/侧家手牌.png";
+        image.src = "img/ce_jia_shou_pai.png";
         // image.style.width="30%";
         // image.style.height="8%";
         image.style.top = 8 * i + "%";
@@ -405,7 +405,7 @@ function rightPai() {
             pai.style.left = "-15%";
 
             pai.style.top = ((rightInformation.pai * 8) + (b * 9.5)) + (28 * i) + 6 + "%";
-            pai.style.background = "url(img/侧家出牌.png)";
+            pai.style.background = "url(img/ce_jiia_chu_pai.png)";
             pai.style.backgroundRepeat = "no-repeat";
             pai.style.backgroundSize = "100% 100%";
             pai.append(image);
@@ -424,9 +424,9 @@ function rightPai() {
             pai.style.top = ((rightInformation.pai * 8) + (b * 9.5)) + rightInformation.peng.length * 28 + (28 * j) + 6 + "%";
             var paiNo = rightInformation.xiao[j]
             if(Rule.AnGangHide && rightInformation.hideAnGangSet.has(paiNo)){
-                pai.style.background = "url(img/侧家杠牌.png)";
+                pai.style.background = "url(img/ce_jia_gang_pai.png)";
             }else{
-                pai.style.background = "url(img/侧家出牌.png)";
+                pai.style.background = "url(img/ce_jiia_chu_pai.png)";
                 var image = newImg("img/" + zhuanhuan[paiNo] + ".png")
                 pai.append(image);
             }
@@ -444,9 +444,9 @@ function rightPai() {
         pai.style.top = ((rightInformation.pai * 8) + rightInformation.peng.length * 28 + (28 * j) + 13) + "%";
         var paiNo = rightInformation.xiao[j]
         if(Rule.AnGangHide && rightInformation.hideAnGangSet.has(paiNo)){
-            pai.style.background = "url(img/侧家杠牌.png)";
+            pai.style.background = "url(img/ce_jia_gang_pai.png)";
         }else{
-            pai.style.background = "url(img/侧家出牌.png)";
+            pai.style.background = "url(img/ce_jiia_chu_pai.png)";
             var image = newImg("img/" + zhuanhuan[paiNo] + ".png")
             pai.append(image);
         }
@@ -466,7 +466,7 @@ function rightPai() {
             pai.style.position = "absolute";
             pai.style.left = "-15%";
             pai.style.top = ((rightInformation.pai * 8) + (rightInformation.peng.length + rightInformation.xiao.length) * 28 + (b * 9.5)) + (28 * i) + 6 + "%";
-            pai.style.background = "url(img/侧家出牌.png)";
+            pai.style.background = "url(img/ce_jiia_chu_pai.png)";
             pai.style.backgroundRepeat = "no-repeat";
             pai.style.backgroundSize = "100% 100%";
             pai.append(image);
@@ -481,7 +481,7 @@ function acrossPai() {
     $("#across-pai").empty();
     for (var i = 0; i < acrossInformation.pai; i++) {
         var image = new Image();
-        image.src = "img/对家手牌.png";
+        image.src = "img/dui_jia_shou_pai.png";
         // image.style.width="30%";     
         // image.style.height="8%"; 
         image.style.left = 5.55 * i + 25 + "%";
@@ -514,7 +514,7 @@ function acrossPai() {
 
             pai.style.left = (5.55 * acrossInformation.pai) + 25 + (b * 4.5) + (13.5 * i) + "%";
 
-            pai.style.background = "url(img/自己出牌对家出牌对家碰牌.png)";
+            pai.style.background = "url(img/zi_ji_chu_pai.png)";
             pai.style.backgroundRepeat = "no-repeat";
             pai.style.backgroundSize = "100% 100%";
             pai.append(image);
@@ -534,9 +534,9 @@ function acrossPai() {
             pai.style.left = acrossInformation.peng.length * 13.5 + (5.55 * acrossInformation.pai) + 25 + (b * 4.5) + (13.5 * j) + "%";
             var paiNo=acrossInformation.xiao[j]
             if(Rule.AnGangHide && acrossInformation.hideAnGangSet.has(paiNo)){
-                pai.style.background = "url(img/对家杠牌.png)";
+                pai.style.background = "url(img/dui_jiia_gang_pai.png)";
             }else{
-                pai.style.background = "url(img/自己出牌对家出牌对家碰牌.png)";
+                pai.style.background = "url(img/zi_ji_chu_pai.png)";
                 var image = newImg("img/" + zhuanhuan[paiNo] + ".png")
                 pai.append(image);
             }
@@ -554,9 +554,9 @@ function acrossPai() {
         pai.style.left = acrossInformation.peng.length * 13.5 + (5.55 * acrossInformation.pai) + 29.5 + (13.5 * j) + "%";
         var paiNo=acrossInformation.xiao[j]
         if(Rule.AnGangHide && acrossInformation.hideAnGangSet.has(paiNo)){
-            pai.style.background = "url(img/对家杠牌.png)";
+            pai.style.background = "url(img/dui_jiia_gang_pai.png)";
         }else{
-            pai.style.background = "url(img/自己出牌对家出牌对家碰牌.png)";
+            pai.style.background = "url(img/zi_ji_chu_pai.png)";
             var image = newImg("img/" + zhuanhuan[paiNo] + ".png")
             pai.append(image);
         }
@@ -577,7 +577,7 @@ function acrossPai() {
             pai.style.position = "absolute";
             pai.style.top = "18%";
             pai.style.left = (acrossInformation.peng.length + acrossInformation.xiao.length) * 13.5 + (5.55 * acrossInformation.pai) + 25 + (b * 4.5) + (13.5 * i) + "%";
-            pai.style.background = "url(img/自己出牌对家出牌对家碰牌.png)";
+            pai.style.background = "url(img/zi_ji_chu_pai.png)";
             pai.style.backgroundRepeat = "no-repeat";
             pai.style.backgroundSize = "100% 100%";
             pai.append(image);
@@ -603,7 +603,7 @@ function leftDaZi(zi) {
     image.style.position = "absolute";
     image.style.left = "15%";
     image.style.transform = "rotate(90deg)";
-    // image.style.backgroundImage='url(img/自己出牌对家出牌对家碰牌.png)';
+    // image.style.backgroundImage='url(img/zi_ji_chu_pai.png)';
     /* clip:rect(0px,0px,0px,0px); */
 
     var pai = document.createElement("div");
@@ -612,7 +612,7 @@ function leftDaZi(zi) {
 
     pai.style.width = "35%";
     pai.style.height = "22%";
-    pai.style.background = "url(img/侧家出牌.png)";
+    pai.style.background = "url(img/ce_jiia_chu_pai.png)";
     pai.style.backgroundRepeat = "no-repeat";
     pai.style.backgroundSize = "100% 100%";
     pai.id = "leftchupai" + leftInformation.chuPai.length;
@@ -645,7 +645,7 @@ function rightDaZi(zi) {
     image.style.position = "absolute";
     image.style.left = "3%";
     image.style.transform = "rotate(270deg)";
-    // image.style.backgroundImage='url(img/自己出牌对家出牌对家碰牌.png)';
+    // image.style.backgroundImage='url(img/zi_ji_chu_pai.png)';
     /* clip:rect(0px,0px,0px,0px); */
 
     var pai = document.createElement("div");
@@ -655,7 +655,7 @@ function rightDaZi(zi) {
     pai.id = "rightchupai" + rightInformation.chuPai.length;
     pai.style.width = "35%";
     pai.style.height = "22%";
-    pai.style.background = "url(img/侧家出牌.png)";
+    pai.style.background = "url(img/ce_jiia_chu_pai.png)";
     pai.style.backgroundRepeat = "no-repeat";
     pai.style.backgroundSize = "100% 100%";
     // pai.style.top="30%";
@@ -686,7 +686,7 @@ function acrossDaZi(zi) {
     image.style.top = "-10%";
     image.style.position = "absolute";
     image.style.left = "7%";
-    // image.style.backgroundImage='url(img/自己出牌对家出牌对家碰牌.png)';
+    // image.style.backgroundImage='url(img/zi_ji_chu_pai.png)';
     /* clip:rect(0px,0px,0px,0px); */
 
     var pai = document.createElement("div");
@@ -701,7 +701,7 @@ function acrossDaZi(zi) {
     pai.style.width = "16%";
     pai.style.height = "88%";
     pai.id = "acrosschupai" + acrossInformation.chuPai.length;
-    pai.style.background = "url(img/自己出牌对家出牌对家碰牌.png)";
+    pai.style.background = "url(img/zi_ji_chu_pai.png)";
     pai.style.backgroundRepeat = "no-repeat";
     pai.style.backgroundSize = "100% 100%";
     pai.append(image);
@@ -719,7 +719,7 @@ function moPai(moDePai) {
     image.style.right = "10%";
     image.style.width = "12%";
     image.style.height = "140%";
-    image.style.backgroundImage = 'url(img/自己手牌.png)';
+    image.style.backgroundImage = 'url(img/zi_ji_shou_pai.png)';
     if (moDePai == roomInformation.laizi) {
 
         var yellowPai = document.createElement("div");
@@ -775,7 +775,7 @@ function woChuPai(daPai) {
     image.style.top = "-10%";
     image.style.position = "absolute";
     image.style.left = "7%";
-    // image.style.backgroundImage='url(img/自己出牌对家出牌对家碰牌.png)';
+    // image.style.backgroundImage='url(img/zi_ji_chu_pai.png)';
     /* clip:rect(0px,0px,0px,0px); */
 
     var pai = document.createElement("div");
@@ -789,7 +789,7 @@ function woChuPai(daPai) {
     }
     pai.style.width = "10%";
     pai.style.height = "69%";
-    pai.style.background = "url(img/自己出牌对家出牌对家碰牌.png)";
+    pai.style.background = "url(img/zi_ji_chu_pai.png)";
     pai.style.backgroundRepeat = "no-repeat";
     pai.style.backgroundSize = "100% 100%";
     pai.id = "mychupai" + myInformation.chuPai.length;
@@ -821,9 +821,9 @@ function woPeng() {
             pai.style.height = "53%";
             var paiNo=myInformation.xiao[i]
             if(Rule.AnGangHide && myInformation.hideAnGangSet.has(paiNo)){
-                pai.style.background = "url(img/自己杠牌.png)";
+                pai.style.background = "url(img/zi_ji_gang_pai.png)";
             }else{
-                pai.style.background = "url(img/自己出牌对家出牌对家碰牌.png)";
+                pai.style.background = "url(img/zi_ji_chu_pai.png)";
                 var image = newImg("img/" + zhuanhuan[paiNo] + ".png")
                 pai.append(image);
             }
@@ -841,9 +841,9 @@ function woPeng() {
             pai.style.height = "51.5%";
             var paiNo=myInformation.xiao[i]
             if(Rule.AnGangHide && myInformation.hideAnGangSet.has(paiNo)){
-                pai.style.background = "url(img/自己杠牌.png)";
+                pai.style.background = "url(img/zi_ji_gang_pai.png)";
             }else{
-                pai.style.background = "url(img/自己出牌对家出牌对家碰牌.png)";
+                pai.style.background = "url(img/zi_ji_chu_pai.png)";
                 var image = newImg("img/" + zhuanhuan[paiNo] + ".png")
                 pai.append(image);
             }
@@ -864,7 +864,7 @@ function woPeng() {
 
             pai.style.width = "11.5%";
             pai.style.height = "53%";
-            pai.style.background = "url(img/自己出牌对家出牌对家碰牌.png)";
+            pai.style.background = "url(img/zi_ji_chu_pai.png)";
             pai.style.backgroundRepeat = "no-repeat";
             pai.style.backgroundSize = "100% 100%";
             pai.append(image);
@@ -883,7 +883,7 @@ function woPeng() {
             pai.style.left = ((i * 35) + (b * 11)) + (myInformation.xiao.length + myInformation.peng.length) * 35 + "%";
             pai.style.width = "11.5%";
             pai.style.height = "53%";
-            pai.style.background = "url(img/自己出牌对家出牌对家碰牌.png)";
+            pai.style.background = "url(img/zi_ji_chu_pai.png)";
             pai.style.backgroundRepeat = "no-repeat";
             pai.style.backgroundSize = "100% 100%";
             pai.append(image);

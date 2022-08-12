@@ -46,7 +46,7 @@
     position: absolute;
     left: 3%;
     background-size: 100% 100%;
-    background-image: url("../img/自己手牌.png");
+    background-image: url("../img/zi_ji_shou_pai.png");
 }
 
 #chizuo, #chizhong, #chiyou, #hupai, #pengpai, #xiaopai, #buyao, #chupai {
@@ -149,7 +149,7 @@
 /*position: absolute;*/
 /*height: 62%;*/
 /*width: 8%;*/
-/*background-image: url(img/自己出牌对家出牌对家碰牌.png);*/
+/*background-image: url(img/zi_ji_chu_pai.png);*/
 /*background-repeat: no-repeat;*/
 /*!* background-position: 25%,0%; *!*/
 /*}*/
