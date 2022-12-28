@@ -16,24 +16,16 @@
         token: '',
         roomId: '<%= request.getParameter("roomId")%>'
     };
-    // var wsUrl = 'ws://localhost:8080/lsmj/websocket/{'+JSON.stringify(params)+"}";
-    // var wsUrl = 'ws://192.168.43.35:8080/lsmj/websocket/{'+JSON.stringify(params)+"}";
-
-    var wsUrl = 'ws://localhost:8080/TestGit/lsmj/websocket/{' + JSON.stringify(params) + "}";
-    // var wsUrl = 'ws://111.230.108.43:8080/TestGit/lsmj/websocket/{'+JSON.stringify(params)+"}";
-
-    // var wsUrl = 'ws://3308b008.nat123.cc:53780/lsmj/websocket/{'+JSON.stringify(params)+"}";
+    var wsUrl = "ws://"+location.host+'/majiang/lsmj/websocket/{' + JSON.stringify(params) + "}";
     var accountId = params.accountId;
-
 </script>
 <div id="yemian">
     <div id="yupai-information"></div>
     <div id="showlaizi"></div>
     <div id="fullScreen" onclick=requestFullScreen()>全屏</div>
     <div id="daoZhuan" onclick=daoZhuan()>倒转</div>
-    <div id="buyao">不要</div>
-
     <div id="buttonqu">
+        <button id="buyao">不要</button>
         <button id="chupai">出牌</button>
         <button id="hupai">胡</button>
         <button id="pengpai">碰</button>
@@ -66,6 +58,7 @@
     <div id="chupaiqu"></div>
 
     <div id="chupairen">
+        <img id="lunpan" src="img/time11.png"/>
         <img id="myChuPai" src="img/time33.png"/>
         <img id="acrossChuPai" src="img/time22.png"/>
         <img id="leftChuPai" src="img/time44.png"/>

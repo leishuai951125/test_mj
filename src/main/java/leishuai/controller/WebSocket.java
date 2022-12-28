@@ -93,7 +93,7 @@ public class WebSocket {
                 synchronized (player) {  //进入房间，包括公共房和私人房
                     connectService.intoRoom(player, param.getLong("roomId"), param.getInteger("diFen"));
                     ProcessMsg processMsg = ProcessMsg.map.get("c3"); //加入房间的信息发给每个人
-                    doMsgAndSendMsg(processMsg, null);
+                    doMsgAndSendMsg(processMsg, null); //release
                 }
             }
         } else {
